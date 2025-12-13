@@ -1,0 +1,40 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "pregunta": "¿Cuál es el tratamiento de elección para un paciente con fibrilación auricular paroxística sintomática que no responde a tratamiento farmacológico?",
+      "opciones": [
+        "Ablación con catéter de las venas pulmonares",
+        "Cardioversión eléctrica urgente",
+        "Aumentar la dosis de betabloqueantes",
+        "Implantación de marcapasos definitivo"
+      ],
+      "respuestaCorrecta": 0,
+      "explicacion": "La ablación con catéter de las venas pulmonares es el tratamiento de elección en pacientes con fibrilación auricular paroxística sintomática refractaria al tratamiento farmacológico."
+    },
+    {
+      "id": 2,
+      "pregunta": "Un paciente de 65 años presenta disnea progresiva y en la radiografía de tórax se observa derrame pleural bilateral. El análisis del líquido pleural muestra: proteínas 2.5 g/dL, LDH 110 UI/L (LDH sérica 200 UI/L), glucosa 95 mg/dL. ¿Cuál es el diagnóstico más probable?",
+      "opciones": [
+        "Derrame pleural por insuficiencia cardíaca congestiva",
+        "Tuberculosis pleural",
+        "Empiema pleural",
+        "Derrame pleural maligno"
+      ],
+      "respuestaCorrecta": 0,
+      "explicacion": "Los criterios de Light indican que es un trasudado (proteínas <3 g/dL, ratio proteínas pleural/sérica <0.5, LDH pleural <2/3 del límite superior normal sérico). El derrame bilateral con trasudado sugiere insuficiencia cardíaca."
+    },
+    {
+      "id": 3,
+      "pregunta": "¿Cuál es el mecanismo de acción principal de los inhibidores de SGLT2 en el tratamiento de la diabetes mellitus tipo 2?",
+      "opciones": [
+        "Estimulación de la secreción de insulina pancreática",
+        "Inhibición de la absorción intestinal de glucosa",
+        "Inhibición de la reabsorción renal de glucosa",
+        "Aumento de la sensibilidad periférica a la insulina"
+      ],
+      "respuestaCorrecta": 2,
+      "explicacion": "Los inhibidores de SGLT2 (como empagliflozina, dapagliflozina) actúan inhibiendo el cotransportador sodio-glucosa tipo 2 en el túbulo proximal renal, lo que produce glucosuria y disminución de la glucemia de forma independiente de la insulina."
+    }
+  ]
+}
