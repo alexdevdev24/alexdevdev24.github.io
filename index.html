@@ -5,485 +5,232 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Examen Blanco Especial para Claudia</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .header {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: #667eea;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 1.1em;
-        }
-
-        .timer {
-            background: #ff6b6b;
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 1.3em;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .question-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .question-card.active {
-            display: block;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .question-number {
-            color: #667eea;
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 15px;
-        }
-
-        .question-text {
-            font-size: 1.2em;
-            color: #333;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-
-        .option {
-            background: #f8f9fa;
-            padding: 15px 20px;
-            margin-bottom: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .option:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-
-        .option.selected {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .option.correct {
-            background: #51cf66;
-            color: white;
-            border-color: #51cf66;
-        }
-
-        .option.incorrect {
-            background: #ff6b6b;
-            color: white;
-            border-color: #ff6b6b;
-        }
-
-        .option.disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        .option-unknown {
-            background: #fff3cd;
-            border: 2px dashed #ffc107;
-            color: #856404;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .option-unknown:hover {
-            background: #ffe69c;
-            border-color: #ffb700;
-        }
-
-        .option-unknown.selected {
-            background: #ffc107;
-            color: white;
-            border-color: #ffc107;
-        }
-
-        .explanation {
-            background: #fff3cd;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            border-left: 4px solid #ffc107;
-            display: none;
-        }
-
-        .explanation.show {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .explanation strong {
-            color: #856404;
-        }
-
-        .navigation {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-success {
-            background: #51cf66;
-            color: white;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .results {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            text-align: center;
-            display: none;
-        }
-
-        .results.show {
-            display: block;
-            animation: slideIn 0.5s ease;
-        }
-
-        .score {
-            font-size: 4em;
-            font-weight: bold;
-            color: #667eea;
-            margin: 20px 0;
-        }
-
-        .score-message {
-            font-size: 1.5em;
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .progress-bar {
-            background: #e9ecef;
-            height: 10px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            height: 100%;
-            transition: width 0.3s ease;
-        }
+        * {margin:0; padding:0; box-sizing:border-box;}
+        body {font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); min-height:100vh; padding:20px;}
+        .container {max-width:900px; margin:0 auto;}
+        .header {background:white; padding:30px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); text-align:center; margin-bottom:30px;}
+        .header h1 {color:#667eea; font-size:2.5em; margin-bottom:10px;}
+        .header p {color:#666; font-size:1.1em;}
+        .timer {background:#ff6b6b; color:white; padding:15px; border-radius:10px; text-align:center; font-size:1.3em; font-weight:bold; margin-bottom:20px;}
+        .question-card {background:white; padding:30px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); margin-bottom:20px; display:none;}
+        .question-card.active {display:block; animation:slideIn 0.3s ease;}
+        @keyframes slideIn {from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
+        .question-number {color:#667eea; font-weight:bold; font-size:1.2em; margin-bottom:15px;}
+        .question-text {font-size:1.2em; color:#333; margin-bottom:25px; line-height:1.6;}
+        .option {background:#f8f9fa; padding:15px 20px; margin-bottom:12px; border-radius:10px; cursor:pointer; transition:all 0.3s; border:2px solid transparent;}
+        .option:hover {background:#e9ecef; transform:translateX(5px);}
+        .option.selected {background:#667eea; color:white; border-color:#667eea;}
+        .option.correct {background:#51cf66; color:white; border-color:#51cf66;}
+        .option.incorrect {background:#ff6b6b; color:white; border-color:#ff6b6b;}
+        .option.disabled {cursor:not-allowed; opacity:0.7;}
+        .option-unknown {background:#fff3cd; border:2px dashed #ffc107; color:#856404; font-weight:bold; text-align:center;}
+        .option-unknown:hover {background:#ffe69c; border-color:#ffb700;}
+        .option-unknown.selected {background:#ffc107; color:white; border-color:#ffc107;}
+        .explanation {background:#fff3cd; padding:20px; border-radius:10px; margin-top:20px; border-left:4px solid #ffc107; display:none;}
+        .explanation.show {display:block; animation:fadeIn 0.5s ease;}
+        @keyframes fadeIn {from{opacity:0;} to{opacity:1;}}
+        .explanation strong {color:#856404;}
+        .navigation {display:flex; gap:15px; margin-top:25px;}
+        .btn {flex:1; padding:15px 30px; border:none; border-radius:10px; font-size:1.1em; font-weight:bold; cursor:pointer; transition:all 0.3s;}
+        .btn:hover {transform:translateY(-2px); box-shadow:0 5px 15px rgba(0,0,0,0.2);}
+        .btn-primary {background:#667eea; color:white;}
+        .btn-secondary {background:#6c757d; color:white;}
+        .btn-success {background:#51cf66; color:white;}
+        .btn:disabled {opacity:0.5; cursor:not-allowed;}
+        .results {background:white; padding:40px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.2); text-align:center; display:none;}
+        .results.show {display:block; animation:slideIn 0.5s ease;}
+        .score {font-size:4em; font-weight:bold; color:#667eea; margin:20px 0;}
+        .score-message {font-size:1.5em; color:#666; margin-bottom:30px;}
+        .progress-bar {background:#e9ecef; height:10px; border-radius:5px; margin-bottom:20px; overflow:hidden;}
+        .progress-fill {background:linear-gradient(90deg,#667eea 0%,#764ba2 100%); height:100%; transition:width 0.3s ease;}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🏥 Examen Blanco MIR para Claudia</h1>
-            <p>Médico Interno Residente - Simulacro</p>
-        </div>
-
-        <div class="timer" id="timer">⏱️ Tiempo: 00:00</div>
-
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressBar"></div>
-        </div>
-
-        <div id="questionsContainer"></div>
-
-        <div class="results" id="results">
-            <h2>🎯 Resultados del Examen</h2>
-            <div class="score" id="finalScore"></div>
-            <div class="score-message" id="scoreMessage"></div>
-            <button class="btn btn-primary" onclick="location.reload()">🔄 Reintentar Examen</button>
-        </div>
+<div class="container">
+    <div class="header">
+        <h1>🏥 Examen Blanco MIR para Claudia</h1>
+        <p>Médico Interno Residente - Simulacro</p>
     </div>
 
-    <script>
-        let questionsData = null;
-        let currentQuestion = 0;
-        let score = 0;
-        let unknownCount = 0;
-        let incorrectCount = 0;
-        let correctCount = 0;
-        let userAnswers = [];
-        let startTime = Date.now();
-        let timerInterval;
+    <div class="timer" id="timer">⏱️ Tiempo: 00:00</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+    <div id="questionsContainer"></div>
 
-        // Cargar preguntas desde questions.json
-        async function loadQuestions() {
-            try {
-                const response = await fetch('questions.json');
-                if (!response.ok) {
-                    throw new Error('No se pudo cargar el archivo questions.json');
-                }
-                questionsData = await response.json();
-                startTimer();
-                renderQuestion(0);
-            } catch (error) {
-                console.error('Error cargando preguntas:', error);
-                document.getElementById('questionsContainer').innerHTML = `
-                    <div class="question-card active" style="display: block;">
-                        <h2 style="color: #ff6b6b;">⚠️ Error</h2>
-                        <p>No se pudo cargar el archivo <strong>questions.json</strong></p>
-                        <p>Asegúrate de que el archivo existe en la misma carpeta que index.html</p>
-                    </div>
-                `;
-            }
-        }
+    <div class="results" id="results">
+        <h2>🎯 Resultados del Examen</h2>
+        <div class="score" id="finalScore"></div>
+        <div class="score-message" id="scoreMessage"></div>
+        <button class="btn btn-primary" onclick="location.reload()">🔄 Reintentar Examen</button>
+    </div>
+</div>
 
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                const minutes = Math.floor(elapsed / 60);
-                const seconds = elapsed % 60;
-                document.getElementById('timer').textContent = 
-                    `⏱️ Tiempo: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            }, 1000);
-        }
+<script>
+let questionsData = null;
+let currentQuestion = 0;
+let score = 0;
+let unknownCount = 0;
+let incorrectCount = 0;
+let correctCount = 0;
+let userAnswers = [];
+let startTime = Date.now();
+let timerInterval;
 
-        function updateProgressBar() {
-            const progress = ((currentQuestion + 1) / questionsData.questions.length) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
-        }
+async function loadQuestions() {
+    try {
+        const response = await fetch('questions.json');
+        if (!response.ok) throw new Error('No se pudo cargar el archivo questions.json');
+        questionsData = await response.json();
+        startTimer();
+        renderQuestion(0);
+    } catch (error) {
+        console.error('Error cargando preguntas:', error);
+        document.getElementById('questionsContainer').innerHTML = `<div class="question-card active" style="display: block;">
+            <h2 style="color: #ff6b6b;">⚠️ Error</h2>
+            <p>No se pudo cargar el archivo <strong>questions.json</strong></p>
+            <p>Asegúrate de que el archivo existe en la misma carpeta que index.html</p>
+        </div>`;
+    }
+}
 
-        function renderQuestion(index) {
-            const question = questionsData.questions[index];
-            const container = document.getElementById('questionsContainer');
-            
-            const questionHTML = `
-                <div class="question-card active" id="question-${index}">
-                    <div class="question-number">Pregunta ${index + 1} de ${questionsData.questions.length}</div>
-                    <div class="question-text">${question.pregunta}</div>
-                    <div class="options">
-                        ${question.opciones.map((option, i) => `
-                            <div class="option" onclick="selectAnswer(${index}, ${i})">
-                                ${String.fromCharCode(65 + i)}. ${option}
-                            </div>
-                        `).join('')}
-                        <div class="option option-unknown" onclick="selectUnknown(${index})">
-                            ❓ No lo sé / Necesito revisar este tema
-                        </div>
-                    </div>
-                    <div class="explanation" id="explanation-${index}">
-                        <strong>💡 Explicación:</strong><br>${question.explicacion}
-                    </div>
-                    <div class="navigation">
-                        ${index > 0 ? '<button class="btn btn-secondary" onclick="previousQuestion()">⬅️ Anterior</button>' : ''}
-                        <button class="btn btn-primary" id="checkBtn-${index}" onclick="checkAnswer(${index})" disabled>✓ Comprobar</button>
-                        ${index < questionsData.questions.length - 1 ? 
-                            '<button class="btn btn-success" id="nextBtn-' + index + '" onclick="nextQuestion()" style="display:none">Siguiente ➡️</button>' : 
-                            '<button class="btn btn-success" id="finishBtn" onclick="finishExam()" style="display:none">🏁 Finalizar</button>'}
-                    </div>
+function startTimer() {
+    timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        document.getElementById('timer').textContent = 
+            `⏱️ Tiempo: ${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+    }, 1000);
+}
+
+function updateProgressBar() {
+    const progress = ((currentQuestion+1)/questionsData.questions.length)*100;
+    document.getElementById('progressBar').style.width = progress+'%';
+}
+
+function renderQuestion(index) {
+    const question = questionsData.questions[index];
+    const container = document.getElementById('questionsContainer');
+
+    const questionHTML = `
+        <div class="question-card active" id="question-${index}">
+            <div class="question-number">Pregunta ${index+1} de ${questionsData.questions.length}</div>
+            <div class="question-text">${question.pregunta}</div>
+            <div class="options">
+                ${question.opciones.map((option,i)=>`
+                    <div class="option" onclick="selectAnswer(${index},${i})">
+                        ${String.fromCharCode(65+i)}. ${option}
+                    </div>`).join('')}
+                <div class="option option-unknown" onclick="selectUnknown(${index})">
+                    ❓ No lo sé / Necesito revisar este tema
                 </div>
-            `;
-            
-            container.innerHTML = questionHTML;
-            updateProgressBar();
-        }
+            </div>
+            <div class="explanation" id="explanation-${index}">
+                <strong>💡 Explicación:</strong><br>${question.explicacion}
+            </div>
+            <div class="navigation">
+                ${index>0?'<button class="btn btn-secondary" onclick="previousQuestion()">⬅️ Anterior</button>':''}
+                <button class="btn btn-primary" id="checkBtn-${index}" onclick="checkAnswer(${index})" disabled>✓ Comprobar</button>
+                ${index<questionsData.questions.length-1?'<button class="btn btn-success" id="nextBtn-'+index+'" onclick="nextQuestion()" style="display:none">Siguiente ➡️</button>':'<button class="btn btn-success" id="finishBtn" onclick="finishExam()" style="display:none">🏁 Finalizar</button>'}
+            </div>
+        </div>
+    `;
+    container.innerHTML = questionHTML;
+    updateProgressBar();
+}
 
-        function selectAnswer(questionIndex, optionIndex) {
-            if (userAnswers[questionIndex] !== undefined) return;
-            
-            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
-            options.forEach((opt, i) => {
-                opt.classList.remove('selected');
-            });
-            
-            options[optionIndex].classList.add('selected');
-            
-            userAnswers[questionIndex] = { type: 'answer', value: optionIndex };
-            document.getElementById(`checkBtn-${questionIndex}`).disabled = false;
-        }
+function selectAnswer(questionIndex, optionIndex){
+    if(userAnswers[questionIndex]!==undefined) return;
+    const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+    options.forEach(opt=>opt.classList.remove('selected'));
+    options[optionIndex].classList.add('selected');
+    userAnswers[questionIndex] = {type:'answer', value:optionIndex};
+    document.getElementById(`checkBtn-${questionIndex}`).disabled=false;
+}
 
-        function selectUnknown(questionIndex) {
-            if (userAnswers[questionIndex] !== undefined) return;
-            
-            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
-            options.forEach(opt => opt.classList.remove('selected'));
-            
-            const unknownOption = document.querySelector(`#question-${questionIndex} .option-unknown`);
-            unknownOption.classList.add('selected');
-            
-            userAnswers[questionIndex] = { type: 'unknown' };
-            document.getElementById(`checkBtn-${questionIndex}`).disabled = false;
-        }
+function selectUnknown(questionIndex){
+    if(userAnswers[questionIndex]!==undefined) return;
+    const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+    options.forEach(opt=>opt.classList.remove('selected'));
+    const unknownOption = document.querySelector(`#question-${questionIndex} .option-unknown`);
+    unknownOption.classList.add('selected');
+    userAnswers[questionIndex] = {type:'unknown'};
+    document.getElementById(`checkBtn-${questionIndex}`).disabled=false;
+}
 
-        function checkAnswer(questionIndex) {
-            const question = questionsData.questions[questionIndex];
-            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
-            const userAnswer = userAnswers[questionIndex];
-            
-            options.forEach((opt, i) => {
-                opt.classList.add('disabled');
-                if (i === question.respuestaCorrecta) {
-                    opt.classList.add('correct');
-                }
-            });
-            
-            if (userAnswer.type === 'unknown') {
-                unknownCount++;
-                // No lo sé = 0 puntos
-                document.querySelector(`#question-${questionIndex} .option-unknown`).style.background = '#ffc107';
-            } else if (userAnswer.value === question.respuestaCorrecta) {
-                correctCount++;
-                score += 3; // Respuesta correcta = +3 puntos
-            } else {
-                incorrectCount++;
-                score -= 1; // Respuesta incorrecta = -1 punto
-                options[userAnswer.value].classList.add('incorrect');
-            }
-            
-            document.getElementById(`explanation-${questionIndex}`).classList.add('show');
-            document.getElementById(`checkBtn-${questionIndex}`).style.display = 'none';
-            
-            if (questionIndex < questionsData.questions.length - 1) {
-                document.getElementById(`nextBtn-${questionIndex}`).style.display = 'block';
-            } else {
-                document.getElementById('finishBtn').style.display = 'block';
-            }
-        }
+function checkAnswer(questionIndex){
+    const question = questionsData.questions[questionIndex];
+    const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+    const userAnswer = userAnswers[questionIndex];
 
-        function nextQuestion() {
-            currentQuestion++;
-            renderQuestion(currentQuestion);
-        }
+    options.forEach((opt,i)=>{
+        opt.classList.add('disabled');
+        if(i===question.respuestaCorrecta) opt.classList.add('correct');
+    });
 
-        function previousQuestion() {
-            currentQuestion--;
-            renderQuestion(currentQuestion);
-        }
+    if(userAnswer.type==='unknown'){
+        unknownCount++;
+        document.querySelector(`#question-${questionIndex} .option-unknown`).style.background='#ffc107';
+    } else if(userAnswer.value===question.respuestaCorrecta){
+        correctCount++;
+        score+=3;
+    } else {
+        incorrectCount++;
+        score-=1;
+        options[userAnswer.value].classList.add('incorrect');
+    }
 
-        function finishExam() {
-            clearInterval(timerInterval);
-            document.getElementById('questionsContainer').style.display = 'none';
-            document.querySelector('.timer').style.display = 'none';
-            document.querySelector('.progress-bar').style.display = 'none';
-            
-            const total = questionsData.questions.length;
-            const maxScore = total * 3; // Puntuación máxima posible
-            const percentage = Math.round((score / maxScore) * 100);
-            
-            document.getElementById('finalScore').innerHTML = `
-                <div style="margin-bottom: 20px;">
-                    <div style="font-size: 0.6em; color: #667eea; margin-bottom: 15px;">Puntuación: ${score} / ${maxScore} puntos</div>
-                    <div style="font-size: 0.5em; color: #51cf66;">✓ Correctas: ${correctCount} (+${correctCount * 3} puntos)</div>
-                    <div style="font-size: 0.5em; color: #ff6b6b;">✗ Incorrectas: ${incorrectCount} (${incorrectCount * -1} puntos)</div>
-                    <div style="font-size: 0.5em; color: #ffc107;">❓ No sabía: ${unknownCount} (0 puntos)</div>
-                </div>
-            `;
-            
-            let message = `<strong>Porcentaje:</strong> ${percentage}%<br><br>`;
-            
-            message += `<div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 20px 0; font-size: 0.9em; text-align: left;">
-                <strong>📊 Sistema de puntuación:</strong><br>
-                ✅ Respuesta correcta: +3 puntos<br>
-                ❌ Respuesta incorrecta: -1 punto<br>
-                ❓ No lo sé: 0 puntos<br><br>
-                <em>¡Es mejor ser honesta que adivinar!</em>
-            </div>`;
-            
-            if (score < 0) {
-                message += '⚠️ Has perdido puntos por adivinar. Recuerda: es mejor marcar "No lo sé" que responder al azar.';
-            } else if (unknownCount === 0 && percentage >= 90) {
-                message += '🌟 ¡Excelente! Dominas muy bien el tema y fuiste valiente al intentar todas las preguntas.';
-            } else if (unknownCount === 0 && percentage >= 70) {
-                message += '👍 ¡Muy bien! Buen nivel de conocimientos.';
-            } else if (unknownCount > total * 0.5) {
-                message += '📚 Buena actitud siendo honesta. Identifica bien tus áreas de mejora. ¡Sigue estudiando!';
-            } else if (percentage >= 60) {
-                message += '💪 Buen equilibrio entre conocimiento y honestidad. Sigue así.';
-            } else {
-                message += '📖 Revisa los temas marcados y evita adivinar en el futuro.';
-            }
-            
-            document.getElementById('scoreMessage').innerHTML = message;
-            document.getElementById('results').classList.add('show');
-        }
+    document.getElementById(`explanation-${questionIndex}`).classList.add('show');
+    document.getElementById(`checkBtn-${questionIndex}`).style.display='none';
+    if(questionIndex<questionsData.questions.length-1){
+        document.getElementById(`nextBtn-${questionIndex}`).style.display='block';
+    } else {
+        document.getElementById('finishBtn').style.display='block';
+    }
+}
 
-        // Iniciar la aplicación
-        loadQuestions();
-    </script>
+function nextQuestion(){currentQuestion++; renderQuestion(currentQuestion);}
+function previousQuestion(){currentQuestion--; renderQuestion(currentQuestion);}
+
+function finishExam(){
+    clearInterval(timerInterval);
+    document.getElementById('questionsContainer').style.display='none';
+    document.querySelector('.timer').style.display='none';
+    document.querySelector('.progress-bar').style.display='none';
+
+    const total = questionsData.questions.length;
+    const maxScore = total*3;
+    const percentage = Math.round((score/maxScore)*100);
+
+    document.getElementById('finalScore').innerHTML = `
+        <div style="margin-bottom:20px;">
+            <div style="font-size:0.6em;color:#667eea;margin-bottom:15px;">Puntuación: ${score} / ${maxScore} puntos</div>
+            <div style="font-size:0.5em;color:#51cf66;">✓ Correctas: ${correctCount} (+${correctCount*3} puntos)</div>
+            <div style="font-size:0.5em;color:#ff6b6b;">✗ Incorrectas: ${incorrectCount} (${incorrectCount*-1} puntos)</div>
+            <div style="font-size:0.5em;color:#ffc107;">❓ No sabía: ${unknownCount} (0 puntos)</div>
+        </div>
+    `;
+
+    let message = `<strong>Porcentaje:</strong> ${percentage}%<br><br>`;
+    message += `<div style="background:#f8f9fa;padding:15px;border-radius:10px;margin:20px 0;font-size:0.9em;text-align:left;">
+        <strong>📊 Sistema de puntuación:</strong><br>
+        ✅ Respuesta correcta: +3 puntos<br>
+        ❌ Respuesta incorrecta: -1 punto<br>
+        ❓ No lo sé: 0 puntos<br><br>
+        <em>¡Es mejor ser honesta que adivinar!</em>
+    </div>`;
+
+    if(score<0) message+='⚠️ Has perdido puntos por adivinar. Recuerda: es mejor marcar "No lo sé" que responder al azar.';
+    else if(unknownCount===0 && percentage>=90) message+='🌟 ¡Excelente! Dominas muy bien el tema y fuiste valiente al intentar todas las preguntas.';
+    else if(unknownCount===0 && percentage>=70) message+='👍 ¡Muy bien! Buen nivel de conocimientos.';
+    else if(unknownCount>total*0.5) message+='📚 Buena actitud siendo honesta. Identifica bien tus áreas de mejora. ¡Sigue estudiando!';
+    else if(percentage>=60) message+='💪 Buen equilibrio entre conocimiento y honestidad. Sigue así.';
+    else message+='📖 Revisa los temas marcados y evita adivinar en el futuro.';
+
+    document.getElementById('scoreMessage').innerHTML = message;
+    document.getElementById('results').classList.add('show');
+}
+
+loadQuestions();
+</script>
 </body>
 </html>
