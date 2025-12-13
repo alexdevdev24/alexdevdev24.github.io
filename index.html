@@ -131,6 +131,25 @@
             opacity: 0.7;
         }
 
+        .option-unknown {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            color: #856404;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .option-unknown:hover {
+            background: #ffe69c;
+            border-color: #ffb700;
+        }
+
+        .option-unknown.selected {
+            background: #ffc107;
+            color: white;
+            border-color: #ffc107;
+        }
+
         .explanation {
             background: #fff3cd;
             padding: 20px;
@@ -262,53 +281,37 @@
     </div>
 
     <script>
-        // JSON de preguntas (normalmente se cargaría desde un archivo externo)
-        const questionsData = {
-            "questions": [
-                {
-                    "id": 1,
-                    "pregunta": "¿Cuál es el tratamiento de elección para un paciente con fibrilación auricular paroxística sintomática que no responde a tratamiento farmacológico?",
-                    "opciones": [
-                        "Ablación con catéter de las venas pulmonares",
-                        "Cardioversión eléctrica urgente",
-                        "Aumentar la dosis de betabloqueantes",
-                        "Implantación de marcapasos definitivo"
-                    ],
-                    "respuestaCorrecta": 0,
-                    "explicacion": "La ablación con catéter de las venas pulmonares es el tratamiento de elección en pacientes con fibrilación auricular paroxística sintomática refractaria al tratamiento farmacológico."
-                },
-                {
-                    "id": 2,
-                    "pregunta": "Un paciente de 65 años presenta disnea progresiva y en la radiografía de tórax se observa derrame pleural bilateral. El análisis del líquido pleural muestra: proteínas 2.5 g/dL, LDH 110 UI/L (LDH sérica 200 UI/L), glucosa 95 mg/dL. ¿Cuál es el diagnóstico más probable?",
-                    "opciones": [
-                        "Derrame pleural por insuficiencia cardíaca congestiva",
-                        "Tuberculosis pleural",
-                        "Empiema pleural",
-                        "Derrame pleural maligno"
-                    ],
-                    "respuestaCorrecta": 0,
-                    "explicacion": "Los criterios de Light indican que es un trasudado (proteínas <3 g/dL, ratio proteínas pleural/sérica <0.5, LDH pleural <2/3 del límite superior normal sérico). El derrame bilateral con trasudado sugiere insuficiencia cardíaca."
-                },
-                {
-                    "id": 3,
-                    "pregunta": "¿Cuál es el mecanismo de acción principal de los inhibidores de SGLT2 en el tratamiento de la diabetes mellitus tipo 2?",
-                    "opciones": [
-                        "Estimulación de la secreción de insulina pancreática",
-                        "Inhibición de la absorción intestinal de glucosa",
-                        "Inhibición de la reabsorción renal de glucosa",
-                        "Aumento de la sensibilidad periférica a la insulina"
-                    ],
-                    "respuestaCorrecta": 2,
-                    "explicacion": "Los inhibidores de SGLT2 (como empagliflozina, dapagliflozina) actúan inhibiendo el cotransportador sodio-glucosa tipo 2 en el túbulo proximal renal, lo que produce glucosuria y disminución de la glucemia de forma independiente de la insulina."
-                }
-            ]
-        };
-
+        let questionsData = null;
         let currentQuestion = 0;
         let score = 0;
+        let unknownCount = 0;
+        let incorrectCount = 0;
+        let correctCount = 0;
         let userAnswers = [];
         let startTime = Date.now();
         let timerInterval;
+
+        // Cargar preguntas desde questions.json
+        async function loadQuestions() {
+            try {
+                const response = await fetch('questions.json');
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar el archivo questions.json');
+                }
+                questionsData = await response.json();
+                startTimer();
+                renderQuestion(0);
+            } catch (error) {
+                console.error('Error cargando preguntas:', error);
+                document.getElementById('questionsContainer').innerHTML = `
+                    <div class="question-card active" style="display: block;">
+                        <h2 style="color: #ff6b6b;">⚠️ Error</h2>
+                        <p>No se pudo cargar el archivo <strong>questions.json</strong></p>
+                        <p>Asegúrate de que el archivo existe en la misma carpeta que index.html</p>
+                    </div>
+                `;
+            }
+        }
 
         function startTimer() {
             timerInterval = setInterval(() => {
@@ -339,6 +342,9 @@
                                 ${String.fromCharCode(65 + i)}. ${option}
                             </div>
                         `).join('')}
+                        <div class="option option-unknown" onclick="selectUnknown(${index})">
+                            ❓ No lo sé / Necesito revisar este tema
+                        </div>
                     </div>
                     <div class="explanation" id="explanation-${index}">
                         <strong>💡 Explicación:</strong><br>${question.explicacion}
@@ -363,31 +369,50 @@
             const options = document.querySelectorAll(`#question-${questionIndex} .option`);
             options.forEach((opt, i) => {
                 opt.classList.remove('selected');
-                if (i === optionIndex) {
-                    opt.classList.add('selected');
-                }
             });
             
-            userAnswers[questionIndex] = optionIndex;
+            options[optionIndex].classList.add('selected');
+            
+            userAnswers[questionIndex] = { type: 'answer', value: optionIndex };
+            document.getElementById(`checkBtn-${questionIndex}`).disabled = false;
+        }
+
+        function selectUnknown(questionIndex) {
+            if (userAnswers[questionIndex] !== undefined) return;
+            
+            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            const unknownOption = document.querySelector(`#question-${questionIndex} .option-unknown`);
+            unknownOption.classList.add('selected');
+            
+            userAnswers[questionIndex] = { type: 'unknown' };
             document.getElementById(`checkBtn-${questionIndex}`).disabled = false;
         }
 
         function checkAnswer(questionIndex) {
             const question = questionsData.questions[questionIndex];
             const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+            const userAnswer = userAnswers[questionIndex];
             
             options.forEach((opt, i) => {
                 opt.classList.add('disabled');
                 if (i === question.respuestaCorrecta) {
                     opt.classList.add('correct');
                 }
-                if (i === userAnswers[questionIndex] && i !== question.respuestaCorrecta) {
-                    opt.classList.add('incorrect');
-                }
             });
             
-            if (userAnswers[questionIndex] === question.respuestaCorrecta) {
-                score++;
+            if (userAnswer.type === 'unknown') {
+                unknownCount++;
+                // No lo sé = 0 puntos
+                document.querySelector(`#question-${questionIndex} .option-unknown`).style.background = '#ffc107';
+            } else if (userAnswer.value === question.respuestaCorrecta) {
+                correctCount++;
+                score += 3; // Respuesta correcta = +3 puntos
+            } else {
+                incorrectCount++;
+                score -= 1; // Respuesta incorrecta = -1 punto
+                options[userAnswer.value].classList.add('incorrect');
             }
             
             document.getElementById(`explanation-${questionIndex}`).classList.add('show');
@@ -416,27 +441,49 @@
             document.querySelector('.timer').style.display = 'none';
             document.querySelector('.progress-bar').style.display = 'none';
             
-            const percentage = Math.round((score / questionsData.questions.length) * 100);
-            document.getElementById('finalScore').textContent = `${score}/${questionsData.questions.length} (${percentage}%)`;
+            const total = questionsData.questions.length;
+            const maxScore = total * 3; // Puntuación máxima posible
+            const percentage = Math.round((score / maxScore) * 100);
             
-            let message = '';
-            if (percentage >= 90) {
-                message = '¡Excelente! 🌟 Preparación sobresaliente';
-            } else if (percentage >= 70) {
-                message = '¡Muy bien! 👍 Buen nivel de preparación';
-            } else if (percentage >= 50) {
-                message = 'Aprobado ✓ Sigue estudiando';
+            document.getElementById('finalScore').innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 0.6em; color: #667eea; margin-bottom: 15px;">Puntuación: ${score} / ${maxScore} puntos</div>
+                    <div style="font-size: 0.5em; color: #51cf66;">✓ Correctas: ${correctCount} (+${correctCount * 3} puntos)</div>
+                    <div style="font-size: 0.5em; color: #ff6b6b;">✗ Incorrectas: ${incorrectCount} (${incorrectCount * -1} puntos)</div>
+                    <div style="font-size: 0.5em; color: #ffc107;">❓ No sabía: ${unknownCount} (0 puntos)</div>
+                </div>
+            `;
+            
+            let message = `<strong>Porcentaje:</strong> ${percentage}%<br><br>`;
+            
+            message += `<div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin: 20px 0; font-size: 0.9em; text-align: left;">
+                <strong>📊 Sistema de puntuación:</strong><br>
+                ✅ Respuesta correcta: +3 puntos<br>
+                ❌ Respuesta incorrecta: -1 punto<br>
+                ❓ No lo sé: 0 puntos<br><br>
+                <em>¡Es mejor ser honesta que adivinar!</em>
+            </div>`;
+            
+            if (score < 0) {
+                message += '⚠️ Has perdido puntos por adivinar. Recuerda: es mejor marcar "No lo sé" que responder al azar.';
+            } else if (unknownCount === 0 && percentage >= 90) {
+                message += '🌟 ¡Excelente! Dominas muy bien el tema y fuiste valiente al intentar todas las preguntas.';
+            } else if (unknownCount === 0 && percentage >= 70) {
+                message += '👍 ¡Muy bien! Buen nivel de conocimientos.';
+            } else if (unknownCount > total * 0.5) {
+                message += '📚 Buena actitud siendo honesta. Identifica bien tus áreas de mejora. ¡Sigue estudiando!';
+            } else if (percentage >= 60) {
+                message += '💪 Buen equilibrio entre conocimiento y honestidad. Sigue así.';
             } else {
-                message = 'Necesitas más estudio 📚';
+                message += '📖 Revisa los temas marcados y evita adivinar en el futuro.';
             }
             
-            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('scoreMessage').innerHTML = message;
             document.getElementById('results').classList.add('show');
         }
 
-        // Inicializar examen
-        startTimer();
-        renderQuestion(0);
+        // Iniciar la aplicación
+        loadQuestions();
     </script>
 </body>
 </html>
