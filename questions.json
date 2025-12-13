@@ -1,124 +1,22 @@
 {
-  "questions": [
-    {
-      "id": 1,
-      "pregunta": "¿Cuál es el tratamiento de elección para un paciente con fibrilación auricular paroxística sintomática que no responde a tratamiento farmacológico?",
-      "opciones": [
-        "Ablación con catéter de las venas pulmonares",
-        "Cardioversión eléctrica urgente",
-        "Aumentar la dosis de betabloqueantes",
-        "Implantación de marcapasos definitivo"
-      ],
-      "respuestaCorrecta": 0,
-      "explicacion": "La ablación con catéter de las venas pulmonares es el tratamiento de elección en pacientes con fibrilación auricular paroxística sintomática refractaria al tratamiento farmacológico. Esta técnica aísla las venas pulmonares que son el foco de los impulsos ectópicos que generan la arritmia."
-    },
-    {
-      "id": 2,
-      "pregunta": "Un paciente de 65 años presenta disnea progresiva y en la radiografía de tórax se observa derrame pleural bilateral. El análisis del líquido pleural muestra: proteínas 2.5 g/dL, LDH 110 UI/L (LDH sérica 200 UI/L), glucosa 95 mg/dL. ¿Cuál es el diagnóstico más probable?",
-      "opciones": [
-        "Derrame pleural por insuficiencia cardíaca congestiva",
-        "Tuberculosis pleural",
-        "Empiema pleural",
-        "Derrame pleural maligno"
-      ],
-      "respuestaCorrecta": 0,
-      "explicacion": "Los criterios de Light indican que es un trasudado (proteínas <3 g/dL, ratio proteínas pleural/sérica <0.5, LDH pleural <2/3 del límite superior normal sérico). El derrame bilateral con trasudado sugiere insuficiencia cardíaca. Los exudados tendrían proteínas >3 g/dL y LDH elevada."
-    },
-    {
-      "id": 3,
-      "pregunta": "¿Cuál es el mecanismo de acción principal de los inhibidores de SGLT2 en el tratamiento de la diabetes mellitus tipo 2?",
-      "opciones": [
-        "Estimulación de la secreción de insulina pancreática",
-        "Inhibición de la absorción intestinal de glucosa",
-        "Inhibición de la reabsorción renal de glucosa",
-        "Aumento de la sensibilidad periférica a la insulina"
-      ],
-      "respuestaCorrecta": 2,
-      "explicacion": "Los inhibidores de SGLT2 (como empagliflozina, dapagliflozina, canagliflozina) actúan inhibiendo el cotransportador sodio-glucosa tipo 2 en el túbulo proximal renal, lo que produce glucosuria y disminución de la glucemia de forma independiente de la insulina. Además tienen beneficios cardiovasculares y renales demostrados."
-    },
-    {
-      "id": 4,
-      "pregunta": "En el contexto de una sepsis grave, ¿cuál es la recomendación actual respecto al control glucémico?",
-      "opciones": [
-        "Glucemia objetivo < 110 mg/dL (control estricto)",
-        "Glucemia objetivo 140-180 mg/dL (control moderado)",
-        "No es necesario controlar la glucemia",
-        "Glucemia objetivo < 80 mg/dL"
-      ],
-      "respuestaCorrecta": 1,
-      "explicacion": "Las guías actuales de la Surviving Sepsis Campaign recomiendan un control glucémico moderado con objetivo de 140-180 mg/dL. El control estricto (<110 mg/dL) ha demostrado aumentar el riesgo de hipoglucemia sin beneficio adicional en mortalidad."
-    },
-    {
-      "id": 5,
-      "pregunta": "¿Cuál es la prueba diagnóstica de elección para confirmar una embolia pulmonar en un paciente hemodinámicamente estable?",
-      "opciones": [
-        "Radiografía de tórax",
-        "Angio-TC pulmonar (angiografía por TC)",
-        "Gammagrafía de ventilación-perfusión",
-        "Ecocardiografía transtorácica"
-      ],
-      "respuestaCorrecta": 1,
-      "explicacion": "La angio-TC pulmonar es la prueba de elección para el diagnóstico de embolia pulmonar en pacientes hemodinámicamente estables, con una sensibilidad y especificidad superiores al 90%. Permite visualizar directamente los trombos en las arterias pulmonares y evaluar el parénquima pulmonar."
-    },
-    {
-      "id": 6,
-      "pregunta": "Un paciente presenta una úlcera gástrica. ¿Cuál de los siguientes hallazgos histológicos es MENOS probable que esté relacionado con malignidad?",
-      "opciones": [
-        "Úlcera con bordes elevados e irregulares",
-        "Úlcera con pliegues que convergen hacia el cráter",
-        "Úlcera de más de 3 cm de diámetro",
-        "Presencia de invasión vascular en la biopsia"
-      ],
-      "respuestaCorrecta": 1,
-      "explicacion": "Los pliegues que convergen radialmente hacia el cráter ulceroso son característicos de las úlceras benignas. Los bordes elevados e irregulares, el gran tamaño y la invasión vascular son signos de sospecha de malignidad. Toda úlcera gástrica debe biopsiarse para descartar cáncer."
-    },
-    {
-      "id": 7,
-      "pregunta": "En un paciente con infarto agudo de miocardio con elevación del ST (IAMCEST), ¿cuál es el objetivo de tiempo puerta-balón para la angioplastia primaria?",
-      "opciones": [
-        "< 60 minutos",
-        "< 90 minutos",
-        "< 120 minutos",
-        "< 180 minutos"
-      ],
-      "respuestaCorrecta": 1,
-      "explicacion": "El objetivo de tiempo puerta-balón (desde la llegada del paciente al hospital hasta la angioplastia) es < 90 minutos según las guías internacionales. Este tiempo es crucial para minimizar el daño miocárdico. Si no es posible la angioplastia en este tiempo, se debe considerar la fibrinólisis."
-    },
-    {
-      "id": 8,
-      "pregunta": "¿Cuál es el antibiótico de primera elección para el tratamiento de una neumonía adquirida en la comunidad en un paciente ambulatorio sin comorbilidades?",
-      "opciones": [
-        "Amoxicilina",
-        "Levofloxacino",
-        "Azitromicina",
-        "Ceftriaxona"
-      ],
-      "respuestaCorrecta": 0,
-      "explicacion": "La amoxicilina es el tratamiento de primera línea para neumonía adquirida en la comunidad en pacientes ambulatorios sin comorbilidades, debido a su excelente cobertura de Streptococcus pneumoniae, el patógeno más frecuente. Los macrólidos se reservan para pacientes con alergia o sospecha de atípicos."
-    },
-    {
-      "id": 9,
-      "pregunta": "En el manejo inicial de un paciente con hemorragia digestiva alta, ¿cuál es el objetivo de hemoglobina a mantener mediante transfusión en un paciente sin comorbilidades?",
-      "opciones": [
-        "Hemoglobina > 10 g/dL",
-        "Hemoglobina > 7 g/dL",
-        "Hemoglobina > 12 g/dL",
-        "No transfundir independientemente del nivel"
-      ],
-      "respuestaCorrecta": 1,
-      "explicacion": "Las guías actuales recomiendan una estrategia restrictiva de transfusión con objetivo de hemoglobina > 7 g/dL en pacientes sin cardiopatía isquémica activa. Esta estrategia ha demostrado mejores resultados que una estrategia liberal (>9-10 g/dL), con menor riesgo de resangrado y mortalidad."
-    },
-    {
-      "id": 10,
-      "pregunta": "¿Cuál es el factor de riesgo más importante para desarrollar carcinoma hepatocelular en un paciente con cirrosis hepática?",
-      "opciones": [
-        "Consumo de alcohol",
-        "Infección por virus de hepatitis B o C",
-        "Obesidad y diabetes",
-        "Hemocromatosis"
-      ],
-      "respuestaCorrecta": 1,
-      "explicacion": "La infección crónica por virus de hepatitis B o C es el factor de riesgo más importante para desarrollar carcinoma hepatocelular, especialmente en el contexto de cirrosis. Se recomienda vigilancia periódica con ecografía y alfa-fetoproteína cada 6 meses en estos pacientes."
-    }
-  ]
+    "questions": [
+        {
+            "pregunta": "¿Cuál es la presión arterial normal en adultos?",
+            "opciones": ["120/80 mmHg", "140/90 mmHg", "100/60 mmHg", "130/85 mmHg"],
+            "respuestaCorrecta": 0,
+            "explicacion": "La presión arterial normal para un adulto sano es de aproximadamente 120/80 mmHg."
+        },
+        {
+            "pregunta": "¿Qué tipo de células producen insulina?",
+            "opciones": ["Células alfa", "Células beta", "Células delta", "Células gamma"],
+            "respuestaCorrecta": 1,
+            "explicacion": "Las células beta de los islotes de Langerhans del páncreas producen insulina."
+        },
+        {
+            "pregunta": "¿Cuál es la función principal de los glóbulos rojos?",
+            "opciones": ["Defensa inmune", "Transporte de oxígeno", "Coagulación", "Producción de hormonas"],
+            "respuestaCorrecta": 1,
+            "explicacion": "Los glóbulos rojos transportan oxígeno desde los pulmones a los tejidos y dióxido de carbono de vuelta a los pulmones."
+        }
+    ]
 }
