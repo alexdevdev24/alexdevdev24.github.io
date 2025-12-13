@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen Blanco Especial para Claudia</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:0; }
+.container { max-width:700px; margin:20px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+.header { text-align:center; margin-bottom:20px;}
+.timer { font-size:1.1em; margin-bottom:10px; text-align:right; }
+.progress-bar { width:100%; height:15px; background:#ddd; border-radius:10px; overflow:hidden; margin-bottom:20px; }
+.progress-fill { height:100%; width:0%; background:#667eea; transition:width 0.3s; }
+.question-card { display:none; margin-bottom:20px; padding:15px; border-radius:10px; background:#f8f9fa; }
+.question-card.active { display:block; }
+.question-number { font-size:0.9em; color:#555; margin-bottom:5px;}
+.question-text { font-size:1.1em; margin-bottom:15px;}
+.options { display:flex; flex-direction:column; gap:10px;}
+.option { padding:10px; border-radius:8px; border:1px solid #ccc; cursor:pointer; transition:0.2s; }
+.option.selected { border:2px solid #667eea; background:#e0e0ff; }
+.option.correct { background:#51cf66; color:#fff; border:none; }
+.option.incorrect { background:#ff6b6b; color:#fff; border:none; }
+.option.option-unknown { background:#ffeaa7; }
+.option.disabled { pointer-events:none; opacity:0.7; }
+.explanation { display:none; margin-top:10px; font-size:0.9em; background:#f1f3f5; padding:10px; border-radius:8px; }
+.explanation.show { display:block; }
+.navigation { margin-top:15px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+.btn { padding:8px 12px; border:none; border-radius:6px; cursor:pointer; font-size:0.9em; }
+.btn-primary { background:#667eea; color:#fff; }
+.btn-success { background:#51cf66; color:#fff; }
+.btn-secondary { background:#adb5bd; color:#fff; }
+.results { display:none; }
+.results.show { display:block; text-align:center; }
+.score-message { text-align:left; margin-top:15px; font-size:0.9em; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🏥 Examen Blanco MIR para Claudia</h1>
+        <p>Médico Interno Residente - Simulacro</p>
+    </div>
+    <div class="timer" id="timer">⏱️ Tiempo: 00:00</div>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressBar"></div>
+    </div>
+    <div id="questionsContainer"></div>
+    <div class="results" id="results">
+        <h2>🎯 Resultados del Examen</h2>
+        <div class="score" id="finalScore"></div>
+        <div class="score-message" id="scoreMessage"></div>
+        <button class="btn btn-primary" onclick="location.reload()">🔄 Reintentar Examen</button>
+    </div>
+</div>
+
+<script>
+class Exam {
+    constructor(questions) {
+        this.questions = questions;
+        this.current = 0;
+        this.score = 0;
+        this.correctCount = 0;
+        this.incorrectCount = 0;
+        this.unknownCount = 0;
+        this.userAnswers = JSON.parse(localStorage.getItem('userAnswers')) || [];
+        this.startTime = Date.now();
+        this.timerInterval = null;
+        this.renderAllQuestions();
+        this.showQuestion(0);
+        this.startTimer();
+    }
+
+    startTimer() {
+        this.timerInterval = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+            const min = String(Math.floor(elapsed/60)).padStart(2,'0');
+            const sec = String(elapsed%60).padStart(2,'0');
+            document.getElementById('timer').textContent = `⏱️ Tiempo: ${min}:${sec}`;
+        }, 1000);
+    }
+
+    renderAllQuestions() {
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = '';
+        this.questions.forEach((q,index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `question-${index}`;
+            card.innerHTML = `
+                <div class="question-number">Pregunta ${index+1} de ${this.questions.length}</div>
+                <div class="question-text">${q.pregunta}</div>
+                <div class="options">
+                    ${q.opciones.map((opt,i)=>`<div class="option" data-index="${i}">${String.fromCharCode(65+i)}. ${opt}</div>`).join('')}
+                    <div class="option option-unknown">❓ No lo sé / Necesito revisar este tema</div>
+                </div>
+                <div class="explanation" id="explanation-${index}">
+                    <strong>💡 Explicación:</strong><br>${q.explicacion}
+                </div>
+                <div class="navigation">
+                    ${index>0?'<button class="btn btn-secondary prevBtn">⬅️ Anterior</button>':''}
+                    <button class="btn btn-primary checkBtn" disabled>✓ Comprobar</button>
+                    ${index<this.questions.length-1?'<button class="btn btn-success nextBtn" style="display:none">Siguiente ➡️</button>':'<button class="btn btn-success finishBtn" style="display:none">🏁 Finalizar</button>'}
+                </div>
+            `;
+            container.appendChild(card);
+
+            // Event listeners
+            const options = card.querySelectorAll('.option');
+            options.forEach(opt=>{
+                opt.addEventListener('click', ()=>this.selectAnswer(index,opt));
+            });
+
+            const checkBtn = card.querySelector('.checkBtn');
+            checkBtn.addEventListener('click', ()=>this.checkAnswer(index));
+
+            const nextBtn = card.querySelector('.nextBtn');
+            if(nextBtn) nextBtn.addEventListener('click', ()=>this.nextQuestion());
+
+            const prevBtn = card.querySelector('.prevBtn');
+            if(prevBtn) prevBtn.addEventListener('click', ()=>this.previousQuestion());
+
+            const finishBtn = card.querySelector('.finishBtn');
+            if(finishBtn) finishBtn.addEventListener('click', ()=>this.finishExam());
+        });
+
+        this.updateProgressBar();
+        this.restorePreviousAnswers();
+    }
+
+    showQuestion(index) {
+        document.querySelectorAll('.question-card').forEach((card,i)=>{
+            card.classList.toggle('active', i===index);
+        });
+        this.current = index;
+        this.updateProgressBar();
+    }
+
+    selectAnswer(qIndex,optElement) {
+        const card = document.getElementById(`question-${qIndex}`);
+        const options = card.querySelectorAll('.option');
+        options.forEach(o=>o.classList.remove('selected'));
+        optElement.classList.add('selected');
+
+        if(optElement.classList.contains('option-unknown')) {
+            this.userAnswers[qIndex] = {type:'unknown'};
+        } else {
+            this.userAnswers[qIndex] = {type:'answer', value:parseInt(optElement.dataset.index)};
+        }
+        card.querySelector('.checkBtn').disabled = false;
+        localStorage.setItem('userAnswers', JSON.stringify(this.userAnswers));
+    }
+
+    checkAnswer(qIndex) {
+        const question = this.questions[qIndex];
+        const card = document.getElementById(`question-${qIndex}`);
+        const userAnswer = this.userAnswers[qIndex];
+        const options = card.querySelectorAll('.option');
+
+        options.forEach((opt,i)=>{
+            opt.classList.add('disabled');
+            if(i===question.respuestaCorrecta) opt.classList.add('correct');
+        });
+
+        if(userAnswer.type==='unknown') this.unknownCount++;
+        else if(userAnswer.value===question.respuestaCorrecta) {
+            this.correctCount++;
+            this.score+=3;
+        } else {
+            this.incorrectCount++;
+            this.score-=1;
+            options[userAnswer.value].classList.add('incorrect');
+        }
+
+        card.querySelector('.explanation').classList.add('show');
+        card.querySelector('.checkBtn').style.display='none';
+        const nextBtn = card.querySelector('.nextBtn');
+        if(nextBtn) nextBtn.style.display='block';
+        else card.querySelector('.finishBtn').style.display='block';
+
+        this.updateProgressBar();
+    }
+
+    nextQuestion() { this.showQuestion(this.current+1); }
+    previousQuestion() { this.showQuestion(this.current-1); }
+
+    updateProgressBar() {
+        const total = this.questions.length;
+        const answered = this.userAnswers.filter(a=>a!==undefined).length;
+        const progress = (answered/total)*100;
+        document.getElementById('progressBar').style.width = progress+'%';
+    }
+
+    restorePreviousAnswers() {
+        this.userAnswers.forEach((ans,index)=>{
+            if(ans){
+                const card = document.getElementById(`question-${index}`);
+                const options = card.querySelectorAll('.option');
+                if(ans.type==='unknown') options[options.length-1].classList.add('selected');
+                else options[ans.value].classList.add('selected');
+                card.querySelector('.checkBtn').disabled = false;
+            }
+        });
+    }
+
+    finishExam() {
+        clearInterval(this.timerInterval);
+        document.getElementById('questionsContainer').style.display='none';
+        document.querySelector('.timer').style.display='none';
+        document.querySelector('.progress-bar').style.display='none';
+
+        const total = this.questions.length;
+        const maxScore = total*3;
+        const percentage = Math.round((this.score/maxScore)*100);
+
+        document.getElementById('finalScore').innerHTML = `
+            <div style="margin-bottom:20px;">
+                <div style="font-size:0.6em;color:#667eea;margin-bottom:15px;">Puntuación: ${this.score} / ${maxScore} puntos</div>
+                <div style="font-size:0.5em;color:#51cf66;">✓ Correctas: ${this.correctCount} (+${this.correctCount*3} puntos)</div>
+                <div style="font-size:0.5em;color:#ff6b6b;">✗ Incorrectas: ${this.incorrectCount} (${this.incorrectCount*-1} puntos)</div>
+                <div style="font-size:0.5em;color:#ffc107;">❓ No sabía: ${this.unknownCount} (0 puntos)</div>
+            </div>
+        `;
+
+        let message = `<strong>Porcentaje:</strong> ${percentage}%<br><br>`;
+        message += `<div style="background:#f8f9fa;padding:15px;border-radius:10px;margin:20px 0;font-size:0.9em;text-align:left;">
+            <strong>📊 Sistema de puntuación:</strong><br>
+            ✅ Respuesta correcta: +3 puntos<br>
+            ❌ Respuesta incorrecta: -1 punto<br>
+            ❓ No lo sé: 0 puntos<br><br>
+            <em>¡Es mejor ser honesta que adivinar!</em>
+        </div>`;
+
+        if(this.score<0) message+='⚠️ Has perdido puntos por adivinar. Recuerda: es mejor marcar "No lo sé" que responder al azar.';
+        else if(this.unknownCount===0 && percentage>=90) message+='🌟 ¡Excelente! Dominas muy bien el tema y fuiste valiente al intentar todas las preguntas.';
+        else if(this.unknownCount===0 && percentage>=70) message+='👍 ¡Muy bien! Buen nivel de conocimientos.';
+        else if(this.unknownCount>total*0.5) message+='📚 Buena actitud siendo honesta. Identifica bien tus áreas de mejora. ¡Sigue estudiando!';
+        else if(percentage>=60) message+='💪 Buen equilibrio entre conocimiento y honestidad. Sigue así.';
+        else message+='📖 Revisa los temas marcados y evita adivinar en el futuro.';
+
+        document.getElementById('scoreMessage').innerHTML = message;
+        document.getElementById('results').classList.add('show');
+
+        localStorage.removeItem('userAnswers');
+    }
+}
+
+async function init() {
+    try {
+        const res = await fetch('questions.json');
+        if(!res.ok) throw new Error('No se pudo cargar questions.json');
+        const data = await res.json();
+        new Exam(data.questions);
+    } catch(err) {
+        console.error(err);
+        document.getElementById('questionsContainer').innerHTML = `<div style="color:#ff6b6b;">⚠️ Error al cargar preguntas. Revisa el archivo questions.json</div>`;
+    }
+}
+
+init();
+</script>
+</body>
+</html>
