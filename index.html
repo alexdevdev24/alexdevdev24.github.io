@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen Blanco MIR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .timer {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .question-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .question-card.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .option {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #51cf66;
+            color: white;
+            border-color: #51cf66;
+        }
+
+        .option.incorrect {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .explanation {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .explanation strong {
+            color: #856404;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: #51cf66;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        .score {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .score-message {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Examen Blanco MIR</h1>
+            <p>Médico Interno Residente - Simulacro</p>
+        </div>
+
+        <div class="timer" id="timer">⏱️ Tiempo: 00:00</div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="results" id="results">
+            <h2>🎯 Resultados del Examen</h2>
+            <div class="score" id="finalScore"></div>
+            <div class="score-message" id="scoreMessage"></div>
+            <button class="btn btn-primary" onclick="location.reload()">🔄 Reintentar Examen</button>
+        </div>
+    </div>
+
+    <script>
+        // JSON de preguntas (normalmente se cargaría desde un archivo externo)
+        const questionsData = {
+            "questions": [
+                {
+                    "id": 1,
+                    "pregunta": "¿Cuál es el tratamiento de elección para un paciente con fibrilación auricular paroxística sintomática que no responde a tratamiento farmacológico?",
+                    "opciones": [
+                        "Ablación con catéter de las venas pulmonares",
+                        "Cardioversión eléctrica urgente",
+                        "Aumentar la dosis de betabloqueantes",
+                        "Implantación de marcapasos definitivo"
+                    ],
+                    "respuestaCorrecta": 0,
+                    "explicacion": "La ablación con catéter de las venas pulmonares es el tratamiento de elección en pacientes con fibrilación auricular paroxística sintomática refractaria al tratamiento farmacológico."
+                },
+                {
+                    "id": 2,
+                    "pregunta": "Un paciente de 65 años presenta disnea progresiva y en la radiografía de tórax se observa derrame pleural bilateral. El análisis del líquido pleural muestra: proteínas 2.5 g/dL, LDH 110 UI/L (LDH sérica 200 UI/L), glucosa 95 mg/dL. ¿Cuál es el diagnóstico más probable?",
+                    "opciones": [
+                        "Derrame pleural por insuficiencia cardíaca congestiva",
+                        "Tuberculosis pleural",
+                        "Empiema pleural",
+                        "Derrame pleural maligno"
+                    ],
+                    "respuestaCorrecta": 0,
+                    "explicacion": "Los criterios de Light indican que es un trasudado (proteínas <3 g/dL, ratio proteínas pleural/sérica <0.5, LDH pleural <2/3 del límite superior normal sérico). El derrame bilateral con trasudado sugiere insuficiencia cardíaca."
+                },
+                {
+                    "id": 3,
+                    "pregunta": "¿Cuál es el mecanismo de acción principal de los inhibidores de SGLT2 en el tratamiento de la diabetes mellitus tipo 2?",
+                    "opciones": [
+                        "Estimulación de la secreción de insulina pancreática",
+                        "Inhibición de la absorción intestinal de glucosa",
+                        "Inhibición de la reabsorción renal de glucosa",
+                        "Aumento de la sensibilidad periférica a la insulina"
+                    ],
+                    "respuestaCorrecta": 2,
+                    "explicacion": "Los inhibidores de SGLT2 (como empagliflozina, dapagliflozina) actúan inhibiendo el cotransportador sodio-glucosa tipo 2 en el túbulo proximal renal, lo que produce glucosuria y disminución de la glucemia de forma independiente de la insulina."
+                }
+            ]
+        };
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+        let startTime = Date.now();
+        let timerInterval;
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('timer').textContent = 
+                    `⏱️ Tiempo: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function updateProgressBar() {
+            const progress = ((currentQuestion + 1) / questionsData.questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function renderQuestion(index) {
+            const question = questionsData.questions[index];
+            const container = document.getElementById('questionsContainer');
+            
+            const questionHTML = `
+                <div class="question-card active" id="question-${index}">
+                    <div class="question-number">Pregunta ${index + 1} de ${questionsData.questions.length}</div>
+                    <div class="question-text">${question.pregunta}</div>
+                    <div class="options">
+                        ${question.opciones.map((option, i) => `
+                            <div class="option" onclick="selectAnswer(${index}, ${i})">
+                                ${String.fromCharCode(65 + i)}. ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="explanation-${index}">
+                        <strong>💡 Explicación:</strong><br>${question.explicacion}
+                    </div>
+                    <div class="navigation">
+                        ${index > 0 ? '<button class="btn btn-secondary" onclick="previousQuestion()">⬅️ Anterior</button>' : ''}
+                        <button class="btn btn-primary" id="checkBtn-${index}" onclick="checkAnswer(${index})" disabled>✓ Comprobar</button>
+                        ${index < questionsData.questions.length - 1 ? 
+                            '<button class="btn btn-success" id="nextBtn-' + index + '" onclick="nextQuestion()" style="display:none">Siguiente ➡️</button>' : 
+                            '<button class="btn btn-success" id="finishBtn" onclick="finishExam()" style="display:none">🏁 Finalizar</button>'}
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = questionHTML;
+            updateProgressBar();
+        }
+
+        function selectAnswer(questionIndex, optionIndex) {
+            if (userAnswers[questionIndex] !== undefined) return;
+            
+            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+            options.forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === optionIndex) {
+                    opt.classList.add('selected');
+                }
+            });
+            
+            userAnswers[questionIndex] = optionIndex;
+            document.getElementById(`checkBtn-${questionIndex}`).disabled = false;
+        }
+
+        function checkAnswer(questionIndex) {
+            const question = questionsData.questions[questionIndex];
+            const options = document.querySelectorAll(`#question-${questionIndex} .option`);
+            
+            options.forEach((opt, i) => {
+                opt.classList.add('disabled');
+                if (i === question.respuestaCorrecta) {
+                    opt.classList.add('correct');
+                }
+                if (i === userAnswers[questionIndex] && i !== question.respuestaCorrecta) {
+                    opt.classList.add('incorrect');
+                }
+            });
+            
+            if (userAnswers[questionIndex] === question.respuestaCorrecta) {
+                score++;
+            }
+            
+            document.getElementById(`explanation-${questionIndex}`).classList.add('show');
+            document.getElementById(`checkBtn-${questionIndex}`).style.display = 'none';
+            
+            if (questionIndex < questionsData.questions.length - 1) {
+                document.getElementById(`nextBtn-${questionIndex}`).style.display = 'block';
+            } else {
+                document.getElementById('finishBtn').style.display = 'block';
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            renderQuestion(currentQuestion);
+        }
+
+        function previousQuestion() {
+            currentQuestion--;
+            renderQuestion(currentQuestion);
+        }
+
+        function finishExam() {
+            clearInterval(timerInterval);
+            document.getElementById('questionsContainer').style.display = 'none';
+            document.querySelector('.timer').style.display = 'none';
+            document.querySelector('.progress-bar').style.display = 'none';
+            
+            const percentage = Math.round((score / questionsData.questions.length) * 100);
+            document.getElementById('finalScore').textContent = `${score}/${questionsData.questions.length} (${percentage}%)`;
+            
+            let message = '';
+            if (percentage >= 90) {
+                message = '¡Excelente! 🌟 Preparación sobresaliente';
+            } else if (percentage >= 70) {
+                message = '¡Muy bien! 👍 Buen nivel de preparación';
+            } else if (percentage >= 50) {
+                message = 'Aprobado ✓ Sigue estudiando';
+            } else {
+                message = 'Necesitas más estudio 📚';
+            }
+            
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('results').classList.add('show');
+        }
+
+        // Inicializar examen
+        startTimer();
+        renderQuestion(0);
+    </script>
+</body>
+</html>
