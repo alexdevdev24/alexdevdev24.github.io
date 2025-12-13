@@ -1,22 +1,304 @@
 {
     "questions": [
         {
-            "pregunta": "¿Cuál es la presión arterial normal en adultos?",
-            "opciones": ["120/80 mmHg", "140/90 mmHg", "100/60 mmHg", "130/85 mmHg"],
+            "pregunta": "¿Cuál es la causa más frecuente de hipoxemia en la patología respiratoria?",
+            "opciones": ["Hipoventilación alveolar", "Alteración de la difusión", "Trastorno de la relación ventilación-perfusión (V/Q)", "Efecto shunt"],
+            "respuestaCorrecta": 2,
+            "explicacion": "El mecanismo más frecuente de hipoxemia es el trastorno en la relación ventilación-perfusión,."
+        },
+        {
+            "pregunta": "¿Qué volumen pulmonar NO puede medirse mediante una espirometría simple?",
+            "opciones": ["Volumen Corriente (VC)", "Capacidad Vital (CV)", "Volumen de Reserva Espiratorio (VRE)", "Volumen Residual (VR)"],
+            "respuestaCorrecta": 3,
+            "explicacion": "Para calcular el Volumen Residual (VR), y por tanto la CPT y la CFR, es necesario realizar la técnica de dilución de helio o la pletismografía corporal."
+        },
+        {
+            "pregunta": "¿Qué alteración define el Efecto Bohr en la curva de disociación de la hemoglobina?",
+            "opciones": ["Aumento de la afinidad por el O2 en presencia de CO2", "Disminución de la afinidad de la hemoglobina por el O2 en presencia de acidosis y CO2", "La unión del O2 a la hemoglobina reduce su afinidad por el CO2", "Desplazamiento de la curva a la izquierda por aumento de temperatura"],
+            "respuestaCorrecta": 1,
+            "explicacion": "El efecto Bohr consiste en la disminución de la afinidad de la hemoglobina por el O2 en presencia de cantidades crecientes de CO2 e hidrogeniones (acidosis), desplazando la curva a la derecha."
+        },
+        {
+            "pregunta": "En la intoxicación por monóxido de carbono (CO), ¿cómo suelen estar la PaO2 y la SaO2 medida por pulsioximetría estándar?",
+            "opciones": ["PaO2 baja y SaO2 baja", "PaO2 normal y SaO2 falsamente normal", "PaO2 baja y SaO2 falsamente normal", "PaO2 normal y SaO2 baja real"],
+            "respuestaCorrecta": 1,
+            "explicacion": "La PaO2 suele ser normal porque el intercambio gaseoso está conservado. La pulsioximetría no es fiable ya que confunde la carboxihemoglobina con oxihemoglobina, informando una falsa normalidad,."
+        },
+        {
+            "pregunta": "¿Cuál es el criterio radiológico para definir un Nódulo Pulmonar Solitario (NPS)?",
+            "opciones": ["Opacidad > 3 cm", "Opacidad ≤ 3 cm rodeada de parénquima sano", "Opacidad con adenopatías asociadas", "Opacidad asociada a derrame pleural"],
+            "respuestaCorrecta": 1,
+            "explicacion": "Se define NPS como una densidad radiológica de ≤3 cm, bordes circunscritos y rodeada de parénquima pulmonar normal."
+        },
+        {
+            "pregunta": "¿Qué tipo de calcificación en un nódulo pulmonar sugiere un hamartoma?",
+            "opciones": ["Excéntrica", "En palomita de maíz", "Laminada concéntrica", "Puntiforme dispersa"],
+            "respuestaCorrecta": 1,
+            "explicacion": "La imagen radiográfica patognomónica del hamartoma es la calcificación en 'palomita de maíz',."
+        },
+        {
+            "pregunta": "¿Cuál es el tipo histológico de cáncer de pulmón más frecuente actualmente?",
+            "opciones": ["Carcinoma epidermoide", "Carcinoma de células pequeñas (microcítico)", "Adenocarcinoma", "Carcinoma de células grandes"],
+            "respuestaCorrecta": 2,
+            "explicacion": "El tipo histológico más frecuente actualmente es el adenocarcinoma, tanto en fumadores como en no fumadores,."
+        },
+        {
+            "pregunta": "¿A qué tipo de cáncer de pulmón se asocia típicamente el síndrome de Pancoast?",
+            "opciones": ["Adenocarcinoma", "Carcinoma epidermoide", "Carcinoma microcítico", "Carcinoma de células grandes"],
+            "respuestaCorrecta": 1,
+            "explicacion": "El síndrome de Pancoast aparece fundamentalmente en carcinomas epidermoides que asientan en los vértices pulmonares."
+        },
+        {
+            "pregunta": "¿Qué síndrome paraneoplásico es característico del carcinoma microcítico de pulmón?",
+            "opciones": ["Hipercalcemia por PTH-like", "Osteoartropatía hipertrófica", "Síndrome de secreción inadecuada de ADH (SIADH)", "Ginecomastia"],
+            "respuestaCorrecta": 2,
+            "explicacion": "El carcinoma microcítico es la causa más frecuente de SIADH y de síndrome de Cushing ectópico, entre otros."
+        },
+        {
+            "pregunta": "¿Qué mutación es característica y 'guía' para tratamiento en el adenocarcinoma de pulmón en no fumadores?",
+            "opciones": ["K-RAS", "EGFR", "MYC", "p53"],
+            "respuestaCorrecta": 1,
+            "explicacion": "Las mutaciones del EGFR son más prevalentes en mujeres y no fumadores, y son mutaciones guía para tratamiento con inhibidores tirosin-kinasa."
+        },
+        {
+            "pregunta": "Según los criterios de Light, ¿cuál de los siguientes define un exudado pleural?",
+            "opciones": ["Proteínas pleura/suero < 0.5", "LDH pleura/suero > 0.6", "Glucosa en líquido pleural > 60 mg/dl", "Colesterol en líquido pleural < 45 mg/dl"],
+            "respuestaCorrecta": 1,
+            "explicacion": "Un derrame es exudado si cumple: cociente proteínas pleura/suero >0,5, LDH pleura/suero >0,6 o LDH en pleura >2/3 del límite superior sérico."
+        },
+        {
+            "pregunta": "¿Cuál es la causa más frecuente de derrame pleural tipo trasudado?",
+            "opciones": ["Cirrosis hepática", "Síndrome nefrótico", "Insuficiencia cardiaca congestiva", "Tromboembolismo pulmonar"],
+            "respuestaCorrecta": 2,
+            "explicacion": "La insuficiencia cardiaca congestiva es la causa más frecuente de trasudado."
+        },
+        {
+            "pregunta": "¿Qué parámetro bioquímico es característico del derrame pleural en la artritis reumatoide?",
+            "opciones": ["Glucosa muy baja (<30 mg/dl)", "pH alcalino", "ADA elevado", "Amilasa elevada"],
             "respuestaCorrecta": 0,
-            "explicacion": "La presión arterial normal para un adulto sano es de aproximadamente 120/80 mmHg."
+            "explicacion": "El derrame de la artritis reumatoide suele tener glucosa muy baja (<30 mg/dl) y pH bajo."
         },
         {
-            "pregunta": "¿Qué tipo de células producen insulina?",
-            "opciones": ["Células alfa", "Células beta", "Células delta", "Células gamma"],
+            "pregunta": "¿Cuál es el perfil típico del paciente con neumotórax espontáneo primario?",
+            "opciones": ["Mujer anciana con EPOC", "Varón joven, alto, delgado y fumador", "Paciente con fibrosis quística", "Paciente con ventilación mecánica"],
             "respuestaCorrecta": 1,
-            "explicacion": "Las células beta de los islotes de Langerhans del páncreas producen insulina."
+            "explicacion": "El neumotórax espontáneo primario es típico de varones jóvenes, de hábito asténico (altos y delgados) y fumadores."
         },
         {
-            "pregunta": "¿Cuál es la función principal de los glóbulos rojos?",
-            "opciones": ["Defensa inmune", "Transporte de oxígeno", "Coagulación", "Producción de hormonas"],
+            "pregunta": "¿Cuál es el tratamiento inmediato de un neumotórax a tensión?",
+            "opciones": ["Radiografía de tórax urgente", "Descompresión inmediata con aguja o tubo sin esperar radiografía", "Antibioterapia", "Oxigenoterapia a bajo flujo"],
             "respuestaCorrecta": 1,
-            "explicacion": "Los glóbulos rojos transportan oxígeno desde los pulmones a los tejidos y dióxido de carbono de vuelta a los pulmones."
+            "explicacion": "El neumotórax a tensión es una emergencia vital que requiere rápida descompresión de la cavidad pleural sin esperar a la radiografía,."
+        },
+        {
+            "pregunta": "¿Qué criterio es imprescindible para diagnosticar EPOC en una espirometría?",
+            "opciones": ["FEV1 < 80%", "FVC < 80%", "Cociente FEV1/FVC < 0.7 tras broncodilatador", "Prueba broncodilatadora positiva"],
+            "respuestaCorrecta": 2,
+            "explicacion": "El criterio diagnóstico que define la EPOC es un índice de Tiffeneau (FEV1/FVC) post-broncodilatador < 0,7,."
+        },
+        {
+            "pregunta": "¿Cuál es la única alteración genética conocida que produce EPOC (enfisema panacinar)?",
+            "opciones": ["Déficit de alfa-1 antitripsina", "Mutación del gen CFTR", "Déficit de surfactante", "Síndrome de Kartagener"],
+            "respuestaCorrecta": 0,
+            "explicacion": "El déficit de alfa-1 antitripsina es la única alteración genética que produce EPOC, típicamente enfisema panacinar en lóbulos inferiores,."
+        },
+        {
+            "pregunta": "En la clasificación GOLD 2025, ¿qué define al grupo E?",
+            "opciones": ["0 o 1 exacerbación moderada sin ingreso", "Disnea mMRC 0-1", "≥2 exacerbaciones o ≥1 con ingreso hospitalario", "FEV1 < 30%"],
+            "respuestaCorrecta": 2,
+            "explicacion": "El grupo E (Exacerbador) incluye pacientes con ≥2 exacerbaciones moderadas o ≥1 que requirió hospitalización en el último año,."
+        },
+        {
+            "pregunta": "¿Qué tratamiento ha demostrado aumentar la supervivencia en la EPOC?",
+            "opciones": ["Broncodilatadores de larga acción", "Corticoides inhalados", "Oxigenoterapia domiciliaria en pacientes con hipoxemia grave", "Mucolíticos"],
+            "respuestaCorrecta": 2,
+            "explicacion": "Las únicas medidas que mejoran la supervivencia son el abandono del tabaco y la oxigenoterapia crónica domiciliaria cuando está indicada,."
+        },
+        {
+            "pregunta": "¿Cuál es el tratamiento antibiótico de elección en una agudización infecciosa de EPOC?",
+            "opciones": ["Amoxicilina-clavulánico", "Gentamicina", "Vancomicina", "Metronidazol"],
+            "respuestaCorrecta": 0,
+            "explicacion": "El antibiótico de elección ante una reagudización infecciosa en la EPOC es la amoxicilina-clavulánico; también pueden usarse quinolonas."
+        },
+        {
+            "pregunta": "¿Qué característica define la reversibilidad en el diagnóstico de asma mediante espirometría?",
+            "opciones": ["Aumento del FEV1 ≥ 12% y ≥ 200 ml tras broncodilatador", "Aumento del FEV1 > 10%", "Normalización completa de la espirometría", "Mejoría subjetiva de la disnea"],
+            "respuestaCorrecta": 0,
+            "explicacion": "La reversibilidad se confirma con un aumento del FEV1 ≥12% y ≥200 ml tras la administración de un broncodilatador."
+        },
+        {
+            "pregunta": "¿Qué fármacos constituyen el pilar fundamental del tratamiento antiinflamatorio en el asma?",
+            "opciones": ["Antileucotrienos", "Corticoides inhalados", "Teofilinas", "Anticuerpos monoclonales"],
+            "respuestaCorrecta": 1,
+            "explicacion": "Los corticoides son los fármacos antiinflamatorios por excelencia en el tratamiento del asma bronquial."
+        },
+        {
+            "pregunta": "¿Qué signo indica extrema gravedad en una crisis asmática?",
+            "opciones": ["Sibilancias inspiratorias", "Taquicardia > 100 lpm", "Silencio auscultatorio", "Alcalosis respiratoria"],
+            "respuestaCorrecta": 2,
+            "explicacion": "El silencio auscultatorio es un signo de gravedad extrema que puede indicar obstrucción casi total o fatiga muscular,."
+        },
+        {
+            "pregunta": "¿Cuál es el tratamiento de rescate preferido en el escalón 3 de asma según GINA?",
+            "opciones": ["SABA en monoterapia", "Dosis altas de corticoides orales", "Formoterol + Corticoide inhalado a dosis bajas", "Anticolinérgicos de larga duración"],
+            "respuestaCorrecta": 2,
+            "explicacion": "La opción preferida es la terapia MART: inhalador con formoterol-corticoide inhalado dosis baja como mantenimiento y rescate."
+        },
+        {
+            "pregunta": "¿Cuál es el origen más frecuente de los trombos en el tromboembolismo pulmonar (TEP)?",
+            "opciones": ["Venas de extremidades superiores", "Sistema venoso profundo de extremidades inferiores", "Aurícula derecha", "Vena cava inferior"],
+            "respuestaCorrecta": 1,
+            "explicacion": "Más del 95% de los casos de TEP se deben a trombosis en el sistema venoso profundo de las extremidades inferiores."
+        },
+        {
+            "pregunta": "¿Qué patrón electrocardiográfico es específico (aunque poco sensible) del TEP?",
+            "opciones": ["S1Q3T3", "Elevación del ST difusa", "Bloqueo de rama izquierda", "Ondas Q en cara anterior"],
+            "respuestaCorrecta": 0,
+            "explicacion": "El patrón S1-Q3-T3 es el signo más específico en el ECG de sobrecarga derecha por TEP."
+        },
+        {
+            "pregunta": "¿Cuál es la utilidad principal del Dímero-D en el diagnóstico del TEP?",
+            "opciones": ["Confirmar el diagnóstico", "Su alto valor predictivo negativo para descartar TEP", "Monitorizar el tratamiento", "Localizar el trombo"],
+            "respuestaCorrecta": 1,
+            "explicacion": "El Dímero-D tiene un elevado valor predictivo negativo, ayudando a excluir el diagnóstico si es normal en pacientes con baja/media probabilidad."
+        },
+        {
+            "pregunta": "¿Cuál es la prueba de imagen de elección ante sospecha de TEP?",
+            "opciones": ["Radiografía de tórax", "Gammagrafía V/Q", "AngioTC de tórax", "Resonancia magnética"],
+            "respuestaCorrecta": 2,
+            "explicacion": "La AngioTC con contraste es la prueba de elección ante la sospecha de TEP."
+        },
+        {
+            "pregunta": "¿Cuál es el tratamiento de elección en un TEP de alto riesgo con inestabilidad hemodinámica?",
+            "opciones": ["Heparina de bajo peso molecular subcutánea", "Fibrinólisis (trombolíticos)", "Filtro de vena cava", "Anticoagulantes orales directos"],
+            "respuestaCorrecta": 1,
+            "explicacion": "En el paciente inestable (TEP de alto riesgo), el objetivo es restaurar la circulación mediante reperfusión, siendo de elección los trombolíticos,."
+        },
+        {
+            "pregunta": "¿Qué caracteriza a la apnea obstructiva del sueño (AOS)?",
+            "opciones": ["Cese del flujo aéreo con persistencia de esfuerzo respiratorio", "Cese del flujo aéreo sin esfuerzo respiratorio", "Respiración de Cheyne-Stokes", "Hipoventilación alveolar diurna"],
+            "respuestaCorrecta": 0,
+            "explicacion": "La apnea obstructiva se define por ausencia o reducción del flujo aéreo acompañada de esfuerzo respiratorio persistente."
+        },
+        {
+            "pregunta": "¿Cuál es el tratamiento de elección para el Síndrome de Apnea Obstructiva del Sueño (SAHS) sintomático?",
+            "opciones": ["Oxigenoterapia nocturna", "CPAP (Presión positiva continua en la vía aérea)", "Benzodiacepinas", "Uvulopalatofaringoplastia"],
+            "respuestaCorrecta": 1,
+            "explicacion": "El tratamiento de elección de la AOS consiste en aplicar CPAP."
+        },
+        {
+            "pregunta": "¿Qué criterio define el SDRA (Síndrome de Dificultad Respiratoria Aguda) según Berlín?",
+            "opciones": ["PaO2/FiO2 ≤ 300 mmHg con PEEP ≥ 5 cmH2O", "Evolución > 1 mes", "Origen cardiogénico del edema", "Opacidades unilaterales"],
+            "respuestaCorrecta": 0,
+            "explicacion": "Los criterios de Berlín incluyen inicio agudo, opacidades bilaterales, origen no cardiogénico y alteración de la oxigenación (PaO2/FiO2 ≤ 300),."
+        },
+        {
+            "pregunta": "¿Qué estrategia ventilatoria se recomienda en el SDRA?",
+            "opciones": ["Volúmenes corrientes altos (>10 ml/kg)", "Ventilación protectora con volumen tidal bajo (6 ml/kg)", "PEEP cero", "Mantener al paciente siempre en supino"],
+            "respuestaCorrecta": 1,
+            "explicacion": "Se recomienda ventilación protectora con volúmenes corrientes bajos (<6 ml/kg de peso ideal) para evitar el volutrauma,."
+        },
+        {
+            "pregunta": "¿Cuál es el hallazgo radiológico típico de la Fibrosis Pulmonar Idiopática (FPI) en la TCAR?",
+            "opciones": ["Patrón en vidrio deslustrado extenso", "Patrón en panal de abeja de predominio basal y subpleural", "Nódulos centrolobulillares", "Adenopatías calcificadas"],
+            "respuestaCorrecta": 1,
+            "explicacion": "La imagen más típica es el patrón en panal (quistes aéreos) de predominio en bases y subpleural,."
+        },
+        {
+            "pregunta": "¿Cuál es el tratamiento aprobado para frenar la progresión de la Fibrosis Pulmonar Idiopática?",
+            "opciones": ["Corticoides a dosis altas", "Antifibróticos (Pirfenidona o Nintedanib)", "Azatioprina y NAC", "Ciclofosfamida"],
+            "respuestaCorrecta": 1,
+            "explicacion": "El tratamiento antifibrótico (Pirfenidona y Nintedanib) ha demostrado enlentecer la caída de la capacidad vital forzada."
+        },
+        {
+            "pregunta": "¿Qué hallazgo es característico en el lavado broncoalveolar (LBA) de la sarcoidosis?",
+            "opciones": ["Aumento de neutrófilos", "Cociente CD4/CD8 aumentado (>3.5)", "Eosinofilia > 25%", "Presencia de células de Langerhans > 5%"],
+            "respuestaCorrecta": 1,
+            "explicacion": "El LBA muestra un aumento de linfocitos CD4, con un cociente CD4/CD8 aumentado, muy sugestivo si es >3,5."
+        },
+        {
+            "pregunta": "¿Qué síndrome agudo de la sarcoidosis cursa con eritema nodoso, adenopatías hiliares y artralgias?",
+            "opciones": ["Síndrome de Heerfordt", "Síndrome de Löfgren", "Síndrome de Caplan", "Síndrome de Kartagener"],
+            "respuestaCorrecta": 1,
+            "explicacion": "El síndrome de Löfgren reúne eritema nodoso, adenopatías hiliares bilaterales, fiebre y artralgias."
+        },
+        {
+            "pregunta": "¿Qué enfermedad intersticial afecta típicamente a mujeres en edad fértil y puede causar neumotórax y quilotórax?",
+            "opciones": ["Histiocitosis X", "Linfangioleiomiomatosis (LAM)", "Proteinosis alveolar", "Neumonía eosinófila crónica"],
+            "respuestaCorrecta": 1,
+            "explicacion": "La linfangioleiomiomatosis afecta casi exclusivamente a mujeres en edad fértil y se caracteriza por neumotórax recidivante y quilotórax,."
+        },
+        {
+            "pregunta": "¿Cuál es la neumoconiosis producida por inhalación de polvo de carbón?",
+            "opciones": ["Silicosis", "Asbestosis", "Antracosis", "Beriliosis"],
+            "respuestaCorrecta": 2,
+            "explicacion": "La antracosis es la neumoconiosis de los mineros del carbón."
+        },
+        {
+            "pregunta": "¿Qué tumor pleural maligno se asocia característicamente a la exposición al asbesto?",
+            "opciones": ["Adenocarcinoma", "Mesotelioma", "Tumor fibroso solitario", "Linfoma"],
+            "respuestaCorrecta": 1,
+            "explicacion": "El mesotelioma difuso maligno es el cáncer que más característicamente se asocia al asbesto."
+        },
+        {
+            "pregunta": "En la neumonitis por hipersensibilidad (alveolitis alérgica extrínseca), ¿qué predomina en el LBA?",
+            "opciones": ["Linfocitos CD4", "Linfocitos CD8 (cociente CD4/CD8 disminuido)", "Eosinófilos", "Neutrófilos"],
+            "respuestaCorrecta": 1,
+            "explicacion": "El lavado broncoalveolar demuestra un incremento de linfocitos T, con predominio de los CD8 (cociente CD4/CD8 disminuido)."
+        },
+        {
+            "pregunta": "¿Qué fármaco es conocido por producir toxicidad pulmonar con macrófagos espumosos en el LBA?",
+            "opciones": ["Amiodarona", "Bleomicina", "Metotrexato", "Nitrofurantoína"],
+            "respuestaCorrecta": 0,
+            "explicacion": "Es muy típica de la toxicidad por amiodarona la presencia de macrófagos espumosos en el LBA y biopsia."
+        },
+        {
+            "pregunta": "¿Cuál es la masa más frecuente en el mediastino anterior?",
+            "opciones": ["Tumor neurogénico", "Quiste broncogénico", "Timoma", "Hernia de Bochdalek"],
+            "respuestaCorrecta": 2,
+            "explicacion": "Las masas más frecuentes del mediastino anterior son las de origen tímico, siendo los timomas casi el 50%."
+        },
+        {
+            "pregunta": "¿Cómo se define hemodinámicamente la Hipertensión Arterial Pulmonar (Grupo 1)?",
+            "opciones": ["PAPm > 20 mmHg y PCP > 15 mmHg", "PAPm > 20 mmHg y PCP ≤ 15 mmHg", "PAPm < 20 mmHg", "RVP < 2 Unidades Wood"],
+            "respuestaCorrecta": 1,
+            "explicacion": "La HAP se define como PAP media >20 mmHg con presión de enclavamiento (PCP) ≤15 mmHg (precapilar),."
+        },
+        {
+            "pregunta": "¿Qué síntoma es fundamental para sospechar bronquiectasias?",
+            "opciones": ["Tos seca", "Hemoptisis masiva", "Tos crónica con broncorrea purulenta abundante", "Disfonía"],
+            "respuestaCorrecta": 2,
+            "explicacion": "La clínica se caracteriza por tos crónica productiva con broncorrea y expectoración purulenta abundante (>150 ml/día)."
+        },
+        {
+            "pregunta": "¿Cuál es la principal causa de hemoptisis amenazante?",
+            "opciones": ["Bronquitis aguda", "Tromboembolismo pulmonar", "Bronquiectasias / Arterias bronquiales", "Estenosis mitral"],
+            "respuestaCorrecta": 2,
+            "explicacion": "La mayoría de las hemoptisis amenazantes son de origen arterial bronquial, siendo las bronquiectasias una de las causas más frecuentes,."
+        },
+        {
+            "pregunta": "¿Qué enfermedad se caracteriza por hemorragia alveolar difusa y glomerulonefritis por anticuerpos anti-MBG?",
+            "opciones": ["Granulomatosis con poliangeítis", "Enfermedad de Goodpasture", "Lupus Eritematoso Sistémico", "Hemosiderosis pulmonar idiopática"],
+            "respuestaCorrecta": 1,
+            "explicacion": "La enfermedad por anticuerpos anti-membrana basal glomerular es la enfermedad de Goodpasture, un síndrome renopulmonar."
+        },
+        {
+            "pregunta": "¿Qué indicación de trasplante pulmonar es la más frecuente?",
+            "opciones": ["Fibrosis quística", "Enfisema / EPOC", "Hipertensión pulmonar", "Fibrosis pulmonar"],
+            "respuestaCorrecta": 1,
+            "explicacion": "El enfisema es la indicación más frecuente de trasplante pulmonar."
+        },
+        {
+            "pregunta": "¿Qué es un secuestro pulmonar?",
+            "opciones": ["Ausencia de un lóbulo pulmonar", "Segmento pulmonar con irrigación sistémica y sin comunicación bronquial", "Quiste broncogénico infectado", "Hipoplasia de la arteria pulmonar"],
+            "respuestaCorrecta": 1,
+            "explicacion": "Consiste en un segmento pulmonar con aporte sanguíneo sistémico (aorta) y que no presenta comunicación con la vía aérea."
+        },
+        {
+            "pregunta": "¿Qué signo radiológico sugiere una lesión de localización en el lóbulo medio?",
+            "opciones": ["Borramiento del botón aórtico", "Borramiento del borde cardiaco derecho (Signo de la silueta)", "Borramiento del hemidiafragma derecho", "Desplazamiento cisural posterior"],
+            "respuestaCorrecta": 1,
+            "explicacion": "Si una lesión borra el contorno cardiaco derecho (signo de la silueta), es anterior y corresponde al lóbulo medio."
         }
     ]
 }
