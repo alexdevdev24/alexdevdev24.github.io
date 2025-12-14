@@ -254,7 +254,7 @@ class Exam {
 async function init() {
     try {
         const res = await fetch('batch1.json');
-        if(!res.ok) throw new Error('No se pudo cargar questions.json');
+        if(!res.ok) throw new Error('No se pudo cargar batch1.json (I must be doing an update now)');
         const data = await res.json();
         new Exam(data);
     } catch(err) {
