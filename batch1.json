@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "tema": "Cardiología",
+    "pregunta": "Paciente de 68 años diagnosticado de Insuficiencia Cardíaca con Fracción de Eyección Reducida (ICFEr). ¿Cuál de los siguientes fármacos NO se considera uno de los 4 pilares fundamentales que mejoran el pronóstico de la enfermedad?",
+    "opciones": [
+      "Betabloqueantes (ej. Bisoprolol).",
+      "Inhibidores de SGLT2 (ej. Dapagliflozina).",
+      "Digoxina.",
+      "ARNI (Sacubitrilo/Valsartán)."
+    ],
+    "respuesta_correcta": 3,
+    "explicacion": "Según CardioExpress, los 4 pilares que cambian el pronóstico son: Betabloqueantes, ARNI, ARM (Espironolactona) e iSGLT2. La Digoxina se usa para control de síntomas o frecuencia, pero no es un pilar pronóstico (Ley del Intruso Terapéutico).",
+    "metodo_mots_cles": "Identificar 'NO se considera uno de los 4 pilares', buscar cuál medicamento aparece como intruso o menos habitual → Digoxina."
+  },
+  {
+    "id": 2,
+    "tema": "Infectología",
+    "pregunta": "Paciente que ingresa en UCI con diagnóstico de shock séptico. Tras la administración inicial de fluidoterapia intensiva con cristaloides, el paciente persiste hipotenso (TAM < 65 mmHg). ¿Cuál es el fármaco vasopresor de elección que debe iniciarse a continuación?",
+    "opciones": [
+      "Dopamina.",
+      "Noradrenalina.",
+      "Adrenalina.",
+      "Dobutamina."
+    ],
+    "respuesta_correcta": 2,
+    "explicacion": "Según InfectExpress, si persiste la hipotensión a pesar de fluidos, se debe iniciar Noradrenalina como fármaco de elección. La dopamina ya no es la primera elección (Ley de la Actualización/Evidencia).",
+    "metodo_mots_cles": "Buscar palabras clave 'shock séptico', 'persiste hipotenso', identificar el vasopresor de elección en situación crítica → Noradrenalina."
+  },
+  {
+    "id": 3,
+    "tema": "Neumología",
+    "pregunta": "Varón fumador de 55 años. Se realiza una espirometría para descartar EPOC. ¿Cuál de los siguientes hallazgos confirma el diagnóstico de obstrucción crónica al flujo aéreo?",
+    "opciones": [
+      "FEV1/FVC < 0,7 post-broncodilatador.",
+      "FEV1 < 80% con FEV1/FVC normal.",
+      "Mejoría del FEV1 > 12% y 200 ml tras broncodilatador.",
+      "Capacidad Vital Forzada (FVC) disminuida."
+    ],
+    "respuesta_correcta": 1,
+    "explicacion": "Según NeumoExpress, el criterio diagnóstico obligatorio para EPOC es un índice de Tiffeneau (FEV1/FVC) menor a 0,7 tras broncodilatador. La opción 3 sugiere asma (reversibilidad).",
+    "metodo_mots_cles": "Buscar 'obstrucción crónica', 'confirmar diagnóstico', usar valores de referencia (FEV1/FVC <0,7) → respuesta correcta."
+  },
+  {
+    "id": 4,
+    "tema": "Cardiología",
+    "pregunta": "Paciente que acude a urgencias por dolor torácico brusco y desgarrador irradiado a espalda. La Angio-TC muestra una disección aórtica que afecta a la aorta ascendente. Según la clasificación de Stanford y el manejo recomendado, ¿cuál es la actitud correcta?",
+    "opciones": [
+      "Disección tipo B, tratamiento médico con betabloqueantes.",
+      "Disección tipo A, tratamiento médico intensivo en UCI.",
+      "Disección tipo A, cirugía urgente.",
+      "Disección tipo B, cirugía diferida."
+    ],
+    "respuesta_correcta": 3,
+    "explicacion": "Según CardioExpress y MIR 2024, si afecta a la aorta ascendente es Stanford A. La Ley de la Urgencia dicta que Stanford A requiere cirugía urgente por alto riesgo vital, mientras que la B suele manejarse médicamente.",
+    "metodo_mots_cles": "Identificar 'aorta ascendente', 'Stanford A', 'urgencia'; asociar inmediatamente con cirugía urgente → respuesta correcta."
+  },
+  {
+    "id": 5,
+    "tema": "Inmunología",
+    "pregunta": "Paciente que presenta una reacción anafiláctica tras recibir una transfusión de sangre. Tiene antecedentes de infecciones respiratorias de repetición y diarreas por Giardia lamblia. ¿Cuál es el diagnóstico más probable?",
+    "opciones": [
+      "Inmunodeficiencia Común Variable.",
+      "Síndrome de DiGeorge.",
+      "Déficit selectivo de IgA.",
+      "Agammaglobulinemia de Bruton."
+    ],
+    "respuesta_correcta": 3,
+    "explicacion": "Según InmunoExpress, la 'Regla de las 5 A' del déficit selectivo de IgA incluye: Asintomático, Atopia, Autoinmunidad, Anafilaxia en transfusiones (anticuerpos anti-IgA).",
+    "metodo_mots_cles": "Buscar 'anafiláctica tras transfusión', 'infecciones repetidas', 'diarreas por Giardia'; estas palabras clave señalan Déficit selectivo de IgA → respuesta correcta."
+  }
+]
