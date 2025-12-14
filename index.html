@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Examen Blanco Especial para Claudia</title>
-<link rel="stylesheet" href="styles.css">
 <style>
 body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:0; }
 .container { max-width:700px; margin:20px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
@@ -15,14 +14,16 @@ body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:0; 
 .question-card { display:none; margin-bottom:20px; padding:15px; border-radius:10px; background:#f8f9fa; }
 .question-card.active { display:block; }
 .question-number { font-size:0.9em; color:#555; margin-bottom:5px;}
-.question-text { font-size:1.1em; margin-bottom:15px;}
-.options { display:flex; flex-direction:column; gap:10px;}
+.question-text { font-size:1.1em; margin-bottom:10px;}
+.options { display:flex; flex-direction:column; gap:10px; margin-bottom:10px; }
 .option { padding:10px; border-radius:8px; border:1px solid #ccc; cursor:pointer; transition:0.2s; }
 .option.selected { border:2px solid #667eea; background:#e0e0ff; }
 .option.correct { background:#51cf66; color:#fff; border:none; }
 .option.incorrect { background:#ff6b6b; color:#fff; border:none; }
 .option.option-unknown { background:#ffeaa7; }
 .option.disabled { pointer-events:none; opacity:0.7; }
+.method { display:none; margin-top:5px; padding:8px; background:#fff3bf; border-radius:6px; font-size:0.85em; color:#495057; }
+.method.show { display:block; }
 .explanation { display:none; margin-top:10px; font-size:0.9em; background:#f1f3f5; padding:10px; border-radius:8px; }
 .explanation.show { display:block; }
 .navigation { margin-top:15px; display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;}
@@ -32,7 +33,6 @@ body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:0; 
 .btn-secondary { background:#adb5bd; color:#fff; }
 .results { display:none; }
 .results.show { display:block; text-align:center; }
-.score-message { text-align:left; margin-top:15px; font-size:0.9em; }
 </style>
 </head>
 <body>
@@ -94,6 +94,8 @@ class Exam {
                     ${q.opciones.map((opt,i)=>`<div class="option" data-index="${i}">${String.fromCharCode(65+i)}. ${opt}</div>`).join('')}
                     <div class="option option-unknown">❓ No lo sé / Necesito revisar este tema</div>
                 </div>
+                <button class="btn btn-secondary methodBtn">💡 Ver Método de Mots-Clés</button>
+                <div class="method">${q.metodo_mots_cles || ''}</div>
                 <div class="explanation" id="explanation-${index}">
                     <strong>💡 Explicación:</strong><br>${q.explicacion}
                 </div>
@@ -109,6 +111,10 @@ class Exam {
             const options = card.querySelectorAll('.option');
             options.forEach(opt=>{
                 opt.addEventListener('click', ()=>this.selectAnswer(index,opt));
+            });
+
+            card.querySelector('.methodBtn').addEventListener('click', ()=>{
+                card.querySelector('.method').classList.toggle('show');
             });
 
             const checkBtn = card.querySelector('.checkBtn');
@@ -159,11 +165,11 @@ class Exam {
 
         options.forEach((opt,i)=>{
             opt.classList.add('disabled');
-            if(i===question.respuestaCorrecta) opt.classList.add('correct');
+            if(i===question.respuesta_correcta) opt.classList.add('correct');
         });
 
         if(userAnswer.type==='unknown') this.unknownCount++;
-        else if(userAnswer.value===question.respuestaCorrecta) {
+        else if(userAnswer.value===question.respuesta_correcta) {
             this.correctCount++;
             this.score+=3;
         } else {
@@ -247,10 +253,10 @@ class Exam {
 
 async function init() {
     try {
-        const res = await fetch('questions.json');
+        const res = await fetch('batch1.json');
         if(!res.ok) throw new Error('No se pudo cargar questions.json');
         const data = await res.json();
-        new Exam(data.questions);
+        new Exam(data);
     } catch(err) {
         console.error(err);
         document.getElementById('questionsContainer').innerHTML = `<div style="color:#ff6b6b;">⚠️ Error al cargar preguntas. Revisa el archivo questions.json</div>`;
