@@ -1,22 +1,27 @@
+Voici les 10 questions générées à partir de vos sources (CardioExpress, InfectExpress, InmunoExpress, NeumoExpress et les examens MIR récents), formatées en JSON comme demandé.
+
+Ensuite, je vous expliquerai la méthode pour les résoudre sans connaissances médicales approfondies, basée sur le document « MIR_Hacking ».
+
+```json
 [
   {
     "id": 1,
     "tema": "Cardiología",
-    "pregunta": "Paciente de 68 años diagnosticado de Insuficiencia Cardíaca con Fracción de Eyección Reducida (ICFEr). ¿Cuál de los siguientes fármacos NO se considera uno de los 4 pilares fundamentales que mejoran el pronóstico de la enfermedad?",
+    "pregunta": "Paciente con Insuficiencia Cardíaca con fracción de eyección reducida (ICFEr). ¿Cuál de los siguientes fármacos NO se considera uno de los 4 pilares fundamentales que mejoran el pronóstico?",
     "opciones": [
       "Betabloqueantes (ej. Bisoprolol).",
       "Inhibidores de SGLT2 (ej. Dapagliflozina).",
       "Digoxina.",
-      "ARNI (Sacubitrilo/Valsartán)."
+      "Sacubitrilo/Valsartán (ARNI)."
     ],
     "respuesta_correcta": 3,
-    "explicacion": "Según CardioExpress, los 4 pilares que cambian el pronóstico son: Betabloqueantes, ARNI, ARM (Espironolactona) e iSGLT2. La Digoxina se usa para control de síntomas o frecuencia, pero no es un pilar pronóstico (Ley del Intruso Terapéutico).",
-    "metodo_mots_cles": "Identificar 'NO se considera uno de los 4 pilares', buscar cuál medicamento aparece como intruso o menos habitual → Digoxina."
+    "explicacion": "Según CardioExpress, los 4 pilares pronósticos son: Betabloqueantes, ARNI, ARM e iSGLT2. La Digoxina es sintomática pero no mejora la supervivencia.",
+    "metodo_mots_cles": "Loi de l'Intrus : Trois options (1, 2, 4) son fármacos modernos/complejos ('pilares'). La Digoxina (3) es un fármaco antiguo clásico. Es el intruso cronológico y terapéutico."
   },
   {
     "id": 2,
     "tema": "Infectología",
-    "pregunta": "Paciente que ingresa en UCI con diagnóstico de shock séptico. Tras la administración inicial de fluidoterapia intensiva con cristaloides, el paciente persiste hipotenso (TAM < 65 mmHg). ¿Cuál es el fármaco vasopresor de elección que debe iniciarse a continuación?",
+    "pregunta": "Paciente en shock séptico. Tras la administración de fluidos, persiste hipotenso. ¿Cuál es el vasopresor de elección?",
     "opciones": [
       "Dopamina.",
       "Noradrenalina.",
@@ -24,49 +29,145 @@
       "Dobutamina."
     ],
     "respuesta_correcta": 2,
-    "explicacion": "Según InfectExpress, si persiste la hipotensión a pesar de fluidos, se debe iniciar Noradrenalina como fármaco de elección. La dopamina ya no es la primera elección (Ley de la Actualización/Evidencia).",
-    "metodo_mots_cles": "Buscar palabras clave 'shock séptico', 'persiste hipotenso', identificar el vasopresor de elección en situación crítica → Noradrenalina."
+    "explicacion": "InfectExpress indica que la Noradrenalina es el fármaco de elección si no responde a fluidos.",
+    "metodo_mots_cles": "Loi de la Probabilidad/Buzzword : En los exámenes actuales (MIR 2023/24), la Noradrenalina es casi siempre la respuesta correcta para el shock séptico. La Dopamina es una respuesta 'obsoleta'."
   },
   {
     "id": 3,
     "tema": "Neumología",
-    "pregunta": "Varón fumador de 55 años. Se realiza una espirometría para descartar EPOC. ¿Cuál de los siguientes hallazgos confirma el diagnóstico de obstrucción crónica al flujo aéreo?",
+    "pregunta": "Varón fumador. Espirometría para descartar EPOC. ¿Qué hallazgo es imprescindible para el diagnóstico?",
     "opciones": [
       "FEV1/FVC < 0,7 post-broncodilatador.",
       "FEV1 < 80% con FEV1/FVC normal.",
-      "Mejoría del FEV1 > 12% y 200 ml tras broncodilatador.",
-      "Capacidad Vital Forzada (FVC) disminuida."
+      "Mejoría del FEV1 > 12% tras broncodilatador.",
+      "Disminución de la capacidad vital."
     ],
     "respuesta_correcta": 1,
-    "explicacion": "Según NeumoExpress, el criterio diagnóstico obligatorio para EPOC es un índice de Tiffeneau (FEV1/FVC) menor a 0,7 tras broncodilatador. La opción 3 sugiere asma (reversibilidad).",
-    "metodo_mots_cles": "Buscar 'obstrucción crónica', 'confirmar diagnóstico', usar valores de referencia (FEV1/FVC <0,7) → respuesta correcta."
+    "explicacion": "NeumoExpress establece que el criterio diagnóstico obligatorio es el índice de Tiffeneau < 0,7 post-broncodilatador.",
+    "metodo_mots_cles": "Loi de la Binarité/Définition : On cherche une définition rigide. L'option 1 donne un chiffre précis (<0,7) et une condition spécifique (post-broncodilatador). C'est la définition technique standard."
   },
   {
     "id": 4,
     "tema": "Cardiología",
-    "pregunta": "Paciente que acude a urgencias por dolor torácico brusco y desgarrador irradiado a espalda. La Angio-TC muestra una disección aórtica que afecta a la aorta ascendente. Según la clasificación de Stanford y el manejo recomendado, ¿cuál es la actitud correcta?",
+    "pregunta": "Disección aórtica que afecta a la aorta ascendente (Stanford A). ¿Cuál es la actitud correcta?",
     "opciones": [
-      "Disección tipo B, tratamiento médico con betabloqueantes.",
-      "Disección tipo A, tratamiento médico intensivo en UCI.",
-      "Disección tipo A, cirugía urgente.",
-      "Disección tipo B, cirugía diferida."
+      "Tratamiento médico con betabloqueantes.",
+      "Vigilancia en UCI.",
+      "Cirugía urgente.",
+      "Cirugía diferida."
     ],
     "respuesta_correcta": 3,
-    "explicacion": "Según CardioExpress y MIR 2024, si afecta a la aorta ascendente es Stanford A. La Ley de la Urgencia dicta que Stanford A requiere cirugía urgente por alto riesgo vital, mientras que la B suele manejarse médicamente.",
-    "metodo_mots_cles": "Identificar 'aorta ascendente', 'Stanford A', 'urgencia'; asociar inmediatamente con cirugía urgente → respuesta correcta."
+    "explicacion": "CardioExpress: Stanford A afecta aorta ascendente = Cirugía Urgente por riesgo vital inminente.",
+    "metodo_mots_cles": "Loi de l'Urgence : Aorta Ascendente es proximal al corazón (máximo riesgo). Entre 'medicinas' (1, 2) y 'cirugía' (3, 4), la gravedad dicta la acción más agresiva e inmediata: Cirugía Urgente."
   },
   {
     "id": 5,
     "tema": "Inmunología",
-    "pregunta": "Paciente que presenta una reacción anafiláctica tras recibir una transfusión de sangre. Tiene antecedentes de infecciones respiratorias de repetición y diarreas por Giardia lamblia. ¿Cuál es el diagnóstico más probable?",
+    "pregunta": "Paciente con infecciones respiratorias y diarrea por Giardia. Sufre anafilaxia tras una transfusión. ¿Diagnóstico?",
     "opciones": [
       "Inmunodeficiencia Común Variable.",
       "Síndrome de DiGeorge.",
       "Déficit selectivo de IgA.",
-      "Agammaglobulinemia de Bruton."
+      "Agammaglobulinemia."
     ],
     "respuesta_correcta": 3,
-    "explicacion": "Según InmunoExpress, la 'Regla de las 5 A' del déficit selectivo de IgA incluye: Asintomático, Atopia, Autoinmunidad, Anafilaxia en transfusiones (anticuerpos anti-IgA).",
-    "metodo_mots_cles": "Buscar 'anafiláctica tras transfusión', 'infecciones repetidas', 'diarreas por Giardia'; estas palabras clave señalan Déficit selectivo de IgA → respuesta correcta."
+    "explicacion": "InmunoExpress: La regla de las 5 A incluye Anafilaxia en transfusiones y Asintomático/Atopia/Autoimmune.",
+    "metodo_mots_cles": "Association/Buzzword : Transfusión + Anafilaxia = Déficit IgA. Es una asociación clásica 'de libro' que se repite en los exámenes."
+  },
+  {
+    "id": 6,
+    "tema": "Infectología",
+    "pregunta": "Úlcera genital única, indurada e indolora. ¿Diagnóstico?",
+    "opciones": [
+      "Herpes genital.",
+      "Chancroide.",
+      "Sífilis primaria.",
+      "Linfogranuloma venéreo."
+    ],
+    "respuesta_correcta": 3,
+    "explicacion": "InfectExpress: El chancro sifilítico es duro e indoloro. El herpes y chancroide duelen.",
+    "metodo_mots_cles": "Loi de la Binarité (Dolor) : Herpes y Chancroide duelen (blandos/múltiples). Sífilis NO duele (duro/único). 'Indolora' es la palabra clave discriminante."
+  },
+  {
+    "id": 7,
+    "tema": "Cardiología",
+    "pregunta": "Fibrilación auricular con CHA2DS2-VASc de 4 puntos. ¿Tratamiento?",
+    "opciones": [
+      "Ninguno.",
+      "Antiagregación (Aspirina).",
+      "Anticoagulación oral.",
+      "Doble antiagregación."
+    ],
+    "respuesta_correcta": 3,
+    "explicacion": "CardioExpress: Puntuación >= 2 exige anticoagulación. La aspirina no es suficiente para prevenir ictus en FA.",
+    "metodo_mots_cles": "Loi de la Protection : Con 4 puntos (riesgo alto de trombosis), la opción 2 (aspirina) es insuficiente. La opción 3 (anticoagulación) ofrece la máxima protección necesaria."
+  },
+  {
+    "id": 8,
+    "tema": "Neumología",
+    "pregunta": "Ante sospecha de TEP, ¿cuál es la utilidad del Dímero-D?",
+    "opciones": [
+      "Confirmar el diagnóstico.",
+      "Descartar el TEP por su alto valor predictivo negativo.",
+      "Localizar el trombo.",
+      "Monitorizar el tratamiento."
+    ],
+    "respuesta_correcta": 2,
+    "explicacion": "NeumoExpress: El Dímero-D tiene alto valor predictivo negativo. Sirve para descartar, nunca para confirmar.",
+    "metodo_mots_cles": "Loi de la Binarité (Confirmar vs Descartar) : En pruebas de screening sensibles (como el Dímero-D), la función lógica es 'Descartar' (High NPV). Confirmar requiere imagen (TC)."
+  },
+  {
+    "id": 9,
+    "tema": "Inmunología",
+    "pregunta": "Reacción de hipersensibilidad Tipo I. ¿Mecanismo?",
+    "opciones": [
+      "Inmunocomplejos.",
+      "Linfocitos T.",
+      "IgG citotóxica.",
+      "IgE y mastocitos."
+    ],
+    "respuesta_correcta": 4,
+    "explicacion": "InmunoExpress: Tipo I es la inmediata/alérgica, mediada por IgE e histamina (mastocitos).",
+    "metodo_mots_cles": "Association/Buzzword : Tipo 1 = Primero = Alergia = IgE. Es la asociación más rápida y directa."
+  },
+  {
+    "id": 10,
+    "tema": "Urología/Oncología",
+    "pregunta": "Cáncer de próstata metastásico (huesos y vísceras). ¿Tratamiento INCORRECTO?",
+    "opciones": [
+      "Bloqueo hormonal.",
+      "Quimioterapia (Docetaxel).",
+      "Nuevos antiandrógenos.",
+      "Prostatectomía radical."
+    ],
+    "respuesta_correcta": 4,
+    "explicacion": "Ley del Intruso: En enfermedad sistémica (metástasis), el tratamiento local (cirugía de próstata) no cura y es el 'intruso' frente a los tratamientos sistémicos (1, 2, 3).",
+    "metodo_mots_cles": "Loi de l'Intrus (Local vs Sistémico) : Opciones 1, 2 y 3 son fármacos que van a todo el cuerpo (sistémicos). La opción 4 es una cirugía local. En un cáncer extendido, operar solo el local es ilógico."
   }
 ]
+```
+
+### Méthode pour résoudre sans connaissances précises
+
+Selon les principes du document **"MIR_Hacking"** et la logique des QCM médicaux, voici comment aborder ces questions si vous ne connaissez pas la réponse médicale :
+
+**1. La Loi de l'Intrus (L'option différente)**
+*   **Principe :** Si trois options se ressemblent (même famille de médicaments, même type de chirurgie) et qu'une option est radicalement différente, c'est souvent la réponse (soit la bonne, soit la fausse à cocher).
+*   *Application (Question 10) :* Trois options sont des médicaments (chimio, hormones) pour tout le corps. Une option est une chirurgie locale (Prostatectomie). Dans une maladie "métastatique" (partout), l'option locale est l'intrus illogique.
+*   *Application (Question 1) :* Trois options sont des "piliers" modernes/complexes. La Digoxine est un vieux médicament. C'est l'intrus "chronologique".
+
+**2. La Loi de l'Urgence (Gravité = Action)**
+*   **Principe :** Si le patient est instable, en choc, ou a une maladie grave (type A), l'option la plus agressive et rapide (chirurgie, urgence) l'emporte sur les options passives (surveillance, médicaments simples).
+*   *Application (Question 4) :* "Disección Tipo A" (Aorta Ascendente = Cœur). C'est mortel. Entre "médicaments" et "chirurgie urgente", la logique de survie impose la chirurgie.
+
+**3. La Loi de la Binarité (Les opposés)**
+*   **Principe :** Si deux options disent le contraire (Dur/Mou, Douloureux/Indolore, Confirmer/Éliminer), la réponse est l'une des deux.
+*   *Application (Question 8) :* Une option dit "Confirmer", l'autre "Descartar" (Éliminer/Exclure). En médecine, les tests sanguins simples (Dímero D) servent souvent à exclure (car sensibles) mais pas à confirmer (car peu spécifiques). On parie sur "Descartar".
+
+**4. Mots-clés et Associations (Buzzwords)**
+*   **Principe :** Certains mots vont toujours ensemble dans l'examen ("Reflexe de Pavlov").
+*   *Application (Question 5) :* Le mot "Transfusion" associé à "Choc/Anafilaxia" est le *buzzword* pour "Déficit en IgA" (à cause des anticorps anti-IgA).
+*   *Application (Question 9) :* "Tipo I" (Le numéro 1) est associé à "Allergie" donc "IgE".
+
+**5. Détection de l'Absurde ou de l'Insuffisant**
+*   *Application (Question 7) :* Un score de risque de 4 est élevé. Traiter un risque élevé avec de l'aspirine (option 2) semble insuffisant comparé à un anticoagulant fort (option 3). La logique de "Protection" favorise le traitement le plus efficace.
