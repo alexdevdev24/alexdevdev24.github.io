@@ -1,8 +1,3 @@
-Voici les 10 questions générées à partir de vos sources (CardioExpress, InfectExpress, InmunoExpress, NeumoExpress et les examens MIR récents), formatées en JSON comme demandé.
-
-Ensuite, je vous expliquerai la méthode pour les résoudre sans connaissances médicales approfondies, basée sur le document « MIR_Hacking ».
-
-```json
 [
   {
     "id": 1,
@@ -145,29 +140,3 @@ Ensuite, je vous expliquerai la méthode pour les résoudre sans connaissances m
     "metodo_mots_cles": "Loi de l'Intrus (Local vs Sistémico) : Opciones 1, 2 y 3 son fármacos que van a todo el cuerpo (sistémicos). La opción 4 es una cirugía local. En un cáncer extendido, operar solo el local es ilógico."
   }
 ]
-```
-
-### Méthode pour résoudre sans connaissances précises
-
-Selon les principes du document **"MIR_Hacking"** et la logique des QCM médicaux, voici comment aborder ces questions si vous ne connaissez pas la réponse médicale :
-
-**1. La Loi de l'Intrus (L'option différente)**
-*   **Principe :** Si trois options se ressemblent (même famille de médicaments, même type de chirurgie) et qu'une option est radicalement différente, c'est souvent la réponse (soit la bonne, soit la fausse à cocher).
-*   *Application (Question 10) :* Trois options sont des médicaments (chimio, hormones) pour tout le corps. Une option est une chirurgie locale (Prostatectomie). Dans une maladie "métastatique" (partout), l'option locale est l'intrus illogique.
-*   *Application (Question 1) :* Trois options sont des "piliers" modernes/complexes. La Digoxine est un vieux médicament. C'est l'intrus "chronologique".
-
-**2. La Loi de l'Urgence (Gravité = Action)**
-*   **Principe :** Si le patient est instable, en choc, ou a une maladie grave (type A), l'option la plus agressive et rapide (chirurgie, urgence) l'emporte sur les options passives (surveillance, médicaments simples).
-*   *Application (Question 4) :* "Disección Tipo A" (Aorta Ascendente = Cœur). C'est mortel. Entre "médicaments" et "chirurgie urgente", la logique de survie impose la chirurgie.
-
-**3. La Loi de la Binarité (Les opposés)**
-*   **Principe :** Si deux options disent le contraire (Dur/Mou, Douloureux/Indolore, Confirmer/Éliminer), la réponse est l'une des deux.
-*   *Application (Question 8) :* Une option dit "Confirmer", l'autre "Descartar" (Éliminer/Exclure). En médecine, les tests sanguins simples (Dímero D) servent souvent à exclure (car sensibles) mais pas à confirmer (car peu spécifiques). On parie sur "Descartar".
-
-**4. Mots-clés et Associations (Buzzwords)**
-*   **Principe :** Certains mots vont toujours ensemble dans l'examen ("Reflexe de Pavlov").
-*   *Application (Question 5) :* Le mot "Transfusion" associé à "Choc/Anafilaxia" est le *buzzword* pour "Déficit en IgA" (à cause des anticorps anti-IgA).
-*   *Application (Question 9) :* "Tipo I" (Le numéro 1) est associé à "Allergie" donc "IgE".
-
-**5. Détection de l'Absurde ou de l'Insuffisant**
-*   *Application (Question 7) :* Un score de risque de 4 est élevé. Traiter un risque élevé avec de l'aspirine (option 2) semble insuffisant comparé à un anticoagulant fort (option 3). La logique de "Protection" favorise le traitement le plus efficace.
