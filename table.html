@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psiquiatría - Tiempos y Duraciones</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .table-wrapper {
+            padding: 40px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: #f7fafc;
+            transform: scale(1.01);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        td {
+            padding: 20px;
+            font-size: 1em;
+        }
+
+        .pathology {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .duration {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .note {
+            color: #718096;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .table-wrapper {
+                padding: 20px;
+            }
+
+            th, td {
+                padding: 12px;
+                font-size: 0.9em;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: #f7fafc;
+            color: #718096;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚕️ Psiquiatría</h1>
+            <p class="subtitle">Tiempos y Duraciones de las Patologías</p>
+        </header>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patología</th>
+                        <th>Duración Mínima</th>
+                        <th>Notas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="pathology">Episodio Depresivo Mayor</td>
+                        <td class="duration">2 semanas</td>
+                        <td class="note">Síntomas presentes casi todos los días</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Episodio Maníaco</td>
+                        <td class="duration">1 semana</td>
+                        <td class="note">Estado de ánimo anormalmente elevado o irritable</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Episodio Hipomaníaco</td>
+                        <td class="duration">4 días</td>
+                        <td class="note">Menos severo que la manía</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Trastorno de Ansiedad Generalizada</td>
+                        <td class="duration">6 meses</td>
+                        <td class="note">Ansiedad excesiva difícil de controlar</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Trastorno de Pánico</td>
+                        <td class="duration">1 mes</td>
+                        <td class="note">Preocupación persistente después de los ataques</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Trastorno de Estrés Postraumático</td>
+                        <td class="duration">1 mes</td>
+                        <td class="note">Síntomas tras un traumatismo</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Trastorno de Estrés Agudo</td>
+                        <td class="duration">3 días - 1 mes</td>
+                        <td class="note">Reacción inmediata al traumatismo</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Trastorno Obsesivo-Compulsivo</td>
+                        <td class="duration">Variable</td>
+                        <td class="note">Obsesiones y/o compulsiones recurrentes</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Esquizofrenia</td>
+                        <td class="duration">6 meses</td>
+                        <td class="note">Incluyendo fase activa y prodrómica</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Trastorno Esquizofreniforme</td>
+                        <td class="duration">1-6 meses</td>
+                        <td class="note">Síntomas similares a la esquizofrenia</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Trastorno Psicótico Breve</td>
+                        <td class="duration">1 día - 1 mes</td>
+                        <td class="note">Episodio psicótico de corta duración</td>
+                    </tr>
+                    <tr>
+                        <td class="pathology">Duelo Normal</td>
+                        <td class="duration">Variable</td>
+                        <td class="note">Hasta 12 meses generalmente aceptado</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>📋 Referencia diagnóstica según los criterios estándar de clasificación</p>
+        </div>
+    </div>
+</body>
+</html>
