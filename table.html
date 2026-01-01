@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +19,7 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -55,6 +55,7 @@
             width: 100%;
             border-collapse: collapse;
             background: white;
+            font-size: 0.9em;
         }
 
         thead {
@@ -63,12 +64,17 @@
         }
 
         th {
-            padding: 20px;
+            padding: 16px 12px;
             text-align: left;
             font-weight: 600;
-            font-size: 1.1em;
+            font-size: 0.95em;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        th:last-child {
+            border-right: none;
         }
 
         tbody tr {
@@ -78,42 +84,72 @@
 
         tbody tr:hover {
             background: #f7fafc;
-            transform: scale(1.01);
+            transform: scale(1.005);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         td {
-            padding: 20px;
-            font-size: 1em;
+            padding: 16px 12px;
+            font-size: 0.9em;
+            vertical-align: top;
+            border-right: 1px solid #f0f0f0;
+        }
+
+        td:last-child {
+            border-right: none;
         }
 
         .pathology {
             font-weight: 600;
             color: #2d3748;
+            min-width: 150px;
         }
 
-        .duration {
+        .tiempo {
             color: #667eea;
             font-weight: 500;
+            min-width: 120px;
         }
 
-        .note {
+        .duracion {
+            color: #48bb78;
+            min-width: 140px;
+        }
+
+        .latencia {
+            color: #ed8936;
+            min-width: 140px;
+        }
+
+        .periodicidad {
+            color: #9f7aea;
+            min-width: 140px;
+        }
+
+        .criterios {
             color: #718096;
             font-style: italic;
+            min-width: 140px;
         }
 
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-            }
+        .fuente {
+            color: #a0aec0;
+            font-size: 0.85em;
+            min-width: 100px;
+        }
 
+        @media (max-width: 1200px) {
             .table-wrapper {
                 padding: 20px;
             }
 
             th, td {
-                padding: 12px;
-                font-size: 0.9em;
+                padding: 10px 8px;
+                font-size: 0.8em;
+            }
+
+            h1 {
+                font-size: 1.8em;
             }
         }
 
@@ -130,78 +166,94 @@
     <div class="container">
         <header>
             <h1>⚕️ Psiquiatría</h1>
-            <p class="subtitle">Tiempos y Duraciones de las Patologías</p>
+            <p class="subtitle">Tiempos y Duraciones Completas de las Patologías</p>
         </header>
 
         <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
-                        <th>Patología</th>
-                        <th>Duración Mínima</th>
-                        <th>Notas</th>
+                        <th>Patología o Episodio</th>
+                        <th>Tiempo Mínimo</th>
+                        <th>Duración Media</th>
+                        <th>Latencia de Respuesta</th>
+                        <th>Periodicidad de Seguimiento</th>
+                        <th>Criterios de Cronicidad</th>
+                        <th>Fuente</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
+                        <td class="pathology">Esquizofrenia</td>
+                        <td class="tiempo">6 meses (incluye fase prodrómica)</td>
+                        <td class="duracion">Curso crónico, generalmente de por vida</td>
+                        <td class="latencia">Variable según el tratamiento</td>
+                        <td class="periodicidad">Monitorización hematológica periódica</td>
+                        <td class="criterios">Signos continuos durante 6 meses</td>
+                        <td class="fuente">PSIQUIATRIA.pdf</td>
+                    </tr>
+                    <tr>
                         <td class="pathology">Episodio Depresivo Mayor</td>
-                        <td class="duration">2 semanas</td>
-                        <td class="note">Síntomas presentes casi todos los días</td>
+                        <td class="tiempo">2 semanas</td>
+                        <td class="duracion">Suele ser larga</td>
+                        <td class="latencia">4-6 semanas (antidepresivos)</td>
+                        <td class="periodicidad">Mantenimiento de 6-12 meses</td>
+                        <td class="criterios">Presencia de síntomas por al menos 2 semanas</td>
+                        <td class="fuente">PSIQUIATRIA.pdf</td>
                     </tr>
                     <tr>
-                        <td class="pathology">Episodio Maníaco</td>
-                        <td class="duration">1 semana</td>
-                        <td class="note">Estado de ánimo anormalmente elevado o irritable</td>
+                        <td class="pathology">Trastorno Bipolar</td>
+                        <td class="tiempo">1 semana (o menos si requiere hospitalización)</td>
+                        <td class="duracion">Trastorno crónico</td>
+                        <td class="latencia">Variable; ciclos recurrentes</td>
+                        <td class="periodicidad">7-10 días para el litio; Litemias semanales</td>
+                        <td class="criterios">Episodios recurrentes de manía/hipomanía y depresión</td>
+                        <td class="fuente">PSIQUIATRIA.pdf</td>
                     </tr>
                     <tr>
-                        <td class="pathology">Episodio Hipomaníaco</td>
-                        <td class="duration">4 días</td>
-                        <td class="note">Menos severo que la manía</td>
+                        <td class="pathology">Distimia</td>
+                        <td class="tiempo">2 años (1 año en niños)</td>
+                        <td class="duracion">Crónico</td>
+                        <td class="latencia">4-6 semanas para tratamiento</td>
+                        <td class="periodicidad">Seguimiento crónico</td>
+                        <td class="criterios">Estado de ánimo deprimido la mayor parte del día durante al menos 2 años</td>
+                        <td class="fuente">PSIQUIATRIA.pdf</td>
                     </tr>
                     <tr>
                         <td class="pathology">Trastorno de Ansiedad Generalizada</td>
-                        <td class="duration">6 meses</td>
-                        <td class="note">Ansiedad excesiva difícil de controlar</td>
+                        <td class="tiempo">6 meses</td>
+                        <td class="duracion">Curso crónico</td>
+                        <td class="latencia">Inmediata para benzodiacepinas; 4-6 semanas para ISRS</td>
+                        <td class="periodicidad">Revisiones periódicas</td>
+                        <td class="criterios">Ansiedad y preocupación excesiva durante al menos 6 meses</td>
+                        <td class="fuente">PSIQUIATRIA.pdf</td>
                     </tr>
                     <tr>
                         <td class="pathology">Trastorno de Pánico</td>
-                        <td class="duration">1 mes</td>
-                        <td class="note">Preocupación persistente después de los ataques</td>
+                        <td class="tiempo">1 mes</td>
+                        <td class="duracion">Crisis agudas de 10-30 minutos</td>
+                        <td class="latencia">Benzodiacepinas (inmediata); ISRS (4-6 semanas)</td>
+                        <td class="periodicidad">Tratamiento de mantenimiento 6-12 meses</td>
+                        <td class="criterios">Presencia de crisis de pánico recurrentes con preocupación persistente</td>
+                        <td class="fuente">PSIQUIATRIA.pdf</td>
                     </tr>
                     <tr>
-                        <td class="pathology">Trastorno de Estrés Postraumático</td>
-                        <td class="duration">1 mes</td>
-                        <td class="note">Síntomas tras un traumatismo</td>
+                        <td class="pathology">Insomnio Crónico</td>
+                        <td class="tiempo">3 meses</td>
+                        <td class="duracion">Persistente</td>
+                        <td class="latencia">Variable (ej. Daridorexant: 1-2 semanas)</td>
+                        <td class="periodicidad">Higiene del sueño y revisión periódica</td>
+                        <td class="criterios">Al menos 3 meses de dificultad para dormir</td>
+                        <td class="fuente">PSIQUIATRIA.pdf</td>
                     </tr>
                     <tr>
-                        <td class="pathology">Trastorno de Estrés Agudo</td>
-                        <td class="duration">3 días - 1 mes</td>
-                        <td class="note">Reacción inmediata al traumatismo</td>
-                    </tr>
-                    <tr>
-                        <td class="pathology">Trastorno Obsesivo-Compulsivo</td>
-                        <td class="duration">Variable</td>
-                        <td class="note">Obsesiones y/o compulsiones recurrentes</td>
-                    </tr>
-                    <tr>
-                        <td class="pathology">Esquizofrenia</td>
-                        <td class="duration">6 meses</td>
-                        <td class="note">Incluyendo fase activa y prodrómica</td>
-                    </tr>
-                    <tr>
-                        <td class="pathology">Trastorno Esquizofreniforme</td>
-                        <td class="duration">1-6 meses</td>
-                        <td class="note">Síntomas similares a la esquizofrenia</td>
-                    </tr>
-                    <tr>
-                        <td class="pathology">Trastorno Psicótico Breve</td>
-                        <td class="duration">1 día - 1 mes</td>
-                        <td class="note">Episodio psicótico de corta duración</td>
-                    </tr>
-                    <tr>
-                        <td class="pathology">Duelo Normal</td>
-                        <td class="duration">Variable</td>
-                        <td class="note">Hasta 12 meses generalmente aceptado</td>
+                        <td class="pathology">Narcolepsia</td>
+                        <td class="tiempo">No especificado en fuente</td>
+                        <td class="duracion">Crónico</td>
+                        <td class="latencia">Variable según el tratamiento</td>
+                        <td class="periodicidad">Seguimiento clínico continuo</td>
+                        <td class="criterios">Trastorno persistente del sueño</td>
+                        <td class="fuente">PSIQUIATRIA.pdf</td>
                     </tr>
                 </tbody>
             </table>
@@ -209,6 +261,7 @@
 
         <div class="footer">
             <p>📋 Referencia diagnóstica según los criterios estándar de clasificación</p>
+            <p style="margin-top: 10px; font-size: 0.85em;">Información extraída del documento PSIQUIATRIA.pdf</p>
         </div>
     </div>
 </body>
