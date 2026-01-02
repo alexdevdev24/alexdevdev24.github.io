@@ -3,258 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario MIR 2026</title>
+    <title>Ruta hacia el MIR - Fase Final</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
-        header { background: #2d3748; color: white; padding: 30px; text-align: center; border-radius: 15px 15px 0 0; }
-        h1 { font-size: 2em; margin-bottom: 10px; }
-        .content { padding: 30px; }
-        .alert { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 25px; border-radius: 5px; }
-        .alert strong { color: #856404; }
-        .notes { background: #fff5f5; border-left: 4px solid #fc8181; padding: 15px; border-radius: 5px; margin-bottom: 25px; }
-        .note { padding: 8px; background: white; border-radius: 4px; margin: 5px 0; font-size: 0.9em; }
-        .section { margin-bottom: 35px; }
-        .section-header { background: #4299e1; color: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .section-title { font-size: 1.3em; font-weight: bold; }
-        .badge { padding: 5px 12px; border-radius: 15px; font-size: 0.85em; font-weight: bold; }
-        .dif-medio { background: #ed8936; }
-        .dif-dificil { background: #f56565; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
-        .card { background: #f7fafc; border-radius: 8px; padding: 15px; border-left: 4px solid #4299e1; transition: transform 0.2s; }
-        .card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .card-header { display: flex; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #cbd5e0; }
-        .day-label { background: #4299e1; color: white; padding: 5px 12px; border-radius: 15px; font-weight: bold; margin-right: 10px; font-size: 0.85em; }
-        .day-date { font-weight: bold; color: #2d3748; }
-        .session { background: white; padding: 10px; border-radius: 6px; margin: 5px 0; font-size: 0.9em; }
-        .tag { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; margin-right: 5px; }
-        .repaso { background: #c6f6d5; color: #22543d; }
-        .historico { background: #fed7d7; color: #742a2a; }
-        .tm { background: #fbb6ce; color: #702459; }
-        .nf { background: #fef08a; color: #713f12; }
-        .ed { background: #fef3c7; color: #78350f; }
-        .nr { background: #e0e7ff; color: #3730a3; }
-        .cd { background: #cffafe; color: #164e63; }
-        .dg { background: #d1fae5; color: #065f46; }
-        .mc { background: #ddd6fe; color: #5b21b6; }
-        .pd { background: #fecaca; color: #7f1d1d; }
-        .nm { background: #bfdbfe; color: #1e3a8a; }
-        .change { background: #e6fffa; border-left: 3px solid #38b2ac; padding: 8px; margin-top: 8px; border-radius: 4px; font-size: 0.85em; }
-        .roadmap { margin-top: 30px; }
-        .roadmap-item { background: white; padding: 15px; border-radius: 8px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #4299e1; }
-        .roadmap-month { font-weight: bold; color: #4299e1; min-width: 80px; }
-        .roadmap-name { flex: 1; font-weight: bold; }
-        .roadmap-note { color: #718096; font-size: 0.85em; }
-        .warning { color: #c53030; font-weight: bold; }
-        .final { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 10px; text-align: center; margin-top: 30px; }
-        .final-title { font-size: 2em; margin-bottom: 10px; }
-        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        :root {
+            --amir-green: #a4c639; /* Couleur style AMIR */
+            --amir-yellow: #f4d03f;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #3498db;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--amir-green), var(--amir-yellow));
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px; }
+        p.subtitle { margin-top: 5px; font-size: 1.1rem; opacity: 0.9; }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Ligne verticale */
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: #ddd;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            z-index: -1;
+        }
+
+        .container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        .left { left: 0; }
+        .right { left: 50%; }
+
+        /* Cercles sur la timeline */
+        .container::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background-color: white;
+            border: 4px solid var(--amir-green);
+            top: 20px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .right::after { left: -10px; }
+
+        .content {
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .content:hover { transform: translateY(-3px); }
+
+        .content.completed {
+            border-left: 5px solid var(--amir-green);
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .content.urgent { border-left: 5px solid var(--danger); }
+        .content.heavy { border-left: 5px solid var(--warning); }
+        .content.key { border-left: 5px solid var(--info); }
+        .content.mir-day { border: 2px solid gold; background: #fffbe6; text-align: center; }
+
+        h2 { margin-top: 0; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        
+        .badge {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            text-decoration: none !important;
+        }
+
+        .bg-danger { background-color: var(--danger); }
+        .bg-warning { background-color: var(--warning); }
+        .bg-info { background-color: var(--info); }
+        .bg-success { background-color: var(--amir-green); }
+
+        .notes {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+            background: #f9f9f9;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        /* Checkbox custom */
+        .check-btn {
+            float: right;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+        
+        .completed .check-btn { background-color: var(--amir-green); border-color: var(--amir-green); }
+
+        @media screen and (max-width: 600px) {
+            .timeline::after { left: 31px; }
+            .container { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .container::after { left: 21px; }
+            .left::after, .right::after { left: 21px; }
+            .right { left: 0%; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🎯 CALENDARIO MIR 2026-2027</h1>
-            <p>Camino hacia el examen definitivo</p>
-        </header>
-        
+
+<header>
+    <h1>Objetivo MIR</h1>
+    <p class="subtitle">Planificación Fase Final</p>
+</header>
+
+<div class="timeline">
+
+    <div class="container left" onclick="toggleComplete(this)">
         <div class="content">
-            <div class="alert">
-                <strong>📢 Actualización:</strong> Programa reorganizado tras Año Nuevo. ¡Preparación intensiva desde L05!
-            </div>
+            <div class="check-btn"></div>
+            <h2>Epidemiología <span class="badge bg-success">Rentable</span></h2>
+            <p>Estadística y Planificación.</p>
+        </div>
+    </div>
 
+    <div class="container right" onclick="toggleComplete(this)">
+        <div class="content">
+            <div class="check-btn"></div>
+            <h2>Traumatología</h2>
+            <p>Fracturas, Epónimos y Nervios.</p>
+        </div>
+    </div>
+
+    <div class="container left" onclick="toggleComplete(this)">
+        <div class="content">
+            <div class="check-btn"></div>
+            <h2>Nefrología</h2>
+            <p>Glomerulonefritis y Líquidos.</p>
+        </div>
+    </div>
+
+    <div class="container right" onclick="toggleComplete(this)">
+        <div class="content">
+            <div class="check-btn"></div>
+            <h2>Pediatría</h2>
+            <p>Desarrollo, Vacunas y Neonatología.</p>
+        </div>
+    </div>
+
+    <div class="container left" onclick="toggleComplete(this)">
+        <div class="content">
+            <div class="check-btn"></div>
+            <h2>Reumatología</h2>
+            <p>Vasculitis, Artritis y Lupus.</p>
+        </div>
+    </div>
+
+    <div class="container right" onclick="toggleComplete(this)">
+        <div class="content">
+            <div class="check-btn"></div>
+            <h2>Ginecología</h2>
+            <p>Cáncer de mama, Embarazo y Parto.</p>
+        </div>
+    </div>
+
+    <div class="container left" onclick="toggleComplete(this)">
+        <div class="content heavy">
+            <div class="check-btn"></div>
+            <h2>Endocrinología <span class="badge bg-warning">Densa</span></h2>
             <div class="notes">
-                <strong>⚠️ Rotaciones especialmente difíciles:</strong>
-                <div class="note">💀 <strong>ENDOCRINO:</strong> Complicado y súper largo</div>
-                <div class="note">🧠 <strong>NEURO:</strong> Tu punto débil - necesita atención extra</div>
-                <div class="note">🦠 <strong>INFECCIOSAS:</strong> Súper largo y terrible de memorizar</div>
-                <div class="note">❤️ <strong>CARDIO:</strong> Farmacología asesina + Algoritmo SCA crítico</div>
-                <div class="note">🔪 <strong>DIGESTIVO:</strong> Incluye cirugía plástica (cada vez más importante)</div>
-            </div>
-
-            <!-- ENERO - EPIDEMIOLOGÍA -->
-            <div class="section">
-                <div class="section-header">
-                    <div class="section-title">1️⃣ EPIDEMIOLOGÍA - Enero 2026</div>
-                    <div class="badge dif-medio">Dificultad: Media</div>
-                </div>
-                
-                <div class="grid">
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="day-label">L05</span>
-                            <span class="day-date">Lun 5 Ene</span>
-                        </div>
-                        <div class="session"><span class="tag repaso">REPASO LG</span> Repaso General</div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="day-label">M06</span>
-                            <span class="day-date">Mar 6 Ene</span>
-                        </div>
-                        <div class="session"><span class="tag tm">TM</span> Sesión TM</div>
-                        <div class="session"><span class="tag nf">NF</span> Sesión NF</div>
-                        <div class="change">✏️ <strong>Cambio:</strong> REYES → TM y NF</div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="day-label">X07</span>
-                            <span class="day-date">Mié 7 Ene</span>
-                        </div>
-                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
-                        <div class="session"><span class="tag nf">NF</span> <span class="tag pd">PD</span></div>
-                        <div class="session"><span class="tag historico">HISTÓRICO</span> Histórico Fallos</div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="day-label">J08</span>
-                            <span class="day-date">Jue 8 Ene</span>
-                        </div>
-                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
-                        <div class="session"><span class="tag nm">NM</span></div>
-                        <div class="session"><span class="tag historico">HISTÓRICO</span></div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="day-label">L12</span>
-                            <span class="day-date">Lun 12 Ene</span>
-                        </div>
-                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
-                        <div class="session"><span class="tag historico">HISTÓRICO</span></div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="day-label">M13</span>
-                            <span class="day-date">Mar 13 Ene</span>
-                        </div>
-                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
-                        <div class="session"><span class="tag ed">ED</span></div>
-                        <div class="session"><span class="tag historico">HISTÓRICO</span></div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="day-label">X14</span>
-                            <span class="day-date">Mié 14 Ene</span>
-                        </div>
-                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
-                        <div class="session"><span class="tag nr">NR</span></div>
-                        <div class="session"><span class="tag historico">HISTÓRICO</span></div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="day-label">L19</span>
-                            <span class="day-date">Lun 19 Ene</span>
-                        </div>
-                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="day-label">M20</span>
-                            <span class="day-date">Mar 20 Ene</span>
-                        </div>
-                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
-                        <div class="session"><span class="tag cd">CD</span></div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="day-label">X21</span>
-                            <span class="day-date">Mié 21 Ene</span>
-                        </div>
-                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
-                        <div class="session"><span class="tag dg">DG</span> <span class="tag mc">MC</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ROADMAP COMPLETO -->
-            <div class="section roadmap">
-                <div class="section-header">
-                    <div class="section-title">🗺️ ROADMAP COMPLETO HASTA EL MIR</div>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">FEB 2026</span>
-                    <span class="roadmap-name">2️⃣ TRAUMATOLOGÍA</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">MAR 2026</span>
-                    <span class="roadmap-name">3️⃣ NEFROLOGÍA</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">ABR 2026</span>
-                    <span class="roadmap-name">4️⃣ PEDIATRÍA</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">MAY 2026</span>
-                    <span class="roadmap-name">5️⃣ REUMATOLOGÍA</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">JUN 2026</span>
-                    <span class="roadmap-name">6️⃣ GINECOLOGÍA</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">JUL-AGO</span>
-                    <span class="roadmap-name">7️⃣ ENDOCRINOLOGÍA</span>
-                    <span class="roadmap-note warning">⚠️ Complicado y súper largo</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">SEP 2026</span>
-                    <span class="roadmap-name">8️⃣ NEUROLOGÍA</span>
-                    <span class="roadmap-note warning">💀 TU NÉMESIS - Extra focus!</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">OCT 2026</span>
-                    <span class="roadmap-name">9️⃣ NEUMOLOGÍA</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">NOV 2026</span>
-                    <span class="roadmap-name">🔟 INFECCIOSAS</span>
-                    <span class="roadmap-note warning">⚠️ Súper largo y difícil de memorizar</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">DIC 2026</span>
-                    <span class="roadmap-name">1️⃣1️⃣ CARDIOLOGÍA</span>
-                    <span class="roadmap-note warning">⚠️ Farmacología mortal + Algoritmo SCA</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">ENE 2027</span>
-                    <span class="roadmap-name">1️⃣2️⃣ DIGESTIVO + CIRUGÍA PLÁSTICA</span>
-                    <span class="roadmap-note warning">⚠️ Cirugía plástica cada vez más importante</span>
-                </div>
-                
-                <div class="roadmap-item">
-                    <span class="roadmap-month">FEB 2027</span>
-                    <span class="roadmap-name">1️⃣3️⃣ MISCELÁNEA</span>
-                    <span class="roadmap-note">Temas varios y repaso final</span>
-                </div>
-            </div>
-
-            <div class="final">
-                <div class="final-title">🎯 EXAMEN MIR</div>
-                <p style="font-size: 1.2em; margin: 10px 0;">Marzo-Abril 2027</p>
-                <p style="opacity: 0.9;">13 rotaciones intensas por delante. ¡Tú puedes! 💪</p>
+                ⚠ Es larga y complicada. Dividir bien los temas (Tiroides vs Diabetes vs Suprarenales). ¡Ánimo!
             </div>
         </div>
     </div>
+
+    <div class="container right" onclick="toggleComplete(this)">
+        <div class="content urgent">
+            <div class="check-btn"></div>
+            <h2>Neurología <span class="badge bg-danger">Prioridad</span></h2>
+            <div class="notes">
+                🎯 "I suck at this" -> Dedicar tiempo extra a Ictus y Pares Craneales. No te bloquees, ve a lo básico y rentable.
+            </div>
+        </div>
+    </div>
+
+    <div class="container left" onclick="toggleComplete(this)">
+        <div class="content">
+            <div class="check-btn"></div>
+            <h2>Neumología</h2>
+            <p>EPOC, Asma y Cáncer de Pulmón.</p>
+        </div>
+    </div>
+
+    <div class="container right" onclick="toggleComplete(this)">
+        <div class="content heavy">
+            <div class="check-btn"></div>
+            <h2>Infecciosas <span class="badge bg-warning">Larga</span></h2>
+            <div class="notes">
+                🧠 Mucha memoria. Repasar Tratamientos Empíricos y VIH. Usar reglas mnemotécnicas.
+            </div>
+        </div>
+    </div>
+
+    <div class="container left" onclick="toggleComplete(this)">
+        <div class="content key">
+            <div class="check-btn"></div>
+            <h2>Cardiología <span class="badge bg-info">Clave</span></h2>
+            <div class="notes">
+                💊 <strong>FÁRMACOS:</strong> Repasar efectos adversos.<br>
+                📈 <strong>SCA:</strong> Memorizar el algoritmo de manejo del Síndrome Coronario Agudo. ¡Es vital!
+            </div>
+        </div>
+    </div>
+
+    <div class="container right" onclick="toggleComplete(this)">
+        <div class="content">
+            <div class="check-btn"></div>
+            <h2>Digestivo + C. Plástica</h2>
+            <div class="notes">
+                Ojo con Cirugía Plástica, cada vez cae más (Quemados, Colgajos).
+            </div>
+        </div>
+    </div>
+
+    <div class="container left" onclick="toggleComplete(this)">
+        <div class="content">
+            <div class="check-btn"></div>
+            <h2>Miscelánea</h2>
+            <p>Oftalmo, ORL, Derma, Ética, Palias...</p>
+        </div>
+    </div>
+
+    <div class="container right">
+        <div class="content mir-day">
+            <h2>🏆 EL DÍA MIR 🏆</h2>
+            <p>Confía en lo que has estudiado.</p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function toggleComplete(element) {
+        const contentDiv = element.querySelector('.content');
+        contentDiv.classList.toggle('completed');
+        
+        // Efecto visual simple
+        if(contentDiv.classList.contains('completed')) {
+            // Podrías añadir lógica aquí para guardar en localStorage si quisieras
+        }
+    }
+</script>
+
 </body>
 </html>
