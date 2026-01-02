@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programa Actualizado</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #cbd5e0;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .alert-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+        
+        .schedule {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .day-card {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .day-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .day-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #cbd5e0;
+        }
+        
+        .day-label {
+            background: #4299e1;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .day-date {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .session {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4299e1;
+        }
+        
+        .session-type {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .repaso { background: #c6f6d5; color: #22543d; }
+        .historico { background: #fed7d7; color: #742a2a; }
+        .nuevo { background: #ffd89b; color: #7c2d12; }
+        .tm { background: #fbb6ce; color: #702459; }
+        .nf { background: #fef08a; color: #713f12; }
+        .ed { background: #fef3c7; color: #78350f; }
+        .nr { background: #e0e7ff; color: #3730a3; }
+        .cd { background: #cffafe; color: #164e63; }
+        .dg { background: #d1fae5; color: #065f46; }
+        .mc { background: #ddd6fe; color: #5b21b6; }
+        .pd { background: #fecaca; color: #7f1d1d; }
+        .nm { background: #bfdbfe; color: #1e3a8a; }
+        
+        .session-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+        
+        .session-info {
+            color: #718096;
+            font-size: 0.9em;
+        }
+        
+        .change-note {
+            background: #e6fffa;
+            border-left: 3px solid #38b2ac;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        
+        .legend {
+            background: #edf2f7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📅 Programa Actualizado</h1>
+            <p class="subtitle">A partir del Lunes 5 de Enero 2026</p>
+        </header>
+        
+        <div class="content">
+            <div class="alert">
+                <div class="alert-title">⚠️ Modificaciones importantes</div>
+                <div>El programa ha sido reorganizado tras las vacaciones de Año Nuevo. Algunos cursos han sido trasladados o cancelados.</div>
+            </div>
+            
+            <div class="schedule">
+                <!-- L05 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-label">L05</div>
+                        <div class="day-date">Lunes 5 de Enero</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type repaso">REPASO LG</span>
+                        <div class="session-title">Sesión de repaso</div>
+                        <div class="session-info">Repaso general del contenido</div>
+                    </div>
+                </div>
+                
+                <!-- M06 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-label">M06</div>
+                        <div class="day-date">Martes 6 de Enero</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type tm">TM</span>
+                        <div class="session-title">Sesión TM</div>
+                        <div class="session-info">Transferido desde REYES</div>
+                        <div class="change-note">
+                            ✏️ <strong>Cambio:</strong> El curso REYES ha sido transferido a TM y NF
+                        </div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type nf">NF</span>
+                        <div class="session-title">Sesión NF</div>
+                        <div class="session-info">Transferido desde REYES</div>
+                    </div>
+                </div>
+                
+                <!-- X07 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-label">X07</div>
+                        <div class="day-date">Miércoles 7 de Enero</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type repaso">REPASO LG</span>
+                        <div class="session-title">Sesión de repaso</div>
+                        <div class="session-info">Repaso general del contenido</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type nf">NF</span>
+                        <div class="session-title">Sesión NF</div>
+                        <div class="session-info">Módulo especializado</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type pd">PD</span>
+                        <div class="session-title">Sesión PD</div>
+                        <div class="session-info">Módulo especializado</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type historico">HISTÓRICO DE FALLOS</span>
+                        <div class="session-title">Histórico de fallos</div>
+                        <div class="session-info">Repaso de errores comunes</div>
+                    </div>
+                </div>
+                
+                <!-- J08 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-label">J08</div>
+                        <div class="day-date">Jueves 8 de Enero</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type repaso">REPASO LG</span>
+                        <div class="session-title">Sesión de repaso</div>
+                        <div class="session-info">Repaso general del contenido</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type nm">NM</span>
+                        <div class="session-title">Sesión NM</div>
+                        <div class="session-info">Módulo especializado</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type historico">HISTÓRICO DE FALLOS</span>
+                        <div class="session-title">Histórico de fallos</div>
+                        <div class="session-info">Repaso de errores comunes</div>
+                    </div>
+                </div>
+                
+                <!-- L12 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-label">L12</div>
+                        <div class="day-date">Lunes 12 de Enero</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type repaso">REPASO LG</span>
+                        <div class="session-title">Sesión de repaso</div>
+                        <div class="session-info">Repaso general del contenido</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type historico">HISTÓRICO DE FALLOS</span>
+                        <div class="session-title">Histórico de fallos</div>
+                        <div class="session-info">Repaso de errores comunes</div>
+                    </div>
+                </div>
+                
+                <!-- M13 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-label">M13</div>
+                        <div class="day-date">Martes 13 de Enero</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type repaso">REPASO LG</span>
+                        <div class="session-title">Sesión de repaso</div>
+                        <div class="session-info">Repaso general del contenido</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type ed">ED</span>
+                        <div class="session-title">Sesión ED</div>
+                        <div class="session-info">Módulo especializado</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type historico">HISTÓRICO DE FALLOS</span>
+                        <div class="session-title">Histórico de fallos</div>
+                        <div class="session-info">Repaso de errores comunes</div>
+                    </div>
+                </div>
+                
+                <!-- X14 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-label">X14</div>
+                        <div class="day-date">Miércoles 14 de Enero</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type repaso">REPASO LG</span>
+                        <div class="session-title">Sesión de repaso</div>
+                        <div class="session-info">Repaso general del contenido</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type nr">NR</span>
+                        <div class="session-title">Sesión NR</div>
+                        <div class="session-info">Módulo especializado</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type historico">HISTÓRICO DE FALLOS</span>
+                        <div class="session-title">Histórico de fallos</div>
+                        <div class="session-info">Repaso de errores comunes</div>
+                    </div>
+                </div>
+                
+                <!-- L19 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-label">L19</div>
+                        <div class="day-date">Lunes 19 de Enero</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type repaso">REPASO LG</span>
+                        <div class="session-title">Sesión de repaso</div>
+                        <div class="session-info">Repaso general del contenido</div>
+                    </div>
+                </div>
+                
+                <!-- M20 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-label">M20</div>
+                        <div class="day-date">Martes 20 de Enero</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type repaso">REPASO LG</span>
+                        <div class="session-title">Sesión de repaso</div>
+                        <div class="session-info">Repaso general del contenido</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type cd">CD</span>
+                        <div class="session-title">Sesión CD</div>
+                        <div class="session-info">Módulo especializado</div>
+                    </div>
+                </div>
+                
+                <!-- X21 -->
+                <div class="day-card">
+                    <div class="day-header">
+                        <div class="day-label">X21</div>
+                        <div class="day-date">Miércoles 21 de Enero</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type repaso">REPASO LG</span>
+                        <div class="session-title">Sesión de repaso</div>
+                        <div class="session-info">Repaso general del contenido</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type dg">DG</span>
+                        <div class="session-title">Sesión DG</div>
+                        <div class="session-info">Módulo especializado</div>
+                    </div>
+                    <div class="session">
+                        <span class="session-type mc">MC</span>
+                        <div class="session-title">Sesión MC</div>
+                        <div class="session-info">Módulo especializado</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-title">📋 Leyenda de sesiones</div>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <span class="session-type repaso">REPASO LG</span>
+                        <span>Repaso general</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="session-type historico">HISTÓRICO</span>
+                        <span>Histórico de fallos</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="session-type tm">TM</span>
+                        <span>Módulo TM</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="session-type nf">NF</span>
+                        <span>Módulo NF</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="session-type ed">ED</span>
+                        <span>Módulo ED</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="session-type nr">NR</span>
+                        <span>Módulo NR</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="session-type cd">CD</span>
+                        <span>Módulo CD</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="session-type dg">DG</span>
+                        <span>Módulo DG</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="session-type pd">PD</span>
+                        <span>Módulo PD</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="session-type nm">NM</span>
+                        <span>Módulo NM</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="session-type mc">MC</span>
+                        <span>Módulo MC</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
