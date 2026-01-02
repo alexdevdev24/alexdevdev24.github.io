@@ -3,126 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programa Actualizado</title>
+    <title>Calendario MIR 2026</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-        
-        header {
-            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            color: #cbd5e0;
-            font-size: 1.1em;
-        }
-        
-        .content {
-            padding: 30px;
-        }
-        
-        .alert {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin-bottom: 30px;
-            border-radius: 5px;
-        }
-        
-        .alert-title {
-            font-weight: bold;
-            color: #856404;
-            margin-bottom: 5px;
-        }
-        
-        .schedule {
-            display: grid;
-            gap: 20px;
-        }
-        
-        .day-card {
-            background: #f7fafc;
-            border-radius: 10px;
-            padding: 20px;
-            border: 2px solid #e2e8f0;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .day-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        
-        .day-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #cbd5e0;
-        }
-        
-        .day-label {
-            background: #4299e1;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            margin-right: 15px;
-        }
-        
-        .day-date {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #2d3748;
-        }
-        
-        .session {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid #4299e1;
-        }
-        
-        .session-type {
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+        header { background: #2d3748; color: white; padding: 30px; text-align: center; border-radius: 15px 15px 0 0; }
+        h1 { font-size: 2em; margin-bottom: 10px; }
+        .content { padding: 30px; }
+        .alert { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin-bottom: 25px; border-radius: 5px; }
+        .alert strong { color: #856404; }
+        .notes { background: #fff5f5; border-left: 4px solid #fc8181; padding: 15px; border-radius: 5px; margin-bottom: 25px; }
+        .note { padding: 8px; background: white; border-radius: 4px; margin: 5px 0; font-size: 0.9em; }
+        .section { margin-bottom: 35px; }
+        .section-header { background: #4299e1; color: white; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title { font-size: 1.3em; font-weight: bold; }
+        .badge { padding: 5px 12px; border-radius: 15px; font-size: 0.85em; font-weight: bold; }
+        .dif-medio { background: #ed8936; }
+        .dif-dificil { background: #f56565; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .card { background: #f7fafc; border-radius: 8px; padding: 15px; border-left: 4px solid #4299e1; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .card-header { display: flex; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #cbd5e0; }
+        .day-label { background: #4299e1; color: white; padding: 5px 12px; border-radius: 15px; font-weight: bold; margin-right: 10px; font-size: 0.85em; }
+        .day-date { font-weight: bold; color: #2d3748; }
+        .session { background: white; padding: 10px; border-radius: 6px; margin: 5px 0; font-size: 0.9em; }
+        .tag { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; margin-right: 5px; }
         .repaso { background: #c6f6d5; color: #22543d; }
         .historico { background: #fed7d7; color: #742a2a; }
-        .nuevo { background: #ffd89b; color: #7c2d12; }
         .tm { background: #fbb6ce; color: #702459; }
         .nf { background: #fef08a; color: #713f12; }
         .ed { background: #fef3c7; color: #78350f; }
@@ -132,330 +40,219 @@
         .mc { background: #ddd6fe; color: #5b21b6; }
         .pd { background: #fecaca; color: #7f1d1d; }
         .nm { background: #bfdbfe; color: #1e3a8a; }
-        
-        .session-title {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #2d3748;
-            margin-bottom: 5px;
-        }
-        
-        .session-info {
-            color: #718096;
-            font-size: 0.9em;
-        }
-        
-        .change-note {
-            background: #e6fffa;
-            border-left: 3px solid #38b2ac;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-            font-size: 0.9em;
-        }
-        
-        .legend {
-            background: #edf2f7;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
-        }
-        
-        .legend-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #2d3748;
-        }
-        
-        .legend-items {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        @media (max-width: 768px) {
-            .content {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 1.5em;
-            }
-        }
+        .change { background: #e6fffa; border-left: 3px solid #38b2ac; padding: 8px; margin-top: 8px; border-radius: 4px; font-size: 0.85em; }
+        .roadmap { margin-top: 30px; }
+        .roadmap-item { background: white; padding: 15px; border-radius: 8px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #4299e1; }
+        .roadmap-month { font-weight: bold; color: #4299e1; min-width: 80px; }
+        .roadmap-name { flex: 1; font-weight: bold; }
+        .roadmap-note { color: #718096; font-size: 0.85em; }
+        .warning { color: #c53030; font-weight: bold; }
+        .final { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 10px; text-align: center; margin-top: 30px; }
+        .final-title { font-size: 2em; margin-bottom: 10px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📅 Programa Actualizado</h1>
-            <p class="subtitle">A partir del Lunes 5 de Enero 2026</p>
+            <h1>🎯 CALENDARIO MIR 2026-2027</h1>
+            <p>Camino hacia el examen definitivo</p>
         </header>
         
         <div class="content">
             <div class="alert">
-                <div class="alert-title">⚠️ Modificaciones importantes</div>
-                <div>El programa ha sido reorganizado tras las vacaciones de Año Nuevo. Algunos cursos han sido trasladados o cancelados.</div>
+                <strong>📢 Actualización:</strong> Programa reorganizado tras Año Nuevo. ¡Preparación intensiva desde L05!
             </div>
-            
-            <div class="schedule">
-                <!-- L05 -->
-                <div class="day-card">
-                    <div class="day-header">
-                        <div class="day-label">L05</div>
-                        <div class="day-date">Lunes 5 de Enero</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type repaso">REPASO LG</span>
-                        <div class="session-title">Sesión de repaso</div>
-                        <div class="session-info">Repaso general del contenido</div>
-                    </div>
+
+            <div class="notes">
+                <strong>⚠️ Rotaciones especialmente difíciles:</strong>
+                <div class="note">💀 <strong>ENDOCRINO:</strong> Complicado y súper largo</div>
+                <div class="note">🧠 <strong>NEURO:</strong> Tu punto débil - necesita atención extra</div>
+                <div class="note">🦠 <strong>INFECCIOSAS:</strong> Súper largo y terrible de memorizar</div>
+                <div class="note">❤️ <strong>CARDIO:</strong> Farmacología asesina + Algoritmo SCA crítico</div>
+                <div class="note">🔪 <strong>DIGESTIVO:</strong> Incluye cirugía plástica (cada vez más importante)</div>
+            </div>
+
+            <!-- ENERO - EPIDEMIOLOGÍA -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">1️⃣ EPIDEMIOLOGÍA - Enero 2026</div>
+                    <div class="badge dif-medio">Dificultad: Media</div>
                 </div>
                 
-                <!-- M06 -->
-                <div class="day-card">
-                    <div class="day-header">
-                        <div class="day-label">M06</div>
-                        <div class="day-date">Martes 6 de Enero</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type tm">TM</span>
-                        <div class="session-title">Sesión TM</div>
-                        <div class="session-info">Transferido desde REYES</div>
-                        <div class="change-note">
-                            ✏️ <strong>Cambio:</strong> El curso REYES ha sido transferido a TM y NF
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="day-label">L05</span>
+                            <span class="day-date">Lun 5 Ene</span>
                         </div>
+                        <div class="session"><span class="tag repaso">REPASO LG</span> Repaso General</div>
                     </div>
-                    <div class="session">
-                        <span class="session-type nf">NF</span>
-                        <div class="session-title">Sesión NF</div>
-                        <div class="session-info">Transferido desde REYES</div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="day-label">M06</span>
+                            <span class="day-date">Mar 6 Ene</span>
+                        </div>
+                        <div class="session"><span class="tag tm">TM</span> Sesión TM</div>
+                        <div class="session"><span class="tag nf">NF</span> Sesión NF</div>
+                        <div class="change">✏️ <strong>Cambio:</strong> REYES → TM y NF</div>
                     </div>
-                </div>
-                
-                <!-- X07 -->
-                <div class="day-card">
-                    <div class="day-header">
-                        <div class="day-label">X07</div>
-                        <div class="day-date">Miércoles 7 de Enero</div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="day-label">X07</span>
+                            <span class="day-date">Mié 7 Ene</span>
+                        </div>
+                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
+                        <div class="session"><span class="tag nf">NF</span> <span class="tag pd">PD</span></div>
+                        <div class="session"><span class="tag historico">HISTÓRICO</span> Histórico Fallos</div>
                     </div>
-                    <div class="session">
-                        <span class="session-type repaso">REPASO LG</span>
-                        <div class="session-title">Sesión de repaso</div>
-                        <div class="session-info">Repaso general del contenido</div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="day-label">J08</span>
+                            <span class="day-date">Jue 8 Ene</span>
+                        </div>
+                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
+                        <div class="session"><span class="tag nm">NM</span></div>
+                        <div class="session"><span class="tag historico">HISTÓRICO</span></div>
                     </div>
-                    <div class="session">
-                        <span class="session-type nf">NF</span>
-                        <div class="session-title">Sesión NF</div>
-                        <div class="session-info">Módulo especializado</div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="day-label">L12</span>
+                            <span class="day-date">Lun 12 Ene</span>
+                        </div>
+                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
+                        <div class="session"><span class="tag historico">HISTÓRICO</span></div>
                     </div>
-                    <div class="session">
-                        <span class="session-type pd">PD</span>
-                        <div class="session-title">Sesión PD</div>
-                        <div class="session-info">Módulo especializado</div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="day-label">M13</span>
+                            <span class="day-date">Mar 13 Ene</span>
+                        </div>
+                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
+                        <div class="session"><span class="tag ed">ED</span></div>
+                        <div class="session"><span class="tag historico">HISTÓRICO</span></div>
                     </div>
-                    <div class="session">
-                        <span class="session-type historico">HISTÓRICO DE FALLOS</span>
-                        <div class="session-title">Histórico de fallos</div>
-                        <div class="session-info">Repaso de errores comunes</div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="day-label">X14</span>
+                            <span class="day-date">Mié 14 Ene</span>
+                        </div>
+                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
+                        <div class="session"><span class="tag nr">NR</span></div>
+                        <div class="session"><span class="tag historico">HISTÓRICO</span></div>
                     </div>
-                </div>
-                
-                <!-- J08 -->
-                <div class="day-card">
-                    <div class="day-header">
-                        <div class="day-label">J08</div>
-                        <div class="day-date">Jueves 8 de Enero</div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="day-label">L19</span>
+                            <span class="day-date">Lun 19 Ene</span>
+                        </div>
+                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
                     </div>
-                    <div class="session">
-                        <span class="session-type repaso">REPASO LG</span>
-                        <div class="session-title">Sesión de repaso</div>
-                        <div class="session-info">Repaso general del contenido</div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="day-label">M20</span>
+                            <span class="day-date">Mar 20 Ene</span>
+                        </div>
+                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
+                        <div class="session"><span class="tag cd">CD</span></div>
                     </div>
-                    <div class="session">
-                        <span class="session-type nm">NM</span>
-                        <div class="session-title">Sesión NM</div>
-                        <div class="session-info">Módulo especializado</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type historico">HISTÓRICO DE FALLOS</span>
-                        <div class="session-title">Histórico de fallos</div>
-                        <div class="session-info">Repaso de errores comunes</div>
-                    </div>
-                </div>
-                
-                <!-- L12 -->
-                <div class="day-card">
-                    <div class="day-header">
-                        <div class="day-label">L12</div>
-                        <div class="day-date">Lunes 12 de Enero</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type repaso">REPASO LG</span>
-                        <div class="session-title">Sesión de repaso</div>
-                        <div class="session-info">Repaso general del contenido</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type historico">HISTÓRICO DE FALLOS</span>
-                        <div class="session-title">Histórico de fallos</div>
-                        <div class="session-info">Repaso de errores comunes</div>
-                    </div>
-                </div>
-                
-                <!-- M13 -->
-                <div class="day-card">
-                    <div class="day-header">
-                        <div class="day-label">M13</div>
-                        <div class="day-date">Martes 13 de Enero</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type repaso">REPASO LG</span>
-                        <div class="session-title">Sesión de repaso</div>
-                        <div class="session-info">Repaso general del contenido</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type ed">ED</span>
-                        <div class="session-title">Sesión ED</div>
-                        <div class="session-info">Módulo especializado</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type historico">HISTÓRICO DE FALLOS</span>
-                        <div class="session-title">Histórico de fallos</div>
-                        <div class="session-info">Repaso de errores comunes</div>
-                    </div>
-                </div>
-                
-                <!-- X14 -->
-                <div class="day-card">
-                    <div class="day-header">
-                        <div class="day-label">X14</div>
-                        <div class="day-date">Miércoles 14 de Enero</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type repaso">REPASO LG</span>
-                        <div class="session-title">Sesión de repaso</div>
-                        <div class="session-info">Repaso general del contenido</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type nr">NR</span>
-                        <div class="session-title">Sesión NR</div>
-                        <div class="session-info">Módulo especializado</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type historico">HISTÓRICO DE FALLOS</span>
-                        <div class="session-title">Histórico de fallos</div>
-                        <div class="session-info">Repaso de errores comunes</div>
-                    </div>
-                </div>
-                
-                <!-- L19 -->
-                <div class="day-card">
-                    <div class="day-header">
-                        <div class="day-label">L19</div>
-                        <div class="day-date">Lunes 19 de Enero</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type repaso">REPASO LG</span>
-                        <div class="session-title">Sesión de repaso</div>
-                        <div class="session-info">Repaso general del contenido</div>
-                    </div>
-                </div>
-                
-                <!-- M20 -->
-                <div class="day-card">
-                    <div class="day-header">
-                        <div class="day-label">M20</div>
-                        <div class="day-date">Martes 20 de Enero</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type repaso">REPASO LG</span>
-                        <div class="session-title">Sesión de repaso</div>
-                        <div class="session-info">Repaso general del contenido</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type cd">CD</span>
-                        <div class="session-title">Sesión CD</div>
-                        <div class="session-info">Módulo especializado</div>
-                    </div>
-                </div>
-                
-                <!-- X21 -->
-                <div class="day-card">
-                    <div class="day-header">
-                        <div class="day-label">X21</div>
-                        <div class="day-date">Miércoles 21 de Enero</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type repaso">REPASO LG</span>
-                        <div class="session-title">Sesión de repaso</div>
-                        <div class="session-info">Repaso general del contenido</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type dg">DG</span>
-                        <div class="session-title">Sesión DG</div>
-                        <div class="session-info">Módulo especializado</div>
-                    </div>
-                    <div class="session">
-                        <span class="session-type mc">MC</span>
-                        <div class="session-title">Sesión MC</div>
-                        <div class="session-info">Módulo especializado</div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="day-label">X21</span>
+                            <span class="day-date">Mié 21 Ene</span>
+                        </div>
+                        <div class="session"><span class="tag repaso">REPASO LG</span></div>
+                        <div class="session"><span class="tag dg">DG</span> <span class="tag mc">MC</span></div>
                     </div>
                 </div>
             </div>
-            
-            <div class="legend">
-                <div class="legend-title">📋 Leyenda de sesiones</div>
-                <div class="legend-items">
-                    <div class="legend-item">
-                        <span class="session-type repaso">REPASO LG</span>
-                        <span>Repaso general</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="session-type historico">HISTÓRICO</span>
-                        <span>Histórico de fallos</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="session-type tm">TM</span>
-                        <span>Módulo TM</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="session-type nf">NF</span>
-                        <span>Módulo NF</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="session-type ed">ED</span>
-                        <span>Módulo ED</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="session-type nr">NR</span>
-                        <span>Módulo NR</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="session-type cd">CD</span>
-                        <span>Módulo CD</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="session-type dg">DG</span>
-                        <span>Módulo DG</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="session-type pd">PD</span>
-                        <span>Módulo PD</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="session-type nm">NM</span>
-                        <span>Módulo NM</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="session-type mc">MC</span>
-                        <span>Módulo MC</span>
-                    </div>
+
+            <!-- ROADMAP COMPLETO -->
+            <div class="section roadmap">
+                <div class="section-header">
+                    <div class="section-title">🗺️ ROADMAP COMPLETO HASTA EL MIR</div>
                 </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">FEB 2026</span>
+                    <span class="roadmap-name">2️⃣ TRAUMATOLOGÍA</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">MAR 2026</span>
+                    <span class="roadmap-name">3️⃣ NEFROLOGÍA</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">ABR 2026</span>
+                    <span class="roadmap-name">4️⃣ PEDIATRÍA</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">MAY 2026</span>
+                    <span class="roadmap-name">5️⃣ REUMATOLOGÍA</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">JUN 2026</span>
+                    <span class="roadmap-name">6️⃣ GINECOLOGÍA</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">JUL-AGO</span>
+                    <span class="roadmap-name">7️⃣ ENDOCRINOLOGÍA</span>
+                    <span class="roadmap-note warning">⚠️ Complicado y súper largo</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">SEP 2026</span>
+                    <span class="roadmap-name">8️⃣ NEUROLOGÍA</span>
+                    <span class="roadmap-note warning">💀 TU NÉMESIS - Extra focus!</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">OCT 2026</span>
+                    <span class="roadmap-name">9️⃣ NEUMOLOGÍA</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">NOV 2026</span>
+                    <span class="roadmap-name">🔟 INFECCIOSAS</span>
+                    <span class="roadmap-note warning">⚠️ Súper largo y difícil de memorizar</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">DIC 2026</span>
+                    <span class="roadmap-name">1️⃣1️⃣ CARDIOLOGÍA</span>
+                    <span class="roadmap-note warning">⚠️ Farmacología mortal + Algoritmo SCA</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">ENE 2027</span>
+                    <span class="roadmap-name">1️⃣2️⃣ DIGESTIVO + CIRUGÍA PLÁSTICA</span>
+                    <span class="roadmap-note warning">⚠️ Cirugía plástica cada vez más importante</span>
+                </div>
+                
+                <div class="roadmap-item">
+                    <span class="roadmap-month">FEB 2027</span>
+                    <span class="roadmap-name">1️⃣3️⃣ MISCELÁNEA</span>
+                    <span class="roadmap-note">Temas varios y repaso final</span>
+                </div>
+            </div>
+
+            <div class="final">
+                <div class="final-title">🎯 EXAMEN MIR</div>
+                <p style="font-size: 1.2em; margin: 10px 0;">Marzo-Abril 2027</p>
+                <p style="opacity: 0.9;">13 rotaciones intensas por delante. ¡Tú puedes! 💪</p>
             </div>
         </div>
     </div>
