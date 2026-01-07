@@ -1,104 +1,88 @@
 /**
- * scriptpmu.js
- * Fonctionnalités : Proxy CORS, API Online (Client 1), Rapports détaillés, Musique, Export JSON.
+ * scriptpmu.js - Version Production
+ * Gestion: Rapports (Centimes->Euros), Terrain, Conditions, Participants
  */
 
 const PROXY_URL = 'https://corsproxy.io/?';
 const API_BASE = 'https://online.turfinfo.api.pmu.fr/rest/client/1/programme';
 
-// Stockage global pour l'export
-let globalExtractedData = null;
+let globalData = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     const dom = {
         date: document.getElementById('dateInput'),
         reunion: document.getElementById('reunionInput'),
-        btnFetch: document.getElementById('fetchBtn'),
-        btnExport: document.getElementById('exportBtn'),
+        fetch: document.getElementById('fetchBtn'),
+        export: document.getElementById('exportBtn'),
         status: document.getElementById('status'),
-        results: document.getElementById('resultsContainer')
+        container: document.getElementById('resultsContainer')
     };
 
-    if (!dom.btnFetch) return;
+    if (!dom.fetch) return;
 
-    // --- 1. CHARGEMENT DES DONNÉES ---
-    dom.btnFetch.addEventListener('click', async () => {
+    // --- CHARGEMENT ---
+    dom.fetch.addEventListener('click', async () => {
         const date = dom.date.value.trim();
-        const reunionStr = dom.reunion.value.trim().toUpperCase();
-        const reunionNum = reunionStr.replace(/\D/g, ''); 
+        const rStr = dom.reunion.value.trim().toUpperCase();
+        const rNum = rStr.replace(/\D/g, '');
 
-        if (!date || !reunionNum) {
-            showStatus(dom, 'Format invalide. Utilisez Date: JJMMAAAA et Réunion: R1', 'error');
-            return;
-        }
+        if (!date || !rNum) return alert('Date et Réunion requises');
 
         setLoading(dom, true);
+        dom.container.innerHTML = '';
         
-        // Reset data
-        globalExtractedData = { 
-            meta: { date, reunion: reunionStr, generated_at: new Date().toISOString() }, 
-            courses: [] 
-        };
+        globalData = { meta: { date, reunion: rStr }, courses: [] };
 
         try {
-            // A. Programme
-            const urlProg = `${API_BASE}/${date}/R${reunionNum}`;
-            const progData = await fetchWithProxy(urlProg);
+            // 1. Récupération Programme (Contient Terrain & Conditions)
+            const progUrl = `${API_BASE}/${date}/R${rNum}`;
+            const progData = await fetchAPI(progUrl);
 
-            if (!progData.courses || progData.courses.length === 0) throw new Error("Aucune course trouvée.");
+            if (!progData.courses) throw new Error("Réunion introuvable ou vide.");
 
-            // B. Détails (Parallèle)
-            const promises = progData.courses.map(course => processCourse(date, reunionNum, course));
-            globalExtractedData.courses = await Promise.all(promises);
-            
-            // Tri par numéro de course
-            globalExtractedData.courses.sort((a, b) => a.num_course - b.num_course);
+            // 2. Traitement Parallèle
+            const tasks = progData.courses.map(c => processCourse(date, rNum, c));
+            globalData.courses = await Promise.all(tasks);
+            globalData.courses.sort((a, b) => a.num - b.num);
 
-            // C. Rendu
-            renderResults(dom, globalExtractedData.courses);
-            showStatus(dom, `${globalExtractedData.courses.length} courses chargées avec succès.`, 'success');
-            dom.btnExport.style.display = 'inline-block';
+            // 3. Affichage
+            renderUI(dom, globalData.courses);
+            dom.export.style.display = 'block';
+            setStatus(dom, `${globalData.courses.length} courses chargées.`, 'status-loading', false); // Clean status
 
-        } catch (error) {
-            console.error(error);
-            showStatus(dom, `Erreur : ${error.message}`, 'error');
-            dom.btnExport.style.display = 'none';
+        } catch (e) {
+            console.error(e);
+            setStatus(dom, "Erreur: " + e.message, 'status-error');
         } finally {
             setLoading(dom, false);
         }
     });
 
-    // --- 2. EXPORT JSON ---
-    dom.btnExport.addEventListener('click', () => {
-        if (!globalExtractedData) return;
-        const fileName = `PMU_${globalExtractedData.meta.date}_${globalExtractedData.meta.reunion}.json`;
-        const blob = new Blob([JSON.stringify(globalExtractedData, null, 2)], { type: 'application/json;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
+    // --- EXPORT ---
+    dom.export.addEventListener('click', () => {
+        if (!globalData) return;
+        const blob = new Blob([JSON.stringify(globalData, null, 2)], {type: 'application/json;charset=utf-8'});
         const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
+        link.href = URL.createObjectURL(blob);
+        link.download = `PMU_${globalData.meta.date}_${globalData.meta.reunion}.json`;
         link.click();
-        document.body.removeChild(link);
-        setTimeout(() => URL.revokeObjectURL(url), 100);
     });
 });
 
-/**
- * Récupère les données d'une course spécifique (Participants + Rapports)
- */
-async function processCourse(date, reunionNum, courseInfo) {
-    const cNum = courseInfo.numOrdre;
+// --- LOGIQUE MÉTIER ---
+
+async function processCourse(date, rNum, cInfo) {
+    const cNum = cInfo.numOrdre;
     
-    // On appelle Participants et Rapports en parallèle pour aller plus vite
-    const [partantsData, rapportsData] = await Promise.all([
-        fetchWithProxy(`${API_BASE}/${date}/R${reunionNum}/C${cNum}/participants`).catch(() => ({ participants: [] })),
-        fetchWithProxy(`${API_BASE}/${date}/R${reunionNum}/C${cNum}/rapports-definitifs`).catch(() => null)
+    // Appels Parallèles (Participants + Rapports)
+    const [partants, rapports] = await Promise.all([
+        fetchAPI(`${API_BASE}/${date}/R${rNum}/C${cNum}/participants`).catch(() => ({ participants: [] })),
+        fetchAPI(`${API_BASE}/${date}/R${rNum}/C${cNum}/rapports-definitifs`).catch(() => null)
     ]);
 
-    // Nettoyage des participants
-    const participantsPropres = (partantsData.participants || []).map(p => ({
-        numero: p.numPmu,
+    // Formatage Participants
+    const parts = (partants.participants || []).map(p => ({
+        num: p.numPmu,
         nom: p.nomCheval,
         driver: p.driver || p.jockey,
         entraineur: p.entraineur,
@@ -106,122 +90,150 @@ async function processCourse(date, reunionNum, courseInfo) {
         cote: p.dernierRapportDirect ? p.dernierRapportDirect.rapport : null
     }));
 
+    // Extraction Conditions & Terrain (Depuis l'objet cInfo du programme initial)
+    const terrain = {
+        nature: cInfo.etatTerrain || "Non renseigné", // ex: BON SOUPLE
+        penetrometre: cInfo.valeurPenetrometre || "-"
+    };
+
+    // Les conditions sont souvent un tableau de strings dans l'objet API
+    const conditionsTxt = Array.isArray(cInfo.conditions) ? cInfo.conditions.join(". ") : (cInfo.conditions || "");
+
     return {
-        id: `R${reunionNum}C${cNum}`,
-        num_course: cNum,
-        nom: courseInfo.libelle,
-        discipline: courseInfo.discipline,
-        heure_depart: courseInfo.heureDepart,
-        ordre_arrivee: courseInfo.ordreArrivee || [],
-        participants: participantsPropres,
-        rapports: rapportsData // On garde l'objet complet pour le JSON
+        id: `R${rNum}C${cNum}`,
+        num: cNum,
+        nom: cInfo.libelle,
+        discipline: cInfo.discipline,
+        heure: cInfo.heureDepart,
+        arrivee: cInfo.ordreArrivee || [],
+        terrain: terrain,
+        conditions: conditionsTxt, // ex: "Pour poulains entiers... Handicap Classe 2"
+        specialite: cInfo.specialite || cInfo.discipline,
+        participants: parts,
+        rapports: rapports // Objet brut pour l'export, traité pour l'affichage
     };
 }
 
-// --- RENDU HTML ---
+// --- AFFICHAGE HTML ---
 
-function renderResults(dom, courses) {
-    dom.results.innerHTML = '';
-    
-    courses.forEach(course => {
+function renderUI(dom, courses) {
+    courses.forEach(c => {
         const div = document.createElement('div');
         div.className = 'race-card';
+
+        // Logique Rapports
+        const rapportsHTML = buildRapportsTable(c.rapports);
         
-        const arriveeTxt = course.ordre_arrivee.length > 0 ? course.ordre_arrivee.join(' - ') : 'Arrivée non disponible';
-        const rapportsHtml = generateReportsHtml(course.rapports);
+        // Logique Arrivée
+        const arrTxt = c.arrivee.length ? c.arrivee.join(' - ') : 'En cours...';
 
         div.innerHTML = `
             <div class="race-header">
-                <span>C${course.num_course} - ${course.nom}</span>
-                <span>${new Date(course.heure_depart).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                <span>C${c.num} - ${c.nom}</span>
+                <span>${new Date(c.heure).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
             </div>
-            <div class="race-content">
-                <div class="race-meta">
-                    <strong>Discipline:</strong> ${course.discipline} | 
-                    <strong>Partants:</strong> ${course.participants.length} |
-                    <strong>Arrivée:</strong> <span style="color:#d63384; font-weight:bold">${arriveeTxt}</span>
+            <div class="race-body">
+                
+                <div class="meta-grid">
+                    <div class="meta-item">
+                        <strong>Discipline:</strong> ${c.discipline}<br>
+                        <strong>Terrain:</strong> ${c.terrain.nature} (${c.terrain.penetrometre})
+                    </div>
+                    <div class="meta-item">
+                        <strong>Arrivée:</strong> <span style="color:#d63384;font-weight:bold">${arrTxt}</span><br>
+                        <strong>Partants:</strong> ${c.participants.length}
+                    </div>
+                </div>
+                <div style="margin-bottom:10px; font-style:italic; font-size:0.9em; color:#666;">
+                    ${c.conditions}
                 </div>
 
-                ${rapportsHtml}
+                ${rapportsHTML}
 
                 <details>
-                    <summary>Voir les ${course.participants.length} partants (Musique & Cotes)</summary>
-                    <div>
-                        ${course.participants.map(p => `
-                            <div class="p-row">
-                                <strong>${p.numero}</strong> 
-                                <span>${p.nom} <span style="color:#666; font-size:0.9em;">(${p.musique})</span></span>
-                                <span style="font-weight:bold;">${p.cote || '-'}</span>
-                            </div>
-                        `).join('')}
+                    <summary>Voir les participants (Musique, Cotes)</summary>
+                    <div style="max-height:200px; overflow-y:auto; margin-top:5px;">
+                        <table style="width:100%; font-size:0.85em; border-collapse:collapse;">
+                            ${c.participants.map(p => `
+                                <tr style="border-bottom:1px solid #eee;">
+                                    <td style="padding:4px; font-weight:bold;">${p.num}</td>
+                                    <td style="padding:4px;">${p.nom}</td>
+                                    <td style="padding:4px; color:#666;">${p.musique}</td>
+                                    <td style="padding:4px; text-align:right;">${p.cote || '-'}</td>
+                                </tr>
+                            `).join('')}
+                        </table>
                     </div>
                 </details>
             </div>
         `;
-        dom.results.appendChild(div);
+        dom.container.appendChild(div);
     });
 }
 
-/**
- * Génère le tableau HTML des rapports financiers
- */
-function generateReportsHtml(rapports) {
-    if (!rapports || !Array.isArray(rapports)) return '<p style="color:#777; font-style:italic;">Rapports non disponibles.</p>';
+function buildRapportsTable(rapports) {
+    if (!rapports || !Array.isArray(rapports)) return '<div style="color:#777; padding:10px;">Pas de rapports disponibles.</div>';
 
-    // Filtre des paris demandés
-    const CIBLES = ['SIMPLE_GAGNANT', 'SIMPLE_PLACE', 'COUPLE_GAGNANT', 'COUPLE_PLACE', 'COUPLE_ORDRE', 'TRIO', 'TRIO_ORDRE', 'TIERCE', 'CLASSIC_TIERCE'];
-    const paris = rapports.filter(r => CIBLES.some(c => r.typePari.includes(c)));
+    // On cherche tout ce qui contient SIMPLE, COUPLE, TRIO, TIERCE
+    // L'API Online met souvent "E_SIMPLE_GAGNANT", donc on filtre sur inclusion.
+    const validKeys = ['SIMPLE', 'COUPLE', 'TRIO', 'TIERCE'];
+    const hits = rapports.filter(r => validKeys.some(k => r.typePari.includes(k)));
 
-    if (paris.length === 0) return '<p style="color:#777; font-style:italic;">Aucun rapport définitif affichable.</p>';
+    if (!hits.length) return '<div style="color:#777; padding:10px;">Rapports non publiés ou type non géré.</div>';
 
-    let html = '<table class="reports-table"><thead><tr><th>Type</th><th>Combinaison</th><th>Rapport (1€)</th></tr></thead><tbody>';
+    let html = `<table class="reports-table">
+        <thead><tr><th>Pari</th><th>Combinaison</th><th>Gain (1€)</th></tr></thead>
+        <tbody>`;
 
-    paris.forEach(p => {
-        let badgeClass = 'bg-couple'; // Defaut jaune
-        let label = p.libelle || p.typePari;
+    hits.forEach(r => {
+        // Style du badge
+        let cls = 'tag-couple';
+        let lbl = r.libelle || r.typePari.replace('E_', ''); // Nettoyage du nom
+        
+        if (r.typePari.includes('GAGNANT')) cls = 'tag-win';
+        else if (r.typePari.includes('PLACE')) cls = 'tag-place';
+        else if (r.typePari.includes('TRIO') || r.typePari.includes('TIERCE')) cls = 'tag-trio';
 
-        if (p.typePari.includes('GAGNANT')) badgeClass = 'bg-win';
-        else if (p.typePari.includes('PLACE')) badgeClass = 'bg-place';
-        else if (p.typePari.includes('TRIO') || p.typePari.includes('TIERCE')) badgeClass = 'bg-trio';
-
-        p.rapports.forEach(r => {
-            const gain = (r.dividendePourUnEuro / 100).toFixed(2);
-            html += `
-                <tr>
-                    <td><span class="badge ${badgeClass}">${label}</span></td>
-                    <td><b>${r.combinaison}</b></td>
-                    <td style="color:#d63384; font-weight:bold;">${gain} €</td>
-                </tr>`;
+        r.rapports.forEach(gain => {
+            // CALCULE DU GAIN : L'API Online renvoie souvent en Centimes (dividendePourUnEuro)
+            // Parfois dividendePourUnEuro n'existe pas, on fallback sur dividende/miseBase
+            let val = 0;
+            if (gain.dividendePourUnEuro) {
+                val = gain.dividendePourUnEuro / 100;
+            } else if (gain.dividende && r.miseBase) {
+                val = (gain.dividende / r.miseBase); // Supposition miseBase en centimes aussi
+            }
+            
+            html += `<tr>
+                <td><span class="tag ${cls}">${lbl}</span></td>
+                <td><b>${gain.combinaison}</b></td>
+                <td class="gain-cell">${val.toFixed(2)} €</td>
+            </tr>`;
         });
     });
 
-    html += '</tbody></table>';
+    html += `</tbody></table>`;
     return html;
 }
 
-// --- UTILITAIRES ---
+// --- UTILS ---
 
-async function fetchWithProxy(targetUrl) {
-    const finalUrl = PROXY_URL + encodeURIComponent(targetUrl);
-    const response = await fetch(finalUrl);
-    if (!response.ok) {
-        if(response.status === 404) return {}; 
-        throw new Error(`HTTP ${response.status}`);
+async function fetchAPI(url) {
+    const res = await fetch(PROXY_URL + encodeURIComponent(url));
+    if (!res.ok) {
+        if (res.status === 404) return {}; 
+        throw new Error(`HTTP ${res.status}`);
     }
-    return await response.json();
+    return await res.json();
 }
 
-function showStatus(dom, msg, type) {
-    dom.status.style.display = 'block';
-    dom.status.className = `status-${type}`;
+function setStatus(dom, msg, type = 'status-loading', show = true) {
+    dom.status.style.display = show ? 'block' : 'none';
+    dom.status.className = `status-msg ${type}`;
     dom.status.innerText = msg;
 }
 
-function setLoading(dom, isLoading) {
-    dom.btnFetch.disabled = isLoading;
-    if (isLoading) {
-        showStatus(dom, 'Chargement des données Online...', 'loading');
-        dom.results.innerHTML = '';
-        dom.btnExport.style.display = 'none';
-    }
+function setLoading(dom, loading) {
+    dom.fetch.disabled = loading;
+    if(loading) setStatus(dom, "Chargement des données PMU...", 'status-loading');
 }
