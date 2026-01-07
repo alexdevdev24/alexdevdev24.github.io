@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extracteur de Données PMU</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; line-height: 1.6; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; }
+        input { padding: 8px; width: 200px; }
+        button { padding: 10px 15px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:disabled { background: #ccc; }
+        #exportBtn { background: #28a745; margin-top: 10px; display: none; }
+        .race-card { border: 1px solid #ddd; padding: 10px; margin-top: 10px; border-radius: 4px; }
+        pre { background: #f4f4f4; padding: 10px; overflow-x: auto; max-height: 300px; }
+        .status { font-weight: bold; color: #d9534f; }
+    </style>
+</head>
+<body>
+
+    <h2>Extraction des Partants et Résultats PMU</h2>
+
+    <div class="form-group">
+        <label for="date">Date (JJMMAAAA) :</label>
+        <input type="text" id="date" placeholder="ex: 16022020" maxlength="8">
+    </div>
+
+    <div class="form-group">
+        <label for="reunion">Numéro de Réunion (R1, R2...) :</label>
+        <input type="text" id="reunion" placeholder="ex: R1">
+    </div>
+
+    <button id="fetchBtn">Charger les données</button>
+    <button id="exportBtn">Télécharger JSON</button>
+
+    <div id="status" class="status"></div>
+    <div id="results"></div>
+
+    <script>
+        let extractedData = null;
+
+        document.getElementById('fetchBtn').addEventListener('click', async () => {
+            const date = document.getElementById('date').value;
+            const reunionStr = document.getElementById('reunion').value;
+            const reunionNum = reunionStr.replace(/\D/g, '');
+            const statusDiv = document.getElementById('status');
+            const resultsDiv = document.getElementById('results');
+            
+            if (!date || !reunionNum) {
+                alert("Veuillez remplir la date et la réunion.");
+                return;
+            }
+
+            statusDiv.innerText = "Chargement en cours...";
+            resultsDiv.innerHTML = "";
+            extractedData = { date, reunion: reunionStr, courses: [] };
+
+            try {
+                // 1. Récupération du programme de la réunion
+                const progUrl = `https://offline.turfinfo.api.pmu.fr/rest/client/7/programme/${date}/R${reunionNum}`;
+                const progRes = await fetch(progUrl);
+                const progData = await progRes.json();
+
+                if (!progData.courses) throw new Error("Données de réunion introuvables.");
+
+                for (const course of progData.courses) {
+                    const cNum = course.numOrdre;
+                    
+                    // 2. Récupération des partants/cotes
+                    const partRes = await fetch(`https://offline.turfinfo.api.pmu.fr/rest/client/7/programme/${date}/R${reunionNum}/C${cNum}/participants`);
+                    const partData = await partRes.json();
+
+                    // 3. Récupération des rapports définitifs
+                    const rappRes = await fetch(`https://online.turfinfo.api.pmu.fr/rest/client/1/programme/${date}/R${reunionNum}/C${cNum}/rapports-definitifs`);
+                    const rappData = await rappRes.json();
+
+                    const courseObj = {
+                        course_id: `C${cNum}`,
+                        nom: course.libelle,
+                        participants: partData.participants || [],
+                        rapports: rappData || null,
+                        ordreArrivee: course.ordreArrivee || []
+                    };
+
+                    extractedData.courses.push(courseObj);
+                    renderCourse(courseObj);
+                }
+
+                statusDiv.innerText = "Chargement terminé.";
+                document.getElementById('exportBtn').style.display = 'inline-block';
+
+            } catch (err) {
+                statusDiv.innerText = "Erreur : " + err.message + " (Vérifiez les limitations CORS)";
+                console.error(err);
+            }
+        });
+
+        function renderCourse(course) {
+            const div = document.createElement('div');
+            div.className = 'race-card';
+            div.innerHTML = `
+                <h3>Course ${course.course_id} - ${course.nom}</h3>
+                <p><strong>Arrivée :</strong> ${course.ordreArrivee.join(' - ') || 'N/A'}</p>
+                <p>Nombre de partants : ${course.participants.length}</p>
+            `;
+            document.getElementById('results').appendChild(div);
+        }
+
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            if (!extractedData) return;
+            const dataStr = JSON.stringify(extractedData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `pmu_${extractedData.date}_${extractedData.reunion}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
