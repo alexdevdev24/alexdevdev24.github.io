@@ -1,6 +1,6 @@
 /**
- * scriptpmu.js - Version Complète
- * Features: Rapports Euros, Terrain, Participants en Tableau, Export JSON
+ * scriptpmu.js - Version Finale
+ * Affichage DIRECT (Sans Dropdown) des Rapports et Participants
  */
 
 const PROXY_URL = 'https://corsproxy.io/?';
@@ -20,33 +20,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!dom.fetch) return;
 
-    // --- CLICK CHARGER ---
     dom.fetch.addEventListener('click', async () => {
         const date = dom.date.value.trim();
         const rStr = dom.reunion.value.trim().toUpperCase();
         const rNum = rStr.replace(/\D/g, '');
 
-        if (!date || !rNum) return alert('Veuillez entrer une date et une réunion valides.');
+        if (!date || !rNum) return alert('Date et Réunion requises (ex: 07012026 / R1)');
 
         setLoading(dom, true);
         dom.container.innerHTML = '';
         globalData = { meta: { date, reunion: rStr }, courses: [] };
 
         try {
-            // 1. Programme
             const progData = await fetchAPI(`${API_BASE}/${date}/R${rNum}`);
             if (!progData.courses) throw new Error("Réunion introuvable.");
 
-            // 2. Parallélisme pour chaque course
             const tasks = progData.courses.map(c => processCourse(date, rNum, c));
             globalData.courses = await Promise.all(tasks);
             globalData.courses.sort((a, b) => a.num - b.num);
 
-            // 3. Rendu
             renderUI(dom, globalData.courses);
             
             dom.export.style.display = 'inline-block';
-            setStatus(dom, `${globalData.courses.length} courses affichées avec succès.`, 'status-loading', false); // Hide status but keep layout clean
+            setStatus(dom, `${globalData.courses.length} courses affichées.`, 'status-loading', false);
 
         } catch (e) {
             console.error(e);
@@ -57,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- CLICK EXPORT ---
     dom.export.addEventListener('click', () => {
         if (!globalData) return;
         const blob = new Blob([JSON.stringify(globalData, null, 2)], {type: 'application/json;charset=utf-8'});
@@ -70,18 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// --- TRAITEMENT DES DONNÉES ---
-
 async function processCourse(date, rNum, cInfo) {
     const cNum = cInfo.numOrdre;
     
-    // Récupération simultanée Participants + Rapports
     const [partants, rapports] = await Promise.all([
         fetchAPI(`${API_BASE}/${date}/R${rNum}/C${cNum}/participants`).catch(() => ({ participants: [] })),
         fetchAPI(`${API_BASE}/${date}/R${rNum}/C${cNum}/rapports-definitifs`).catch(() => null)
     ]);
 
-    // Formatage Participants
     const parts = (partants.participants || []).map(p => ({
         num: p.numPmu,
         nom: p.nomCheval,
@@ -91,13 +82,6 @@ async function processCourse(date, rNum, cInfo) {
         cote: p.dernierRapportDirect ? p.dernierRapportDirect.rapport : null
     }));
 
-    // Infos Terrain
-    const terrain = {
-        nature: cInfo.etatTerrain || "Non renseigné",
-        penetrometre: cInfo.valeurPenetrometre || "-"
-    };
-
-    // Conditions (Tableau -> String)
     const conditions = Array.isArray(cInfo.conditions) ? cInfo.conditions.join(". ") : (cInfo.conditions || "");
 
     return {
@@ -107,14 +91,15 @@ async function processCourse(date, rNum, cInfo) {
         heure: cInfo.heureDepart,
         discipline: cInfo.discipline,
         arrivee: cInfo.ordreArrivee || [],
-        terrain: terrain,
+        terrain: {
+            nature: cInfo.etatTerrain || "Non renseigné",
+            penetrometre: cInfo.valeurPenetrometre || "-"
+        },
         conditions: conditions,
         participants: parts,
         rapports: rapports
     };
 }
-
-// --- RENDU HTML ---
 
 function renderUI(dom, courses) {
     courses.forEach(c => {
@@ -124,7 +109,7 @@ function renderUI(dom, courses) {
         const heure = new Date(c.heure).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         const arriveeTxt = c.arrivee.length ? c.arrivee.join(' - ') : 'En cours';
 
-        // Construction des tableaux HTML
+        // Génération des tableaux HTML
         const htmlRapports = buildRapportsTable(c.rapports);
         const htmlPartants = buildPartantsTable(c.participants);
 
@@ -136,22 +121,24 @@ function renderUI(dom, courses) {
             <div class="race-body">
                 
                 <div class="meta-box">
-                    <div class="meta-line">
+                    <div>
                         <strong>Discipline :</strong> ${c.discipline}<br>
                         <strong>Arrivée :</strong> <span style="color:#d63384; font-weight:bold; font-size:1.1em;">${arriveeTxt}</span>
                     </div>
-                    <div class="meta-line">
+                    <div>
                         <strong>Terrain :</strong> ${c.terrain.nature} (${c.terrain.penetrometre})<br>
                         <strong>Partants :</strong> ${c.participants.length}
                     </div>
                     <div class="conditions-text">${c.conditions}</div>
                 </div>
 
-                <h4 style="margin: 0 0 10px 0; color:#343a40;">Rapports Définitifs (pour 1€)</h4>
+                <h4>Rapports Définitifs (pour 1€)</h4>
                 ${htmlRapports}
 
-                <h4 style="margin: 20px 0 10px 0; color:#0056b3;">Tableau des Partants</h4>
-                ${htmlPartants}
+                <h4>Tableau des Partants</h4>
+                <div style="overflow-x:auto;">
+                    ${htmlPartants}
+                </div>
 
             </div>
         `;
@@ -165,11 +152,11 @@ function buildPartantsTable(participants) {
     let html = `<table class="participants-table">
         <thead>
             <tr>
-                <th style="width:40px; text-align:center;">N°</th>
+                <th style="width:50px; text-align:center;">N°</th>
                 <th>Cheval</th>
                 <th>Driver / Jockey</th>
                 <th>Musique</th>
-                <th style="width:70px; text-align:right;">Cote</th>
+                <th style="width:80px; text-align:right;">Cote</th>
             </tr>
         </thead>
         <tbody>`;
@@ -180,7 +167,7 @@ function buildPartantsTable(participants) {
                 <td style="text-align:center; font-weight:bold;">${p.num}</td>
                 <td><strong>${p.nom}</strong></td>
                 <td>${p.driver}</td>
-                <td style="font-size:0.9em; color:#555;">${p.musique || '-'}</td>
+                <td style="font-size:0.85em; color:#555;">${p.musique || '-'}</td>
                 <td style="text-align:right; font-weight:bold; color:#0056b3;">${p.cote || '-'}</td>
             </tr>
         `;
@@ -217,7 +204,6 @@ function buildRapportsTable(rapports) {
         else if (r.typePari.includes('TRIO') || r.typePari.includes('TIERCE')) badge = 'badge-trio';
 
         r.rapports.forEach(g => {
-            // Conversion centimes -> euros si nécessaire
             let val = g.dividendePourUnEuro ? g.dividendePourUnEuro / 100 : (g.dividende / (r.miseBase || 100));
             
             html += `<tr>
@@ -232,24 +218,18 @@ function buildRapportsTable(rapports) {
     return html;
 }
 
-// --- UTILS ---
-
+// UTILS
 async function fetchAPI(url) {
     const res = await fetch(PROXY_URL + encodeURIComponent(url));
-    if (!res.ok) {
-        if(res.status === 404) return {};
-        throw new Error(`HTTP ${res.status}`);
-    }
+    if (!res.ok) { if(res.status === 404) return {}; throw new Error(`HTTP ${res.status}`); }
     return await res.json();
 }
-
 function setStatus(dom, msg, type, show = true) {
     dom.status.style.display = show ? 'block' : 'none';
     dom.status.className = type;
     dom.status.innerText = msg;
 }
-
 function setLoading(dom, loading) {
     dom.fetch.disabled = loading;
-    if(loading) setStatus(dom, "Récupération des données en cours...", 'status-loading');
+    if(loading) setStatus(dom, "Chargement...", 'status-loading');
 }
