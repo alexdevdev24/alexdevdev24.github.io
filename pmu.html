@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMU Pro - Résultats Complets</title>
+    <title>PMU Pro - Affichage Direct</title>
     <style>
         :root { --primary: #004085; --secondary: #0056b3; --bg: #f4f6f9; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; background: var(--bg); color: #333; }
@@ -18,30 +18,34 @@
         #exportBtn { background: #28a745; margin-top: 15px; display: none; }
 
         /* Carte Course */
-        .race-card { border: 1px solid #dee2e6; border-radius: 6px; margin-bottom: 30px; background: white; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .race-card { border: 1px solid #dee2e6; border-radius: 6px; margin-bottom: 40px; background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .race-header { background: var(--primary); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .race-title { font-size: 1.1em; font-weight: bold; }
+        .race-title { font-size: 1.2em; font-weight: bold; }
         .race-body { padding: 20px; }
 
-        /* Méta (Terrain, Conditions) */
+        /* Méta Infos */
         .meta-box { background: #f8f9fa; border: 1px solid #e9ecef; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .meta-line { margin-bottom: 5px; }
-        .conditions-text { grid-column: 1 / -1; border-top: 1px solid #eee; padding-top: 10px; color: #666; font-style: italic; }
+        .conditions-text { grid-column: 1 / -1; border-top: 1px solid #dee2e6; padding-top: 10px; color: #555; font-style: italic; margin-top: 5px; }
+
+        /* Titres de Section */
+        h4 { margin: 25px 0 10px 0; padding-bottom: 5px; border-bottom: 2px solid #e9ecef; color: var(--secondary); font-size: 1.1em; }
 
         /* Tables Générales */
-        table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 10px; }
         th { background: #e2e6ea; text-align: left; padding: 8px; color: #495057; font-weight: 700; border: 1px solid #dee2e6; }
-        td { padding: 8px; border: 1px solid #dee2e6; }
-        
-        /* Table Rapports Spécifique */
+        td { padding: 8px; border: 1px solid #dee2e6; vertical-align: middle; }
+
+        /* Table Rapports */
         .reports-table th { background: #343a40; color: white; }
-        .gain-cell { color: #d63384; font-weight: bold; }
-        
-        /* Table Participants Spécifique */
-        .participants-table th { background: #0056b3; color: white; }
+        .gain-cell { color: #d63384; font-weight: bold; font-size: 1.1em; }
+
+        /* Table Participants */
+        .participants-table { border: 1px solid #ccc; }
+        .participants-table th { background: #0056b3; color: white; border-color: #004494; }
         .participants-table tr:nth-child(even) { background-color: #f8f9fa; }
+        .participants-table tr:hover { background-color: #eef; }
         
-        /* Badges */
+        /* Badges & Tags */
         .badge { padding: 3px 8px; border-radius: 3px; color: white; font-size: 0.8em; font-weight: bold; }
         .badge-win { background: #28a745; }
         .badge-place { background: #17a2b8; }
@@ -56,7 +60,7 @@
 </head>
 <body>
     <div class="container">
-        <h2 style="margin-top:0; color:#004085; border-bottom:2px solid #004085; padding-bottom:15px;">PMU : Programme, Rapports & Participants</h2>
+        <h2 style="margin-top:0; color:#004085; border-bottom:2px solid #004085; padding-bottom:15px;">PMU : Programme Complet</h2>
         
         <div class="controls">
             <div class="form-group">
@@ -68,7 +72,7 @@
                 <input type="text" id="reunionInput" placeholder="ex: R1" maxlength="3">
             </div>
             <div class="form-group" style="display:flex; align-items:end;">
-                <button id="fetchBtn">CHARGER LA RÉUNION</button>
+                <button id="fetchBtn">CHARGER LES DONNÉES</button>
             </div>
         </div>
 
