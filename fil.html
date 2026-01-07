@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner PMU - Filtre Hippodrome</title>
+    <title>Scanner PMU - Avec Cache Local</title>
     <style>
         :root { --primary: #004085; --secondary: #0056b3; --bg: #f4f6f9; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; background: var(--bg); color: #333; }
@@ -22,15 +22,15 @@
         .form-group label { display: block; font-weight: 700; margin-bottom: 5px; color: #495057; font-size: 0.9em; }
         input, button { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
         
-        /* Input spécifique pour le filtre hippo */
-        #filterHippo { border-color: #004085; background-color: #fff; color: #004085; font-weight: 600; }
-        
         .btn-action { border: none; font-weight: 700; cursor: pointer; height: 42px; color: white; transition: 0.2s; }
         #scanBtn { background: #d63384; }
         #scanBtn:hover { background: #c21b6c; }
-        #retryBtn { background: #fd7e14; display: none; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+        #retryBtn { background: #fd7e14; display: none; }
         
+        /* Cache Controls */
+        #cacheBtn { background: #6c757d; width: auto; font-size: 0.9em; margin-top: 5px; }
+        #cacheStats { font-size: 0.85em; color: #666; text-align: right; margin-top: 5px; }
+
         .action-bar { text-align: right; margin-bottom: 15px; display: none; }
         #exportBtn { background: #28a745; display: inline-block; width: auto; padding: 0 20px; }
         #printBtn { background: #dc3545; display: inline-block; width: auto; margin-left: 10px; padding: 0 20px; }
@@ -41,12 +41,10 @@
         .status-error { background: #f8d7da; color: #721c24; }
         .status-success { background: #d4edda; color: #155724; }
 
-        /* Race Card */
+        /* Race Card & Tables (inchangé) */
         .race-card { border: 1px solid #dee2e6; border-radius: 6px; margin-bottom: 30px; background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .race-header { background: var(--primary); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
         .race-body { padding: 20px; }
-        
-        /* Tables */
         table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 15px; }
         th { background: #e2e6ea; padding: 8px; text-align: left; border: 1px solid #dee2e6; }
         td { padding: 8px; border: 1px solid #dee2e6; vertical-align: middle; }
@@ -58,7 +56,7 @@
         .badge-trio { background: #fd7e14; }
 
         @media print {
-            .controls, .action-bar, #status, .stats-box { display: none !important; }
+            .controls, .action-bar, #status, .stats-box, #cacheStats { display: none !important; }
             .race-card { break-inside: avoid; border: 1px solid #000; box-shadow: none; }
             .race-header { background: #ccc !important; color: black !important; }
         }
@@ -66,59 +64,46 @@
 </head>
 <body>
     <div class="container">
-        <h2 style="margin-top:0; color:#004085; border-bottom:2px solid #004085; padding-bottom:15px;">Scanner PMU</h2>
+        <h2 style="margin-top:0; color:#004085; border-bottom:2px solid #004085; padding-bottom:15px;">Scanner PMU (Cache Activé)</h2>
         
         <div class="stats-box">
-            <div class="stat-item">
-                <span class="stat-val" id="stEligibles">0</span>
-                <span class="stat-label">Courses Scannées</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-val stat-highlight" id="stFound">0</span>
-                <span class="stat-label">Retenues (> Seuil)</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-val" id="stRatio">0%</span>
-                <span class="stat-label">Taux</span>
-            </div>
+            <div class="stat-item"><span class="stat-val" id="stEligibles">0</span><span class="stat-label">Analysées</span></div>
+            <div class="stat-item"><span class="stat-val stat-highlight" id="stFound">0</span><span class="stat-label">Retenues</span></div>
+            <div class="stat-item"><span class="stat-val" id="stRatio">0%</span><span class="stat-label">Ratio</span></div>
         </div>
 
         <div class="controls">
             <div class="form-group">
                 <label>Date Début</label>
-                <input type="text" id="dateStart" placeholder="ex: 01012024" maxlength="8">
+                <input type="text" id="dateStart" placeholder="ex: 01012025" maxlength="8">
             </div>
             <div class="form-group">
                 <label>Date Fin</label>
-                <input type="text" id="dateEnd" placeholder="ex: 05012024" maxlength="8">
+                <input type="text" id="dateEnd" placeholder="ex: 05012025" maxlength="8">
             </div>
             <div class="form-group">
-                <label>Filtre Hippodrome(s)</label>
-                <input type="text" id="filterHippo" placeholder="Ex: Cagnes, Pau" value="Cagnes, Pau">
+                <label>Filtre Hippodrome</label>
+                <input type="text" id="filterHippo" placeholder="Ex: Cagnes" value="">
             </div>
             <div class="form-group">
                 <label>Seuil Trio (€)</label>
                 <input type="number" id="minTrio" value="100">
             </div>
-            <div class="form-group">
-                <label>Pause (ms)</label>
-                <input type="number" id="apiDelay" value="300" min="100">
-            </div>
-            <div class="form-group" style="display:flex; align-items:end; gap:5px;">
+            <div class="form-group" style="display:flex; flex-direction:column; justify-content:flex-end;">
                 <button id="scanBtn" class="btn-action">🔍 SCANNER</button>
                 <button id="retryBtn" class="btn-action">🔄 REPRENDRE</button>
+                <button id="cacheBtn" class="btn-action">🗑️ VIDER CACHE</button>
+                <div id="cacheStats">Cache: 0 items</div>
             </div>
         </div>
 
         <div id="status"></div>
-        
         <div id="actionBar" class="action-bar">
             <button id="exportBtn" class="btn-action">⬇ JSON</button>
             <button id="printBtn" class="btn-action">🖨️ PDF</button>
         </div>
-        
         <div id="resultsContainer"></div>
     </div>
-    <script src="fil.js"></script>
+    <script src="scriptpmu.js"></script>
 </body>
 </html>
