@@ -1,5 +1,6 @@
 /**
- * scriptpmu.js - Version CACHE PERSISTANT (IndexedDB)
+ * scriptpmu.js - VERSION RÉPARATION (Fail-Safe Cache)
+ * Si le cache plante, le script continue quand même.
  */
 
 const PROXIES = [
@@ -7,19 +8,25 @@ const PROXIES = [
     'https://api.allorigins.win/raw?url=',
     'https://thingproxy.freeboard.io/fetch/',
     'https://api.codetabs.com/v1/proxy?quest=',
-    ''
+    '' // Direct (en dernier recours)
 ];
 
 const API_BASE = 'https://online.turfinfo.api.pmu.fr/rest/client/1/programme';
 
-// --- GESTIONNAIRE DE CACHE (IndexedDB) ---
+// --- GESTIONNAIRE DE CACHE SÉCURISÉ ---
 const DB = {
     dbName: 'PMU_Cache_DB',
     storeName: 'api_responses',
     db: null,
-    
+    enabled: true, // Se désactive si erreur
+
     async init() {
-        return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+            console.warn("IndexedDB non supporté. Cache désactivé.");
+            this.enabled = false;
+            return;
+        }
+        return new Promise((resolve) => {
             const request = indexedDB.open(this.dbName, 1);
             request.onupgradeneeded = (e) => {
                 const db = e.target.result;
@@ -29,41 +36,54 @@ const DB = {
             };
             request.onsuccess = (e) => {
                 this.db = e.target.result;
+                console.log("DB Cache: Connecté.");
                 resolve();
             };
-            request.onerror = (e) => reject("DB Error");
+            request.onerror = (e) => {
+                console.error("DB Cache: Erreur ouverture.", e);
+                this.enabled = false; // On désactive le cache pour ne pas bloquer le script
+                resolve(); // On résout quand même pour continuer
+            };
         });
     },
 
     async get(key) {
-        if (!this.db) await this.init();
+        if (!this.enabled || !this.db) return null;
         return new Promise((resolve) => {
-            const tx = this.db.transaction(this.storeName, 'readonly');
-            const store = tx.objectStore(this.storeName);
-            const req = store.get(key);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => resolve(null);
+            try {
+                const tx = this.db.transaction(this.storeName, 'readonly');
+                const store = tx.objectStore(this.storeName);
+                const req = store.get(key);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(null);
+            } catch (e) {
+                console.warn("DB Read Error", e);
+                resolve(null);
+            }
         });
     },
 
     async set(key, value) {
-        if (!this.db) await this.init();
-        const tx = this.db.transaction(this.storeName, 'readwrite');
-        tx.objectStore(this.storeName).put(value, key);
+        if (!this.enabled || !this.db) return;
+        try {
+            const tx = this.db.transaction(this.storeName, 'readwrite');
+            tx.objectStore(this.storeName).put(value, key);
+        } catch (e) { console.warn("DB Write Error", e); }
     },
 
     async clear() {
-        if (!this.db) await this.init();
+        if (!this.enabled || !this.db) return;
         const tx = this.db.transaction(this.storeName, 'readwrite');
         tx.objectStore(this.storeName).clear();
         return new Promise(r => tx.oncomplete = r);
     },
-
+    
     async count() {
-        if (!this.db) await this.init();
-        return new Promise(resolve => {
+        if (!this.enabled || !this.db) return 0;
+        return new Promise(r => {
             const req = this.db.transaction(this.storeName, 'readonly').objectStore(this.storeName).count();
-            req.onsuccess = () => resolve(req.result);
+            req.onsuccess = () => r(req.result);
+            req.onerror = () => r(0);
         });
     }
 };
@@ -76,7 +96,7 @@ let state = {
     currReunionIdx: 1,
     results: [],
     threshold: 0,
-    delay: 300, // Délai réduit car le cache accélère tout
+    delay: 500,
     hippoFilter: [], 
     stats: { eligibles: 0, found: 0 }
 };
@@ -96,30 +116,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     dom.stRatio = get('stRatio');
     dom.cacheBtn = get('cacheBtn'); dom.cacheStats = get('cacheStats');
 
-    // Init DB
+    // Init Cache (ne bloque pas si erreur)
     await DB.init();
-    updateCacheStats();
+    if(dom.cacheStats) updateCacheStats();
 
     if (!dom.scanBtn) return;
 
-    // --- SCAN ---
+    // --- CLICK SCAN ---
     dom.scanBtn.addEventListener('click', () => {
+        console.log("Bouton Scan cliqué.");
         const dStart = dom.start.value.trim();
         const dEnd = dom.end.value.trim();
-        if (!dStart || !dEnd) return alert('Dates requises.');
+        
+        if (!dStart || !dEnd) return alert('Veuillez entrer les dates.');
 
         let keywords = [];
         if (dom.filterHippo && dom.filterHippo.value) {
             keywords = dom.filterHippo.value.toLowerCase().split(',').map(s=>s.trim()).filter(s=>s.length>0);
         }
 
-        state.dateList = getDatesInRange(dStart, dEnd);
-        if(state.dateList.length === 0) return alert("Dates invalides.");
+        try {
+            state.dateList = getDatesInRange(dStart, dEnd);
+        } catch(e) { return alert("Dates invalides."); }
 
+        if(state.dateList.length === 0) return alert("Dates incohérentes.");
+
+        // Reset
         state.currDateIdx = 0; state.currReunionIdx = 1;
         state.results = []; state.stats = { eligibles: 0, found: 0 };
         state.threshold = parseFloat(dom.minTrio.value) || 0;
-        state.delay = parseInt(dom.delay.value) || 300;
+        state.delay = parseInt(dom.delay.value) || 500;
         state.hippoFilter = keywords;
         state.isRunning = true;
 
@@ -127,49 +153,51 @@ document.addEventListener('DOMContentLoaded', async () => {
         dom.retryBtn.style.display = 'none';
         updateStatsUI();
         
-        setStatus("Démarrage...", "status-loading");
+        setStatus("Initialisation du scan...", "status-loading");
         runScanner();
     });
 
-    // --- ACTIONS ---
+    // --- AUTRES EVENTS ---
     dom.retryBtn.addEventListener('click', () => {
         state.isRunning = true;
-        state.currReunionIdx++; // Skip l'erreur
+        state.currReunionIdx++; // On saute l'obstacle
         dom.retryBtn.style.display = 'none';
         runScanner();
     });
 
-    dom.cacheBtn.addEventListener('click', async () => {
-        if(confirm("Voulez-vous vraiment vider tout le cache local ?")) {
+    if(dom.cacheBtn) {
+        dom.cacheBtn.addEventListener('click', async () => {
             await DB.clear();
             updateCacheStats();
-            alert("Cache vidé.");
-        }
-    });
+            alert("Cache vidé !");
+        });
+    }
 
     dom.export.addEventListener('click', exportJSON);
     dom.print.addEventListener('click', () => window.print());
 });
 
 async function updateCacheStats() {
+    if(!dom.cacheStats) return;
     const count = await DB.count();
-    dom.cacheStats.innerText = `En cache : ${count} fichiers`;
+    const status = DB.enabled ? "Actif" : "Désactivé (Erreur)";
+    dom.cacheStats.innerText = `Cache: ${status} | ${count} fichiers`;
 }
 
-// --- SCANNER ---
+// --- SCANNER PRINCIPAL ---
 async function runScanner() {
     setLoading(true);
     try {
         while (state.currDateIdx < state.dateList.length) {
             const date = state.dateList[state.currDateIdx];
+
             while (state.currReunionIdx <= 6) { 
                 if (!state.isRunning) return;
                 const rNum = state.currReunionIdx;
-                setStatus(`Scan : ${date} - R${rNum}`, 'status-loading');
+                setStatus(`Scan: ${date} - R${rNum}`, 'status-loading');
 
-                // On ne fait de pause que si on n'est PAS en cache (pour aller vite)
-                // Mais pour simplifier, petite pause tout de même pour UI
-                await sleep(10); 
+                // Petite pause UI
+                await sleep(50); 
 
                 try {
                     const courses = await scanSingleMeeting(date, rNum, state.threshold);
@@ -178,15 +206,13 @@ async function runScanner() {
                         renderCourses(courses, state.threshold);
                     }
                 } catch (e) {
-                    // Erreur silencieuse pour continuer
-                    console.warn(`Skip ${date} R${rNum}`);
+                    console.warn(`Skip ${date} R${rNum} (Erreur ou Vide)`);
                 }
+                
                 state.currReunionIdx++;
             }
             state.currDateIdx++;
             state.currReunionIdx = 1;
-            
-            // Mise à jour stats cache après chaque journée
             updateCacheStats();
         }
         finishScan();
@@ -200,13 +226,13 @@ async function runScanner() {
 }
 
 async function scanSingleMeeting(date, rNum, threshold) {
-    // Fetch avec Cache
     const progData = await fetchCached(`${API_BASE}/${date}/R${rNum}`);
     if (!progData || !progData.courses) return [];
 
     const hippoObj = progData.hippodrome || {};
     const fullHippo = `${hippoObj.libelleLong||""} ${hippoObj.libelleCourt||""}`.toLowerCase();
     
+    // Filtre Hippo
     if (state.hippoFilter.length > 0) {
         if (!state.hippoFilter.some(k => fullHippo.includes(k))) return [];
     }
@@ -218,7 +244,6 @@ async function scanSingleMeeting(date, rNum, threshold) {
         if (cInfo.statut === "COURSE_ANNULEE") continue;
 
         const cNum = cInfo.numOrdre;
-        // Rapports avec Cache
         const rapports = await fetchCached(`${API_BASE}/${date}/R${rNum}/C${cNum}/rapports-definitifs`);
 
         if (hasTrioBet(rapports)) {
@@ -229,7 +254,6 @@ async function scanSingleMeeting(date, rNum, threshold) {
                 state.stats.found++;
                 updateStatsUI();
 
-                // Participants avec Cache
                 const partData = await fetchCached(`${API_BASE}/${date}/R${rNum}/C${cNum}/participants`);
                 
                 const parts = (partData?.participants || []).map(p => ({
@@ -248,20 +272,23 @@ async function scanSingleMeeting(date, rNum, threshold) {
     return found;
 }
 
-// --- FETCH AVEC CACHE ET ROTATION ---
-async function fetchCached(url) {
-    // 1. Vérification Cache Local
-    const cached = await DB.get(url);
-    if (cached) return cached;
+// --- FETCHING (Cache -> Network -> Proxy Rotation) ---
 
-    // 2. Si pas en cache, on applique le délai API (pour être gentil avec le serveur)
+async function fetchCached(url) {
+    // 1. Essai Cache
+    if (DB.enabled) {
+        const cached = await DB.get(url);
+        if (cached) return cached;
+    }
+
+    // 2. Pause API (Rate Limit) uniquement si pas en cache
     await sleep(state.delay);
 
-    // 3. Appel Réseau (Retry + Proxy)
+    // 3. Réseau
     const data = await fetchWithRetry(url, true);
 
-    // 4. Sauvegarde Cache (si donnée valide)
-    if (data) {
+    // 4. Sauvegarde
+    if (data && DB.enabled) {
         await DB.set(url, data);
     }
     return data;
@@ -272,28 +299,36 @@ async function fetchWithRetry(url, ignore404, retries = 2) {
         try {
             return await smartFetch(url, ignore404);
         } catch (e) {
-            if (i === retries) return null; // Fail silencieux
+            if (i === retries) return null; // Abandon
             await sleep(1000);
         }
     }
 }
 
 async function smartFetch(url, ignore404) {
+    let lastError = null;
     for (const proxy of PROXIES) {
         try {
             const finalUrl = proxy ? proxy + encodeURIComponent(url) : url;
             const res = await fetch(finalUrl);
+            
             if (res.status === 404 && ignore404) return null;
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             
             const text = await res.text();
+            if (!text || text.trim().length === 0) throw new Error("Empty");
+            
             try { return JSON.parse(text); } catch (e) { throw new Error("Not JSON"); }
-        } catch (e) { }
+
+        } catch (e) {
+            lastError = e;
+            // Continue next proxy
+        }
     }
-    throw new Error("Network Error");
+    throw lastError || new Error("Network Error");
 }
 
-// --- METIER & UI ---
+// --- LOGIQUE METIER (Inchangée) ---
 function hasTrioBet(r) { return r && Array.isArray(r) && r.some(x => x.typePari.includes('TRIO') || x.typePari.includes('TIERCE')); }
 function hasHighTrio(r, t) {
     if(!r) return false;
@@ -364,5 +399,5 @@ function exportJSON() {
     if (!state.results.length) return;
     const blob = new Blob([JSON.stringify(state.results, null, 2)], {type: 'application/json;charset=utf-8'});
     const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
-    link.download = `PMU_CACHE_EXPORT.json`; document.body.appendChild(link); link.click();
+    link.download = `PMU_CACHE_SCAN.json`; document.body.appendChild(link); link.click();
 }
