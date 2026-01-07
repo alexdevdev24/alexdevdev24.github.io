@@ -3,95 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extracteur PMU & Rapports</title>
+    <title>PMU Pro - Rapports & Terrain</title>
     <style>
-        :root {
-            --primary: #004085;
-            --secondary: #0056b3;
-            --success: #28a745;
-            --bg-color: #f4f6f9;
-            --card-bg: #ffffff;
-            --text-color: #333;
-        }
-
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
-        .container { max-width: 900px; margin: 0 auto; background: var(--card-bg); padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        
-        header { border-bottom: 2px solid var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
-        h2 { margin: 0; color: var(--primary); }
+        :root { --primary: #004085; --bg: #f4f6f9; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; background: var(--bg); color: #333; }
+        .container { max-width: 950px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
         /* Contrôles */
-        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; align-items: end; margin-bottom: 20px; background: #e9ecef; padding: 15px; border-radius: 6px; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.85em; color: #495057; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
-        
-        button { padding: 10px 20px; cursor: pointer; border: none; border-radius: 4px; font-weight: 600; height: 42px; transition: 0.2s; }
-        #fetchBtn { background-color: var(--primary); color: white; }
-        #fetchBtn:hover { background-color: var(--secondary); }
-        #fetchBtn:disabled { background-color: #b0c4de; cursor: not-allowed; }
-        #exportBtn { background-color: var(--success); color: white; display: none; }
-        #exportBtn:hover { background-color: #218838; }
+        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; background: #e9ecef; padding: 15px; border-radius: 6px; }
+        input, button { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
+        button:hover { opacity: 0.9; }
+        #exportBtn { background: #28a745; margin-top: 10px; display: none; }
 
-        /* Status */
-        #status { padding: 12px; margin-bottom: 20px; border-radius: 4px; display: none; }
-        .status-loading { background-color: #cce5ff; color: #004085; }
-        .status-error { background-color: #f8d7da; color: #721c24; }
-        .status-success { background-color: #d4edda; color: #155724; }
+        /* Carte Course */
+        .race-card { border: 1px solid #ddd; border-radius: 6px; margin-bottom: 20px; background: white; overflow: hidden; }
+        .race-header { background: #004085; color: white; padding: 10px 15px; display: flex; justify-content: space-between; font-weight: bold; }
+        .race-body { padding: 15px; }
 
-        /* Cartes Course */
-        .race-card { border: 1px solid #dee2e6; border-radius: 6px; overflow: hidden; background: white; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .race-header { background-color: #f8f9fa; padding: 10px 15px; border-bottom: 1px solid #dee2e6; font-weight: bold; display: flex; justify-content: space-between; color: var(--primary); }
-        .race-content { padding: 15px; }
-        .race-meta { font-size: 0.9em; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        /* Infos Terrain & Conditions */
+        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; font-size: 0.9em; background: #f8f9fa; padding: 10px; border-radius: 4px; }
+        .meta-item strong { color: #555; }
+        .condition-badge { display: inline-block; background: #e2e6ea; padding: 2px 6px; border-radius: 3px; font-size: 0.85em; margin-right: 5px; margin-bottom: 5px; }
 
-        /* Tableaux des Rapports */
-        .reports-table { width: 100%; border-collapse: collapse; font-size: 0.85em; margin-bottom: 15px; }
-        .reports-table th, .reports-table td { border: 1px solid #e9ecef; padding: 6px 8px; text-align: left; }
-        .reports-table th { background-color: #e2e6ea; color: #495057; }
-        
-        .badge { display: inline-block; padding: 3px 6px; border-radius: 3px; color: white; font-size: 0.8em; font-weight: bold; min-width: 80px; text-align: center; }
-        .bg-win { background-color: #28a745; } /* Vert */
-        .bg-place { background-color: #17a2b8; } /* Bleu */
-        .bg-couple { background-color: #ffc107; color: #333; } /* Jaune */
-        .bg-trio { background-color: #fd7e14; } /* Orange */
+        /* Tableau Rapports */
+        .reports-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
+        .reports-table th { background: #eee; text-align: left; padding: 6px; border: 1px solid #ddd; }
+        .reports-table td { padding: 6px; border: 1px solid #ddd; }
+        .gain-cell { color: #d63384; font-weight: bold; }
 
-        /* Participants */
-        details { border: 1px solid #eee; border-radius: 4px; padding: 5px; background-color: #fafafa; }
-        details summary { cursor: pointer; font-weight: 600; color: var(--secondary); padding: 5px; }
-        details > div { margin-top: 10px; border-top: 1px solid #eee; max-height: 200px; overflow-y: auto; }
-        .p-row { padding: 5px 10px; border-bottom: 1px solid #f1f1f1; font-size: 0.85em; display: grid; grid-template-columns: 30px 1fr auto; }
-        .p-row:nth-child(even) { background-color: #fff; }
+        /* Badges Paris */
+        .tag { padding: 2px 6px; border-radius: 3px; color: white; font-size: 0.8em; font-weight: bold; }
+        .tag-win { background: #28a745; }
+        .tag-place { background: #17a2b8; }
+        .tag-couple { background: #ffc107; color: #333; }
+        .tag-trio { background: #fd7e14; }
+
+        details { margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
+        .status-msg { padding: 10px; margin: 10px 0; border-radius: 4px; display: none; text-align: center; }
+        .status-loading { background: #cce5ff; color: #004085; }
+        .status-error { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
-
     <div class="container">
-        <header>
-            <h2>PMU Extracteur & Rapports</h2>
-        </header>
-
-        <div class="controls">
-            <div class="form-group">
-                <label for="dateInput">Date (JJMMAAAA)</label>
-                <input type="text" id="dateInput" placeholder="ex: 07012026" maxlength="8">
-            </div>
-            <div class="form-group">
-                <label for="reunionInput">Réunion</label>
-                <input type="text" id="reunionInput" placeholder="ex: R1" maxlength="3">
-            </div>
-            <div class="form-group">
-                <button id="fetchBtn">🔍 Charger</button>
-            </div>
-        </div>
-
-        <div id="status"></div>
-        <div style="text-align: right; margin-bottom: 10px;">
-            <button id="exportBtn">⬇ Télécharger JSON</button>
-        </div>
+        <h2 style="margin-top:0; border-bottom:2px solid #004085; padding-bottom:10px;">PMU : Rapports & Terrain</h2>
         
+        <div class="controls">
+            <div><label>Date (JJMMAAAA)</label><input type="text" id="dateInput" placeholder="ex: 16022020"></div>
+            <div><label>Réunion</label><input type="text" id="reunionInput" placeholder="ex: R1"></div>
+            <div style="display:flex; align-items:end;"><button id="fetchBtn">CHARGER</button></div>
+        </div>
+
+        <div id="status" class="status-msg"></div>
+        <button id="exportBtn">⬇ Télécharger JSON complet</button>
         <div id="resultsContainer"></div>
     </div>
-
     <script src="scriptpmu.js"></script>
 </body>
 </html>
