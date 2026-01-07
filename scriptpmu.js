@@ -5,7 +5,7 @@
 
 // CONFIGURATION
 // En production réelle, remplacez ceci par votre propre endpoint backend sécurisé.
-const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+const PROXY_URL = 'https://corsproxy.io/?';
 const API_OFFLINE = 'https://offline.turfinfo.api.pmu.fr/rest/client/7/programme';
 const API_ONLINE = 'https://online.turfinfo.api.pmu.fr/rest/client/1/programme';
 
