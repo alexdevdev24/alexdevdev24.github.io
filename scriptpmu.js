@@ -1,115 +1,150 @@
 /**
  * scriptpmu.js
- * Version Corrigée : Utilise l'API Online (Client 1) pour garantir la présence des participants et de la musique.
+ * Version Corrigée : Export JSON renforcé
  */
 
-// Utilisation de corsproxy.io qui est plus stable pour le PMU
+// CONFIGURATION
 const PROXY_URL = 'https://corsproxy.io/?';
-
-// ON BASCULE TOUT SUR LE CLIENT 1 (WEB) pour avoir les participants et la musique
 const API_BASE = 'https://online.turfinfo.api.pmu.fr/rest/client/1/programme';
 
 // ÉTAT GLOBAL
 let globalExtractedData = null;
 
-// ÉLÉMENTS DOM
-const dom = {
-    date: document.getElementById('dateInput'),
-    reunion: document.getElementById('reunionInput'),
-    btnFetch: document.getElementById('fetchBtn'),
-    btnExport: document.getElementById('exportBtn'),
-    status: document.getElementById('status'),
-    results: document.getElementById('resultsContainer')
-};
-
-// INITIALISATION
+// ATTENTE DU CHARGEMENT DE LA PAGE
 document.addEventListener('DOMContentLoaded', () => {
-    dom.btnFetch.addEventListener('click', handleFetch);
-    dom.btnExport.addEventListener('click', handleExport);
-});
+    
+    // Récupération sécurisée des éléments DOM
+    const dom = {
+        date: document.getElementById('dateInput'),
+        reunion: document.getElementById('reunionInput'),
+        btnFetch: document.getElementById('fetchBtn'),
+        btnExport: document.getElementById('exportBtn'),
+        status: document.getElementById('status'),
+        results: document.getElementById('resultsContainer')
+    };
 
-/**
- * Gestionnaire principal
- */
-async function handleFetch() {
-    const date = dom.date.value.trim();
-    const reunionStr = dom.reunion.value.trim().toUpperCase();
-    const reunionNum = reunionStr.replace(/\D/g, ''); 
-
-    if (!date || !reunionNum) {
-        showStatus('Veuillez renseigner la date (JJMMAAAA) et la réunion (ex: R1).', 'error');
+    // Vérification que les éléments existent
+    if (!dom.btnFetch || !dom.btnExport) {
+        console.error("Erreur critique : Boutons introuvables dans le HTML");
         return;
     }
 
-    setLoading(true);
-    
-    // Initialisation de l'objet final
-    globalExtractedData = { 
-        meta: { 
-            date: date, 
-            reunion: reunionStr, 
-            source: "PMU Online Client 1",
-            generated_at: new Date().toISOString() 
-        }, 
-        courses: [] 
-    };
+    // --- EVENEMENTS ---
 
-    try {
-        // 1. Récupération du PROGRAMME (Liste des courses)
-        // URL: .../programme/07012026/R1
-        const urlProg = `${API_BASE}/${date}/R${reunionNum}`;
-        const progData = await fetchWithProxy(urlProg);
+    // 1. Clic sur "Charger"
+    dom.btnFetch.addEventListener('click', async () => {
+        const date = dom.date.value.trim();
+        const reunionStr = dom.reunion.value.trim().toUpperCase();
+        const reunionNum = reunionStr.replace(/\D/g, ''); 
 
-        if (!progData.courses || progData.courses.length === 0) {
-            throw new Error("Aucune course trouvée. Vérifiez la date et le numéro de réunion.");
+        if (!date || !reunionNum) {
+            showStatus(dom, 'Veuillez renseigner la date (ex: 07012026) et la réunion (ex: R1).', 'error');
+            return;
         }
 
-        // 2. Récupération des détails pour chaque course
-        // On mappe toutes les promesses pour aller vite
-        const promises = progData.courses.map(course => processCourse(date, reunionNum, course));
+        setLoading(dom, true);
         
-        globalExtractedData.courses = await Promise.all(promises);
+        globalExtractedData = { 
+            meta: { 
+                date: date, 
+                reunion: reunionStr, 
+                source: "PMU Online Client 1",
+                generated_at: new Date().toISOString() 
+            }, 
+            courses: [] 
+        };
 
-        // Tri propre par numéro de course
-        globalExtractedData.courses.sort((a, b) => a.num_course - b.num_course);
+        try {
+            // Récupération Programme
+            const urlProg = `${API_BASE}/${date}/R${reunionNum}`;
+            const progData = await fetchWithProxy(urlProg);
 
-        // Affichage
-        renderResults(globalExtractedData.courses);
-        showStatus(`${globalExtractedData.courses.length} courses récupérées avec participants et musique.`, 'success');
-        dom.btnExport.style.display = 'inline-block';
+            if (!progData.courses || progData.courses.length === 0) {
+                throw new Error("Aucune course trouvée. Vérifiez la date.");
+            }
 
-    } catch (error) {
-        console.error(error);
-        showStatus(`Erreur : ${error.message}`, 'error');
-        dom.btnExport.style.display = 'none';
-    } finally {
-        setLoading(false);
-    }
-}
+            // Récupération Détails (Parallèle)
+            const promises = progData.courses.map(course => processCourse(date, reunionNum, course));
+            globalExtractedData.courses = await Promise.all(promises);
+
+            // Tri
+            globalExtractedData.courses.sort((a, b) => a.num_course - b.num_course);
+
+            // Affichage
+            renderResults(dom, globalExtractedData.courses);
+            showStatus(dom, `${globalExtractedData.courses.length} courses chargées avec succès.`, 'success');
+            
+            // Afficher le bouton Export
+            dom.btnExport.style.display = 'inline-block';
+
+        } catch (error) {
+            console.error(error);
+            showStatus(dom, `Erreur : ${error.message}`, 'error');
+            dom.btnExport.style.display = 'none';
+        } finally {
+            setLoading(dom, false);
+        }
+    });
+
+    // 2. Clic sur "Télécharger JSON"
+    dom.btnExport.addEventListener('click', () => {
+        if (!globalExtractedData) {
+            alert("Aucune donnée à télécharger. Veuillez d'abord charger une réunion.");
+            return;
+        }
+
+        try {
+            const fileName = `PMU_${globalExtractedData.meta.date}_${globalExtractedData.meta.reunion}.json`;
+            const dataStr = JSON.stringify(globalExtractedData, null, 2);
+            
+            // Création du Blob avec encodage UTF-8
+            const blob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
+            
+            // Création du lien de téléchargement temporaire
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            
+            // Ajout au DOM, clic, et nettoyage (Compatible Firefox/Chrome)
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Libération mémoire
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+            
+        } catch (e) {
+            console.error("Erreur Export:", e);
+            alert("Erreur lors de la création du fichier : " + e.message);
+        }
+    });
+
+});
 
 /**
- * Traite une course : récupère Participants (avec musique) et Rapports
+ * Traite une course individuelle
  */
 async function processCourse(date, reunionNum, courseInfo) {
     const cNum = courseInfo.numOrdre;
     
-    // URLs ciblées sur le Client 1 (Online)
+    // URLs
     const urlParticipants = `${API_BASE}/${date}/R${reunionNum}/C${cNum}/participants`;
     const urlRapports = `${API_BASE}/${date}/R${reunionNum}/C${cNum}/rapports-definitifs`;
 
-    // Exécution parallèle
+    // Fetch Parallèle
     const [partantsData, rapportsData] = await Promise.all([
         fetchWithProxy(urlParticipants).catch(e => ({ participants: [] })),
         fetchWithProxy(urlRapports).catch(e => null)
     ]);
 
-    // Nettoyage des participants pour garder l'essentiel (dont la musique)
+    // Formatage Participants
     const participantsPropres = (partantsData.participants || []).map(p => ({
         numero: p.numPmu,
         nom: p.nomCheval,
         driver: p.driver || p.jockey,
         entraineur: p.entraineur,
-        musique: p.musique, // La musique est disponible ici sur le Client 1
+        musique: p.musique,
         cote: p.dernierRapportDirect ? p.dernierRapportDirect.rapport : null
     }));
 
@@ -126,35 +161,29 @@ async function processCourse(date, reunionNum, courseInfo) {
 }
 
 /**
- * Fonction Fetch via Proxy CORS
+ * Proxy Wrapper
  */
 async function fetchWithProxy(targetUrl) {
-    // On encode l'URL cible pour passer proprement dans le proxy
     const finalUrl = PROXY_URL + encodeURIComponent(targetUrl);
-    
     const response = await fetch(finalUrl);
     
     if (!response.ok) {
-        const text = await response.text();
-        // On ignore les erreurs 404 courantes (ex: rapports pas encore dispos)
         if(response.status === 404) return {}; 
         throw new Error(`HTTP ${response.status}`);
     }
     return await response.json();
 }
 
-// --- FONCTIONS D'AFFICHAGE (UI) ---
+// --- FONCTIONS UI ---
 
-function renderResults(courses) {
+function renderResults(dom, courses) {
     dom.results.innerHTML = '';
     
     courses.forEach(course => {
         const div = document.createElement('div');
         div.className = 'race-card';
         
-        // Aperçu des 3 premiers favoris ou arrivés
-        const countPartants = course.participants.length;
-        const arriveeTxt = course.ordre_arrivee.length > 0 ? course.ordre_arrivee.join('-') : 'En cours';
+        const arriveeTxt = course.ordre_arrivee.length > 0 ? course.ordre_arrivee.join(' - ') : 'En cours';
 
         div.innerHTML = `
             <div class="race-header">
@@ -164,16 +193,20 @@ function renderResults(courses) {
             <div class="race-content">
                 <div class="race-meta">
                     <strong>Discipline:</strong> ${course.discipline} | 
-                    <strong>Partants:</strong> ${countPartants}
+                    <strong>Partants:</strong> ${course.participants.length}
                 </div>
                 <div style="margin-top:5px; color:#0056b3;">
                     <strong>Arrivée:</strong> ${arriveeTxt}
                 </div>
-                <details style="margin-top:10px; font-size:0.9em;">
+                <details style="margin-top:10px;">
                     <summary>Voir les participants (Premier: ${course.participants[0]?.nom || '?'})</summary>
-                    <div style="max-height: 200px; overflow-y: auto; background: #f1f1f1; padding: 5px;">
+                    <div>
                         ${course.participants.map(p => `
-                            <div><strong>${p.numero}</strong> ${p.nom} (${p.musique}) - Cote: ${p.cote || '-'}</div>
+                            <div>
+                                <strong>${p.numero}</strong> ${p.nom} 
+                                <span style="color:#666; font-size:0.9em;">(${p.musique})</span> 
+                                <span style="float:right; font-weight:bold;">${p.cote || '-'}</span>
+                            </div>
                         `).join('')}
                     </div>
                 </details>
@@ -183,17 +216,20 @@ function renderResults(courses) {
     });
 }
 
-function showStatus(msg, type) {
+function showStatus(dom, msg, type) {
     dom.status.style.display = 'block';
-    dom.status.className = `status-${type}`; // status-loading, status-error, status-success
+    dom.status.className = `status-${type}`;
     dom.status.innerText = msg;
 }
 
-function setLoading(isLoading) {
+function setLoading(dom, isLoading) {
     dom.btnFetch.disabled = isLoading;
+    dom.date.disabled = isLoading;
+    dom.reunion.disabled = isLoading;
+    
     if (isLoading) {
-        showStatus('Chargement des données Online... (Cela peut prendre quelques secondes)', 'loading');
+        showStatus(dom, 'Chargement en cours...', 'loading');
         dom.results.innerHTML = '';
-        dom.btnExport.style.display = 'none';
+        dom.btnExport.style.display = 'none'; // On cache le bouton pendant le chargement
     }
 }
