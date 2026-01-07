@@ -1,27 +1,30 @@
 /**
- * scriptpmu.js - Version STABLE (Pause & Resume)
+ * scriptpmu.js - Version CIBLEE (Hippodrome Filter)
  */
 
 const PROXY_URL = 'https://corsproxy.io/?';
 const API_BASE = 'https://online.turfinfo.api.pmu.fr/rest/client/1/programme';
 
-// --- ÉTAT DU SCANNER (Pour permettre la reprise) ---
+// --- ÉTAT ---
 let state = {
     isRunning: false,
     dateList: [],
     currDateIdx: 0,
-    currReunionIdx: 1, // On commence à R1
+    currReunionIdx: 1,
     results: [],
     threshold: 0,
-    delay: 500
+    delay: 500,
+    hippoFilter: [], // Liste des mots clés (ex: ['cagnes', 'pau'])
+    stats: { eligibles: 0, found: 0 }
 };
 
-const dom = {}; // Stockage des éléments DOM
+const dom = {};
 
 document.addEventListener('DOMContentLoaded', () => {
     // Init DOM
     dom.start = document.getElementById('dateStart');
     dom.end = document.getElementById('dateEnd');
+    dom.filterHippo = document.getElementById('filterHippo');
     dom.minTrio = document.getElementById('minTrio');
     dom.delay = document.getElementById('apiDelay');
     dom.scanBtn = document.getElementById('scanBtn');
@@ -31,186 +34,214 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.status = document.getElementById('status');
     dom.container = document.getElementById('resultsContainer');
     dom.actions = document.getElementById('actionBar');
+    
+    // Stats
+    dom.stEligibles = document.getElementById('stEligibles');
+    dom.stFound = document.getElementById('stFound');
+    dom.stRatio = document.getElementById('stRatio');
 
     if (!dom.scanBtn) return;
 
-    // --- BOUTON NOUVEAU SCAN ---
     dom.scanBtn.addEventListener('click', () => {
         const dStart = dom.start.value.trim();
         const dEnd = dom.end.value.trim();
         
         if (!dStart || !dEnd) return alert('Dates requises (JJMMAAAA).');
 
-        // Reset complet de l'état
+        // Préparation du filtre Hippodrome
+        const rawFilter = dom.filterHippo.value.toLowerCase();
+        const keywords = rawFilter.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+        // RESET
         state.dateList = getDatesInRange(dStart, dEnd);
         state.currDateIdx = 0;
         state.currReunionIdx = 1;
         state.results = [];
+        state.stats = { eligibles: 0, found: 0 };
         state.threshold = parseFloat(dom.minTrio.value) || 0;
         state.delay = parseInt(dom.delay.value) || 500;
+        state.hippoFilter = keywords;
         state.isRunning = true;
 
-        dom.container.innerHTML = ''; // Clear écran
+        dom.container.innerHTML = '';
         dom.actions.style.display = 'none';
         dom.retryBtn.style.display = 'none';
+        updateStatsUI();
         
-        runScanner(); // Lancement
+        runScanner();
     });
 
-    // --- BOUTON REPRENDRE ---
     dom.retryBtn.addEventListener('click', () => {
         state.isRunning = true;
-        state.delay = parseInt(dom.delay.value) || 1000; // On peut ajuster le délai avant de reprendre
+        state.delay = parseInt(dom.delay.value) || 1000;
         dom.retryBtn.style.display = 'none';
-        runScanner(); // Relance là où ça s'était arrêté
+        runScanner();
     });
 
-    // --- EXPORTS ---
     dom.export.addEventListener('click', exportJSON);
     dom.print.addEventListener('click', () => window.print());
 });
 
 /**
- * Fonction Principale du Scanner (Boucle Séquentielle)
+ * BOUCLE PRINCIPALE
  */
 async function runScanner() {
     setLoading(true);
 
     try {
-        // Boucle sur les dates
         while (state.currDateIdx < state.dateList.length) {
             const date = state.dateList[state.currDateIdx];
 
-            // Boucle sur les réunions (R1 à R6)
-            while (state.currReunionIdx <= 6) {
-                if (!state.isRunning) return; // Arrêt d'urgence si besoin
+            while (state.currReunionIdx <= 6) { // On check R1 à R6
+                if (!state.isRunning) return;
 
                 const rNum = state.currReunionIdx;
-                setStatus(`Analyse : ${date} - Réunion R${rNum} ... (${state.results.length} trouvés)`, 'status-loading');
+                
+                // Feedback visuel léger (sans spammer le log)
+                setStatus(`Scan : ${date} - R${rNum}`, 'status-loading');
 
-                // 1. Pause de sécurité
                 await sleep(state.delay);
 
-                // 2. Traitement d'une réunion complète
+                // Analyse de la réunion
                 const coursesFound = await scanSingleMeeting(date, rNum, state.threshold);
                 
-                // 3. Ajout des résultats
                 if (coursesFound && coursesFound.length > 0) {
                     state.results.push(...coursesFound);
                     renderCourses(coursesFound, state.threshold);
                 }
 
-                // Réunion suivante
                 state.currReunionIdx++;
             }
-
-            // Jour suivant : on reset les réunions à 1
             state.currDateIdx++;
             state.currReunionIdx = 1;
         }
-
-        // --- FIN DU SCAN ---
         finishScan();
 
     } catch (e) {
-        // --- ERREUR : ON MET EN PAUSE ---
         state.isRunning = false;
         console.error(e);
-        setStatus(`ERREUR : ${e.message}. Vérifiez votre connexion.`, 'status-error');
-        dom.retryBtn.style.display = 'inline-block'; // Afficher bouton reprise
+        setStatus(`ERREUR : ${e.message}. Pause.`, 'status-error');
+        dom.retryBtn.style.display = 'inline-block';
         dom.scanBtn.disabled = false;
     }
 }
 
 /**
- * Scanne UNE réunion spécifique.
- * Retourne un tableau de courses ou lance une erreur critique.
+ * SCAN MEETING AVEC FILTRE HIPPODROME
  */
 async function scanSingleMeeting(date, rNum, threshold) {
     try {
-        // Appel Programme
+        // 1. Récupération du Programme de la réunion
         const progUrl = `${API_BASE}/${date}/R${rNum}`;
-        const progData = await fetchAPI(progUrl, true); // true = ignorer 404
+        const progData = await fetchAPI(progUrl, true);
 
-        if (!progData || !progData.courses) return []; // Pas de réunion R(x) ce jour là, on passe
+        // Si la réunion n'existe pas ou est vide
+        if (!progData || !progData.courses) return [];
+
+        // 2. FILTRE HIPPODROME
+        // On récupère le nom de l'hippodrome de la réponse
+        const currentHippoName = (progData.hippodrome?.libelle || "").toLowerCase();
+        
+        // Si l'utilisateur a défini un filtre
+        if (state.hippoFilter.length > 0) {
+            // On vérifie si le nom de l'hippodrome contient l'un des mots clés (ex: "cagnes" dans "CAGNES-SUR-MER")
+            const isMatch = state.hippoFilter.some(keyword => currentHippoName.includes(keyword));
+            
+            // Si ça ne matche pas, on ignore toute la réunion
+            if (!isMatch) {
+                // console.log(`Ignoré: ${currentHippoName}`);
+                return []; 
+            }
+        }
 
         const found = [];
 
-        // Boucle sur les courses de cette réunion
+        // 3. Boucle sur les courses
         for (const cInfo of progData.courses) {
             const cNum = cInfo.numOrdre;
             
-            // Appel Rapports
-            await sleep(state.delay / 2); // Petite pause interne
+            // Rapports
+            await sleep(state.delay / 3);
             const rapUrl = `${API_BASE}/${date}/R${rNum}/C${cNum}/rapports-definitifs`;
             const rapports = await fetchAPI(rapUrl, true);
 
-            // Vérif Trio
-            if (hasHighTrio(rapports, threshold)) {
-                // Appel Participants (Seulement si Trio OK)
-                await sleep(state.delay / 2);
-                const partUrl = `${API_BASE}/${date}/R${rNum}/C${cNum}/participants`;
-                const partData = await fetchAPI(partUrl, true);
+            // Est-ce qu'il y a un Trio ?
+            if (hasTrioBet(rapports)) {
+                state.stats.eligibles++;
+                updateStatsUI();
 
-                // Formatage
-                const parts = (partData?.participants || []).map(p => ({
-                    num: p.numPmu,
-                    nom: p.nomCheval || p.nom || "?",
-                    driver: p.driver || p.jockey || "-",
-                    musique: p.musique || "-",
-                    cote: p.dernierRapportDirect ? p.dernierRapportDirect.rapport : null
-                }));
+                // Est-ce que le gain > seuil ?
+                if (hasHighTrio(rapports, threshold)) {
+                    state.stats.found++;
+                    updateStatsUI();
 
-                found.push({
-                    date: date,
-                    id: `R${rNum}C${cNum}`,
-                    num: cNum,
-                    nom: cInfo.libelle,
-                    heure: cInfo.heureDepart,
-                    discipline: cInfo.discipline,
-                    arrivee: cInfo.ordreArrivee || [],
-                    participants: parts,
-                    rapports: rapports
-                });
+                    // Détails + Participants
+                    await sleep(state.delay / 2);
+                    const partUrl = `${API_BASE}/${date}/R${rNum}/C${cNum}/participants`;
+                    const partData = await fetchAPI(partUrl, true);
+
+                    const parts = (partData?.participants || []).map(p => ({
+                        num: p.numPmu,
+                        nom: p.nomCheval || p.nom || "?",
+                        driver: p.driver || p.jockey || "-",
+                        musique: p.musique || "-",
+                        cote: p.dernierRapportDirect ? p.dernierRapportDirect.rapport : null
+                    }));
+
+                    found.push({
+                        date: date,
+                        id: `R${rNum}C${cNum}`,
+                        hippo: progData.hippodrome?.libelle || "Inconnu",
+                        num: cNum,
+                        nom: cInfo.libelle,
+                        heure: cInfo.heureDepart,
+                        arrivee: cInfo.ordreArrivee || [],
+                        participants: parts,
+                        rapports: rapports
+                    });
+                }
             }
         }
         return found;
 
-    } catch (e) {
-        // Si c'est une erreur réseau (pas une 404), on la remonte pour mettre en pause
-        throw e;
-    }
+    } catch (e) { throw e; }
 }
 
-// --- LOGIQUE MÉTIER ---
+// --- LOGIQUE METIER ---
+
+function hasTrioBet(rapports) {
+    if (!rapports || !Array.isArray(rapports)) return false;
+    return rapports.some(r => r.typePari.includes('TRIO') || r.typePari.includes('TIERCE'));
+}
 
 function hasHighTrio(rapports, threshold) {
-    if (!rapports || !Array.isArray(rapports)) return false;
+    if (!rapports) return false;
     const targets = rapports.filter(r => r.typePari.includes('TRIO') || r.typePari.includes('TIERCE'));
     for (const t of targets) {
         for (const g of t.rapports) {
-            let val = g.dividendePourUnEuro ? g.dividendePourUnEuro / 100 : (g.dividende / (t.miseBase || 100));
+            let val = g.dividendePourUnEuro ? g.dividendePourUnEuro/100 : (g.dividende/(t.miseBase||100));
             if (val >= threshold) return true;
         }
     }
     return false;
 }
 
+function updateStatsUI() {
+    dom.stEligibles.innerText = state.stats.eligibles;
+    dom.stFound.innerText = state.stats.found;
+    let ratio = state.stats.eligibles > 0 ? (state.stats.found / state.stats.eligibles) * 100 : 0;
+    dom.stRatio.innerText = ratio.toFixed(2) + '%';
+}
+
 function finishScan() {
     state.isRunning = false;
     dom.scanBtn.disabled = false;
     dom.retryBtn.style.display = 'none';
-    
-    if (state.results.length === 0) {
-        setStatus("Scan terminé. Aucun résultat trouvé.", 'status-error');
-    } else {
-        setStatus(`Terminé ! ${state.results.length} courses trouvées.`, 'status-success');
-        dom.actions.style.display = 'block';
-        document.title = `PMU_SCAN_${state.dateList.length}J`;
-    }
+    setStatus(`Scan terminé pour : ${state.hippoFilter.join(', ') || 'TOUS'}.`, state.results.length ? 'status-success' : 'status-error');
+    if (state.results.length) dom.actions.style.display = 'block';
 }
 
-// --- UI & RENDU ---
+// --- UI HELPERS ---
 
 function renderCourses(courses, threshold) {
     courses.forEach(c => {
@@ -222,7 +253,7 @@ function renderCourses(courses, threshold) {
 
         div.innerHTML = `
             <div class="race-header">
-                <span class="race-title">[${dateFmt}] ${c.id} - ${c.nom}</span>
+                <span class="race-title">[${dateFmt}] ${c.hippo} - ${c.id} - ${c.nom}</span>
                 <span>${new Date(c.heure).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>
             </div>
             <div class="race-body">
@@ -241,15 +272,13 @@ function buildRapportsHTML(rapports, threshold) {
     const keys = ['SIMPLE','COUPLE','TRIO','TIERCE','MULTI','QUARTE','QUINTE'];
     const hits = rapports.filter(r => keys.some(k => r.typePari.includes(k)));
     let html = `<table class="reports-table"><thead><tr><th>Pari</th><th>Comb.</th><th>Gain</th></tr></thead><tbody>`;
-    
     hits.forEach(r => {
         let isTrio = r.typePari.includes('TRIO') || r.typePari.includes('TIERCE');
         let badge = isTrio ? 'badge badge-trio' : 'badge';
         let lbl = r.libelle || r.typePari.replace('E_','');
-
         r.rapports.forEach(g => {
             let val = g.dividendePourUnEuro ? g.dividendePourUnEuro/100 : (g.dividende/(r.miseBase||100));
-            let style = (isTrio && val >= threshold) ? 'gain-high' : 'gain-cell';
+            let style = (isTrio && val >= threshold) ? 'gain-high' : '';
             html += `<tr><td><span class="${badge}">${lbl}</span></td><td><b>${g.combinaison}</b></td><td class="${style}">${val.toFixed(2)} €</td></tr>`;
         });
     });
@@ -266,16 +295,11 @@ function buildPartantsHTML(parts) {
 }
 
 // --- UTILS ---
-
 async function fetchAPI(url, ignore404 = false) {
     const res = await fetch(PROXY_URL + encodeURIComponent(url));
-    if (!res.ok) {
-        if (ignore404 && res.status === 404) return null; // Normal pour une réunion qui n'existe pas
-        throw new Error(`HTTP ${res.status}`);
-    }
+    if (!res.ok) { if (ignore404 && res.status === 404) return null; throw new Error(`HTTP ${res.status}`); }
     return await res.json();
 }
-
 function getDatesInRange(start, end) {
     const parse = d => new Date(d.substring(4), d.substring(2,4)-1, d.substring(0,2));
     const fmt = d => String(d.getDate()).padStart(2,'0') + String(d.getMonth()+1).padStart(2,'0') + d.getFullYear();
@@ -283,27 +307,15 @@ function getDatesInRange(start, end) {
     while (curr <= last) { list.push(fmt(curr)); curr.setDate(curr.getDate()+1); }
     return list;
 }
-
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-function setLoading(isLoading) {
-    dom.scanBtn.disabled = isLoading;
-    if(isLoading) dom.retryBtn.style.display = 'none';
-}
-
-function setStatus(msg, type) {
-    dom.status.style.display = 'block';
-    dom.status.className = type;
-    dom.status.innerText = msg;
-}
-
+function setLoading(isLoading) { dom.scanBtn.disabled = isLoading; if(isLoading) dom.retryBtn.style.display = 'none'; }
+function setStatus(msg, type) { dom.status.style.display = 'block'; dom.status.className = type; dom.status.innerText = msg; }
 function exportJSON() {
     if (!state.results.length) return;
     const blob = new Blob([JSON.stringify(state.results, null, 2)], {type: 'application/json;charset=utf-8'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `PMU_SCAN_TRIO.json`;
+    link.download = `PMU_STATS_FILTER.json`;
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
 }
