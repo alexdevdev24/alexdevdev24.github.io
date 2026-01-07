@@ -1,14 +1,14 @@
 /**
- * scriptpmu.js - Version ROBUSTE MULTI-PROXY
- * Tente plusieurs chemins pour contourner les blocages.
+ * scriptpmu.js - Version ULTRA ROBUSTE (Retry + Multi-Proxy)
  */
 
-// LISTE DES PROXIES (Ordre de priorité)
-const PROXY_LIST = [
-    'https://corsproxy.io/?',                   // Rapide, souvent bloqué
-    'https://api.allorigins.win/raw?url=',      // Plus lent, mais souvent fiable
-    'https://thingproxy.freeboard.io/fetch/',   // Secours
-    ''                                          // Direct (si vous avez une extension CORS installée)
+// LISTE DE PROXIES ROTATIFS (Priorité : Haut vers Bas)
+const PROXIES = [
+    'https://corsproxy.io/?',
+    'https://api.allorigins.win/raw?url=',
+    'https://thingproxy.freeboard.io/fetch/',
+    'https://api.codetabs.com/v1/proxy?quest=',
+    '' // Direct (si extension)
 ];
 
 const API_BASE = 'https://online.turfinfo.api.pmu.fr/rest/client/1/programme';
@@ -29,65 +29,50 @@ let state = {
 const dom = {};
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Init DOM avec sécurité
     const get = (id) => document.getElementById(id);
-    
-    dom.start = get('dateStart');
-    dom.end = get('dateEnd');
-    dom.filterHippo = get('filterHippo');
-    dom.minTrio = get('minTrio');
-    dom.delay = get('apiDelay');
-    dom.scanBtn = get('scanBtn');
-    dom.retryBtn = get('retryBtn');
-    dom.export = get('exportBtn');
-    dom.print = get('printBtn');
-    dom.status = get('status');
-    dom.container = get('resultsContainer');
-    dom.actions = get('actionBar');
-    dom.stEligibles = get('stEligibles');
-    dom.stFound = get('stFound');
+    dom.start = get('dateStart'); dom.end = get('dateEnd');
+    dom.filterHippo = get('filterHippo'); dom.minTrio = get('minTrio');
+    dom.delay = get('apiDelay'); dom.scanBtn = get('scanBtn');
+    dom.retryBtn = get('retryBtn'); dom.export = get('exportBtn');
+    dom.print = get('printBtn'); dom.status = get('status');
+    dom.container = get('resultsContainer'); dom.actions = get('actionBar');
+    dom.stEligibles = get('stEligibles'); dom.stFound = get('stFound');
     dom.stRatio = get('stRatio');
 
     if (!dom.scanBtn) return;
 
-    // --- CLICK SCANNER ---
     dom.scanBtn.addEventListener('click', () => {
         const dStart = dom.start.value.trim();
         const dEnd = dom.end.value.trim();
-        
-        if (!dStart || !dEnd) return alert('Dates requises (Format JJMMAAAA).');
+        if (!dStart || !dEnd) return alert('Dates requises.');
 
         let keywords = [];
         if (dom.filterHippo && dom.filterHippo.value) {
-            const rawFilter = dom.filterHippo.value.toLowerCase();
-            keywords = rawFilter.split(',').map(s => s.trim()).filter(s => s.length > 0);
+            keywords = dom.filterHippo.value.toLowerCase().split(',').map(s=>s.trim()).filter(s=>s.length>0);
         }
 
-        // RESET
         state.dateList = getDatesInRange(dStart, dEnd);
         if(state.dateList.length === 0) return alert("Dates invalides.");
 
-        state.currDateIdx = 0;
-        state.currReunionIdx = 1;
-        state.results = [];
-        state.stats = { eligibles: 0, found: 0 };
+        // Reset
+        state.currDateIdx = 0; state.currReunionIdx = 1;
+        state.results = []; state.stats = { eligibles: 0, found: 0 };
         state.threshold = parseFloat(dom.minTrio.value) || 0;
         state.delay = parseInt(dom.delay.value) || 500;
         state.hippoFilter = keywords;
         state.isRunning = true;
 
-        dom.container.innerHTML = '';
-        dom.actions.style.display = 'none';
+        dom.container.innerHTML = ''; dom.actions.style.display = 'none';
         dom.retryBtn.style.display = 'none';
         updateStatsUI();
         
-        setStatus("Démarrage du scan multi-proxy...", "status-loading");
+        setStatus("Initialisation...", "status-loading");
         runScanner();
     });
 
     dom.retryBtn.addEventListener('click', () => {
         state.isRunning = true;
-        state.delay = parseInt(dom.delay.value) || 1000;
+        state.delay += 200; // On augmente le délai pour être plus safe
         dom.retryBtn.style.display = 'none';
         runScanner();
     });
@@ -96,80 +81,58 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.print.addEventListener('click', () => window.print());
 });
 
-/**
- * BOUCLE PRINCIPALE
- */
 async function runScanner() {
     setLoading(true);
-
     try {
         while (state.currDateIdx < state.dateList.length) {
             const date = state.dateList[state.currDateIdx];
-
             while (state.currReunionIdx <= 6) { 
                 if (!state.isRunning) return;
-
                 const rNum = state.currReunionIdx;
-                setStatus(`Analyse : ${date} - R${rNum}`, 'status-loading');
-
+                setStatus(`Scan : ${date} - R${rNum}`, 'status-loading');
                 await sleep(state.delay); 
 
-                // Scan Meeting
-                const coursesFound = await scanSingleMeeting(date, rNum, state.threshold);
-                
-                if (coursesFound && coursesFound.length > 0) {
-                    state.results.push(...coursesFound);
-                    renderCourses(coursesFound, state.threshold);
+                const courses = await scanMeeting(date, rNum, state.threshold);
+                if (courses.length > 0) {
+                    state.results.push(...courses);
+                    renderCourses(courses, state.threshold);
                 }
-
                 state.currReunionIdx++;
             }
             state.currDateIdx++;
             state.currReunionIdx = 1;
         }
         finishScan();
-
     } catch (e) {
         state.isRunning = false;
         console.error(e);
-        setStatus(`ERREUR : ${e.message}. Essayez d'augmenter la pause.`, 'status-error');
+        setStatus(`ERREUR : ${e.message}`, 'status-error');
         dom.retryBtn.style.display = 'inline-block';
         dom.scanBtn.disabled = false;
     }
 }
 
-/**
- * SCAN REUNION
- */
-async function scanSingleMeeting(date, rNum, threshold) {
+async function scanMeeting(date, rNum, threshold) {
     try {
-        const progUrl = `${API_BASE}/${date}/R${rNum}`;
-        // On utilise la fonction smartFetch qui essaie plusieurs proxies
-        const progData = await smartFetch(progUrl, true);
-
+        const progData = await fetchWithRetry(`${API_BASE}/${date}/R${rNum}`, true);
         if (!progData || !progData.courses) return [];
 
-        // Filtre Hippodrome
         const hippoObj = progData.hippodrome || {};
-        const fullHippoName = `${hippoObj.libelleLong || ""} ${hippoObj.libelleCourt || ""}`.toLowerCase();
+        const fullHippo = `${hippoObj.libelleLong||""} ${hippoObj.libelleCourt||""}`.toLowerCase();
         
         if (state.hippoFilter.length > 0) {
-            const isMatch = state.hippoFilter.some(keyword => fullHippoName.includes(keyword));
-            if (!isMatch) return []; 
+            if (!state.hippoFilter.some(k => fullHippo.includes(k))) return [];
         }
 
         const found = [];
-        const hippoLabel = hippoObj.libelleCourt || hippoObj.libelleLong || "Inconnu";
+        const hippoLabel = hippoObj.libelleCourt || "Inconnu";
 
         for (const cInfo of progData.courses) {
             if (cInfo.statut === "COURSE_ANNULEE") continue;
 
             const cNum = cInfo.numOrdre;
-            
-            // Rapports
-            await sleep(state.delay / 3);
-            const rapUrl = `${API_BASE}/${date}/R${rNum}/C${cNum}/rapports-definitifs`;
-            const rapports = await smartFetch(rapUrl, true);
+            await sleep(state.delay / 2);
+            const rapports = await fetchWithRetry(`${API_BASE}/${date}/R${rNum}/C${cNum}/rapports-definitifs`, true);
 
             if (hasTrioBet(rapports)) {
                 state.stats.eligibles++;
@@ -178,162 +141,119 @@ async function scanSingleMeeting(date, rNum, threshold) {
                 if (hasHighTrio(rapports, threshold)) {
                     state.stats.found++;
                     updateStatsUI();
-
-                    // Participants
                     await sleep(state.delay / 2);
-                    const partUrl = `${API_BASE}/${date}/R${rNum}/C${cNum}/participants`;
-                    const partData = await smartFetch(partUrl, true);
-
+                    const partData = await fetchWithRetry(`${API_BASE}/${date}/R${rNum}/C${cNum}/participants`, true);
+                    
                     const parts = (partData?.participants || []).map(p => ({
-                        num: p.numPmu,
-                        nom: p.nomCheval || p.nom || "?",
-                        driver: p.driver || p.jockey || "-",
-                        musique: p.musique || "-",
+                        num: p.numPmu, nom: p.nomCheval || "?", driver: p.driver || "-", musique: p.musique || "-",
                         cote: p.dernierRapportDirect ? p.dernierRapportDirect.rapport : null
                     }));
 
                     found.push({
-                        date: date,
-                        id: `R${rNum}C${cNum}`,
-                        hippo: hippoLabel,
-                        num: cNum,
-                        nom: cInfo.libelle,
-                        heure: cInfo.heureDepart,
-                        arrivee: cInfo.ordreArrivee || [],
-                        participants: parts,
-                        rapports: rapports
+                        date: date, id: `R${rNum}C${cNum}`, hippo: hippoLabel, num: cNum,
+                        nom: cInfo.libelle, heure: cInfo.heureDepart, arrivee: cInfo.ordreArrivee || [],
+                        participants: parts, rapports: rapports
                     });
                 }
             }
         }
         return found;
-
     } catch (e) { throw e; }
 }
 
-// --- SMART FETCH (ROTATION DE PROXIES) ---
-// Cette fonction est le coeur de la réparation
-async function smartFetch(url, ignore404 = false) {
-    let lastError = null;
-
-    for (const proxyBase of PROXY_LIST) {
+// --- SMART FETCH AVEC RETRY ---
+async function fetchWithRetry(url, ignore404 = false, retries = 2) {
+    for (let i = 0; i <= retries; i++) {
         try {
-            const finalUrl = proxyBase + encodeURIComponent(url);
-            
-            // Si le proxy est vide (mode direct), on n'encode pas
-            const fetchUrl = proxyBase === '' ? url : finalUrl;
+            return await smartFetch(url, ignore404);
+        } catch (e) {
+            if (i === retries) throw e; // Si c'est le dernier essai, on plante
+            await sleep(1000); // Attente 1s avant retry
+        }
+    }
+}
 
-            const res = await fetch(fetchUrl);
-            
-            if (res.status === 404 && ignore404) return null; // 404 est une réponse valide (pas de course)
-            
+async function smartFetch(url, ignore404) {
+    let lastError = null;
+    for (const proxy of PROXIES) {
+        try {
+            const finalUrl = proxy ? proxy + encodeURIComponent(url) : url;
+            const res = await fetch(finalUrl);
+            if (res.status === 404 && ignore404) return null;
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             
-            // Tentative de parsing JSON
-            const data = await res.json();
+            // Vérification du contenu AVANT parsing
+            const text = await res.text();
+            if (!text || text.trim().length === 0) throw new Error("Réponse vide");
             
-            // Si on est là, c'est que ça a marché !
-            return data;
-
+            try {
+                return JSON.parse(text);
+            } catch (jsonErr) {
+                // Si ce n'est pas du JSON (ex: page HTML d'erreur proxy)
+                throw new Error("Réponse invalide (pas du JSON)");
+            }
         } catch (e) {
-            // Si ça échoue, on continue à la prochaine boucle (prochain proxy)
-            // console.warn(`Echec proxy ${proxyBase} :`, e);
             lastError = e;
         }
     }
-
-    // Si tous les proxys ont échoué
-    throw new Error(`Echec total (tous proxies bloqués). Dernier: ${lastError.message}`);
+    throw new Error(`Echec total: ${lastError.message}`);
 }
 
-// --- LOGIQUE METIER (Inchangée) ---
-
-function hasTrioBet(rapports) {
-    if (!rapports || !Array.isArray(rapports)) return false;
-    return rapports.some(r => r.typePari.includes('TRIO') || r.typePari.includes('TIERCE'));
-}
-
-function hasHighTrio(rapports, threshold) {
-    if (!rapports) return false;
-    const targets = rapports.filter(r => r.typePari.includes('TRIO') || r.typePari.includes('TIERCE'));
-    for (const t of targets) {
-        for (const g of t.rapports) {
-            let val = g.dividendePourUnEuro ? g.dividendePourUnEuro/100 : (g.dividende/(t.miseBase||100));
-            if (val >= threshold) return true;
+// --- METIER & UI (Inchangés) ---
+function hasTrioBet(r) { return r && r.some(x => x.typePari.includes('TRIO') || x.typePari.includes('TIERCE')); }
+function hasHighTrio(r, t) {
+    if(!r) return false;
+    const targets = r.filter(x => x.typePari.includes('TRIO') || x.typePari.includes('TIERCE'));
+    for(const k of targets) {
+        for(const g of k.rapports) {
+            let v = g.dividendePourUnEuro ? g.dividendePourUnEuro/100 : (g.dividende/(k.miseBase||100));
+            if(v >= t) return true;
         }
     }
     return false;
 }
-
 function updateStatsUI() {
     dom.stEligibles.innerText = state.stats.eligibles;
     dom.stFound.innerText = state.stats.found;
-    let ratio = state.stats.eligibles > 0 ? (state.stats.found / state.stats.eligibles) * 100 : 0;
-    dom.stRatio.innerText = ratio.toFixed(2) + '%';
+    dom.stRatio.innerText = state.stats.eligibles ? ((state.stats.found/state.stats.eligibles)*100).toFixed(2)+'%' : '0%';
 }
-
 function finishScan() {
     state.isRunning = false;
-    dom.scanBtn.disabled = false;
-    dom.retryBtn.style.display = 'none';
-    const msg = state.results.length ? "Scan terminé." : "Aucun résultat trouvé.";
-    const type = state.results.length ? 'status-success' : 'status-error';
-    setStatus(msg, type);
-    if (state.results.length) dom.actions.style.display = 'block';
+    dom.scanBtn.disabled = false; dom.retryBtn.style.display = 'none';
+    setStatus(state.results.length ? "Terminé." : "Rien trouvé.", state.results.length ? 'status-success' : 'status-error');
+    if(state.results.length) dom.actions.style.display = 'block';
 }
-
-function renderCourses(courses, threshold) {
+function renderCourses(courses, thresh) {
     courses.forEach(c => {
-        const div = document.createElement('div');
-        div.className = 'race-card';
-        const dateFmt = `${c.date.substring(0,2)}/${c.date.substring(2,4)}`;
-        const htmlRapports = buildRapportsHTML(c.rapports, threshold);
-        const htmlPartants = buildPartantsHTML(c.participants);
-
-        div.innerHTML = `
-            <div class="race-header">
-                <span class="race-title">[${dateFmt}] ${c.hippo} - ${c.id} - ${c.nom}</span>
-                <span>${new Date(c.heure).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>
-            </div>
-            <div class="race-body">
-                <div style="margin-bottom:10px;"><strong>Arrivée:</strong> ${c.arrivee.join('-')}</div>
-                <h4 style="color:#d63384">Rapports (> ${threshold}€)</h4>
-                ${htmlRapports}
-                <h4>Partants</h4>
-                <div style="overflow-x:auto">${htmlPartants}</div>
-            </div>
-        `;
+        const div = document.createElement('div'); div.className = 'race-card';
+        const dFmt = `${c.date.substring(0,2)}/${c.date.substring(2,4)}`;
+        const hRap = buildRapportsHTML(c.rapports, thresh);
+        const hPart = buildPartantsHTML(c.participants);
+        div.innerHTML = `<div class="race-header"><span class="race-title">[${dFmt}] ${c.hippo} - ${c.id} - ${c.nom}</span><span>${new Date(c.heure).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div><div class="race-body"><div style="margin-bottom:10px;"><strong>Arrivée:</strong> ${c.arrivee.join('-')}</div><h4 style="color:#d63384">Rapports (> ${thresh}€)</h4>${hRap}<h4>Partants</h4><div style="overflow-x:auto">${hPart}</div></div>`;
         dom.container.appendChild(div);
     });
 }
-
-function buildRapportsHTML(rapports, threshold) {
+function buildRapportsHTML(r, t) {
     const keys = ['SIMPLE','COUPLE','TRIO','TIERCE','MULTI','QUARTE','QUINTE'];
-    const hits = rapports.filter(r => keys.some(k => r.typePari.includes(k)));
-    let html = `<table class="reports-table"><thead><tr><th>Pari</th><th>Comb.</th><th>Gain</th></tr></thead><tbody>`;
-    hits.forEach(r => {
-        let isTrio = r.typePari.includes('TRIO') || r.typePari.includes('TIERCE');
+    const hits = r.filter(x => keys.some(k => x.typePari.includes(k)));
+    let h = `<table class="reports-table"><thead><tr><th>Pari</th><th>Comb.</th><th>Gain</th></tr></thead><tbody>`;
+    hits.forEach(x => {
+        let isTrio = x.typePari.includes('TRIO')||x.typePari.includes('TIERCE');
         let badge = isTrio ? 'badge badge-trio' : 'badge';
-        let lbl = r.libelle || r.typePari.replace('E_','');
-        r.rapports.forEach(g => {
-            let val = g.dividendePourUnEuro ? g.dividendePourUnEuro/100 : (g.dividende/(r.miseBase||100));
-            let style = (isTrio && val >= threshold) ? 'gain-high' : '';
-            html += `<tr><td><span class="${badge}">${lbl}</span></td><td><b>${g.combinaison}</b></td><td class="${style}">${val.toFixed(2)} €</td></tr>`;
+        x.rapports.forEach(g => {
+            let v = g.dividendePourUnEuro ? g.dividendePourUnEuro/100 : (g.dividende/(x.miseBase||100));
+            let s = (isTrio && v >= t) ? 'gain-high' : '';
+            h += `<tr><td><span class="${badge}">${x.libelle||x.typePari.replace('E_','')}</span></td><td><b>${g.combinaison}</b></td><td class="${s}">${v.toFixed(2)} €</td></tr>`;
         });
     });
-    return html + `</tbody></table>`;
+    return h+`</tbody></table>`;
 }
-
-function buildPartantsHTML(parts) {
-    if(!parts.length) return '';
-    let html = `<table class="participants-table"><thead><tr><th style="width:30px">N°</th><th>Cheval</th><th>Driver</th><th>Musique</th><th style="width:60px">Cote</th></tr></thead><tbody>`;
-    parts.forEach(p => {
-        html += `<tr><td style="font-weight:bold;text-align:center">${p.num}</td><td>${p.nom}</td><td>${p.driver}</td><td style="font-size:0.8em;color:#555">${p.musique}</td><td style="text-align:right">${p.cote||'-'}</td></tr>`;
-    });
-    return html + `</tbody></table>`;
+function buildPartantsHTML(p) {
+    if(!p.length) return '';
+    let h = `<table class="participants-table"><thead><tr><th>N°</th><th>Cheval</th><th>Driver</th><th>Musique</th><th>Cote</th></tr></thead><tbody>`;
+    p.forEach(x => h+=`<tr><td style="font-weight:bold;text-align:center">${x.num}</td><td>${x.nom}</td><td>${x.driver}</td><td style="font-size:0.8em">${x.musique}</td><td style="text-align:right">${x.cote||'-'}</td></tr>`);
+    return h+`</tbody></table>`;
 }
-
-// --- UTILS ---
 function getDatesInRange(start, end) {
     const parse = d => new Date(d.substring(4), d.substring(2,4)-1, d.substring(0,2));
     const fmt = d => String(d.getDate()).padStart(2,'0') + String(d.getMonth()+1).padStart(2,'0') + d.getFullYear();
@@ -342,14 +262,11 @@ function getDatesInRange(start, end) {
     return list;
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-function setLoading(isLoading) { dom.scanBtn.disabled = isLoading; if(isLoading) dom.retryBtn.style.display = 'none'; }
-function setStatus(msg, type) { dom.status.style.display = 'block'; dom.status.className = type; dom.status.innerText = msg; }
+function setLoading(l) { dom.scanBtn.disabled = l; if(l) dom.retryBtn.style.display = 'none'; }
+function setStatus(m, t) { dom.status.style.display = 'block'; dom.status.className = t; dom.status.innerText = m; }
 function exportJSON() {
     if (!state.results.length) return;
     const blob = new Blob([JSON.stringify(state.results, null, 2)], {type: 'application/json;charset=utf-8'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `PMU_STATS_FILTER.json`;
-    document.body.appendChild(link);
-    link.click();
+    const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
+    link.download = `PMU_STATS_ROBUST.json`; document.body.appendChild(link); link.click();
 }
