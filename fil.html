@@ -2,108 +2,320 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner PMU - Avec Cache Local</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Scanner PMU Mobile</title>
     <style>
-        :root { --primary: #004085; --secondary: #0056b3; --bg: #f4f6f9; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; background: var(--bg); color: #333; }
-        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        :root { --primary: #004085; --bg: #f8f9fa; --card: #ffffff; }
+        body { font-family: sans-serif; margin: 0; padding: 10px; background: var(--bg); color: #333; font-size: 14px; }
         
-        /* Stats Dashboard */
-        .stats-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; background: #343a40; color: white; padding: 15px; border-radius: 8px; text-align: center; }
-        .stat-item { border-right: 1px solid #555; }
-        .stat-item:last-child { border-right: none; }
-        .stat-val { font-size: 1.5em; font-weight: bold; display: block; }
-        .stat-label { font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; color: #ccc; }
-        .stat-highlight { color: #d63384; }
-
-        /* Contrôles */
-        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; background: #e9ecef; padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary); }
-        .form-group label { display: block; font-weight: 700; margin-bottom: 5px; color: #495057; font-size: 0.9em; }
-        input, button { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
+        /* Conteneur principal */
+        .container { max-width: 100%; margin: 0 auto; background: var(--card); padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         
-        .btn-action { border: none; font-weight: 700; cursor: pointer; height: 42px; color: white; transition: 0.2s; }
-        #scanBtn { background: #d63384; }
-        #scanBtn:hover { background: #c21b6c; }
-        #retryBtn { background: #fd7e14; display: none; }
+        h2 { margin-top: 0; font-size: 1.2rem; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+        /* Formulaire */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .full-width { grid-column: 1 / -1; }
         
-        /* Cache Controls */
-        #cacheBtn { background: #6c757d; width: auto; font-size: 0.9em; margin-top: 5px; }
-        #cacheStats { font-size: 0.85em; color: #666; text-align: right; margin-top: 5px; }
+        label { display: block; font-weight: bold; margin-bottom: 3px; font-size: 0.8rem; color: #555; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1rem; }
+        
+        /* Boutons */
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; color: white; font-size: 1rem; margin-top: 5px; }
+        #scanBtn { background: #28a745; }
+        #stopBtn { background: #dc3545; display: none; }
+        #exportBtn { background: #007bff; margin-top: 15px; }
 
-        .action-bar { text-align: right; margin-bottom: 15px; display: none; }
-        #exportBtn { background: #28a745; display: inline-block; width: auto; padding: 0 20px; }
-        #printBtn { background: #dc3545; display: inline-block; width: auto; margin-left: 10px; padding: 0 20px; }
-
-        /* Status */
-        #status { padding: 10px; text-align: center; border-radius: 4px; margin-bottom: 20px; display: none; font-weight: 600; font-size: 0.9em; }
-        .status-loading { background: #cce5ff; color: #004085; }
-        .status-error { background: #f8d7da; color: #721c24; }
-        .status-success { background: #d4edda; color: #155724; }
-
-        /* Race Card & Tables (inchangé) */
-        .race-card { border: 1px solid #dee2e6; border-radius: 6px; margin-bottom: 30px; background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .race-header { background: var(--primary); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .race-body { padding: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 15px; }
-        th { background: #e2e6ea; padding: 8px; text-align: left; border: 1px solid #dee2e6; }
-        td { padding: 8px; border: 1px solid #dee2e6; vertical-align: middle; }
-        .reports-table th { background: #343a40; color: white; }
-        .gain-high { color: #d63384; font-weight: bold; text-decoration: underline; }
-        .participants-table th { background: #0056b3; color: white; }
-        .participants-table tr:nth-child(even) { background-color: #f8f9fa; }
-        .badge { padding: 3px 8px; border-radius: 3px; color: white; font-size: 0.8em; font-weight: bold; }
-        .badge-trio { background: #fd7e14; }
-
-        @media print {
-            .controls, .action-bar, #status, .stats-box, #cacheStats { display: none !important; }
-            .race-card { break-inside: avoid; border: 1px solid #000; box-shadow: none; }
-            .race-header { background: #ccc !important; color: black !important; }
+        /* Console de log (Miniature) */
+        #statusLog { 
+            background: #222; color: #0f0; padding: 10px; 
+            border-radius: 4px; font-family: monospace; font-size: 0.75rem; 
+            height: 60px; overflow: hidden; margin-bottom: 15px; white-space: nowrap;
         }
+
+        /* Stats */
+        .stats { display: flex; justify-content: space-between; background: #e9ecef; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-weight: bold; }
+        .red { color: #dc3545; }
+
+        /* Résultats */
+        .race-card { border: 1px solid #eee; border-radius: 6px; margin-bottom: 15px; padding: 10px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .race-header { font-weight: bold; color: var(--primary); margin-bottom: 5px; display: flex; justify-content: space-between; }
+        
+        .gains-box { background: #fff3cd; padding: 8px; border-radius: 4px; margin-bottom: 8px; font-size: 0.9rem; }
+        .gain-high { color: #d63384; font-weight: bold; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th { text-align: left; background: #eee; padding: 4px; }
+        td { border-top: 1px solid #eee; padding: 4px; }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 style="margin-top:0; color:#004085; border-bottom:2px solid #004085; padding-bottom:15px;">Scanner PMU Data</h2>
-        
-        <div class="stats-box">
-            <div class="stat-item"><span class="stat-val" id="stEligibles">0</span><span class="stat-label">Analysées</span></div>
-            <div class="stat-item"><span class="stat-val stat-highlight" id="stFound">0</span><span class="stat-label">Retenues</span></div>
-            <div class="stat-item"><span class="stat-val" id="stRatio">0%</span><span class="stat-label">Ratio</span></div>
-        </div>
 
-        <div class="controls">
-            <div class="form-group">
-                <label>Date Début</label>
-                <input type="text" id="dateStart" placeholder="ex: 01012025" maxlength="8">
-            </div>
-            <div class="form-group">
-                <label>Date Fin</label>
-                <input type="text" id="dateEnd" placeholder="ex: 05012025" maxlength="8">
-            </div>
-            <div class="form-group">
-                <label>Filtre Hippodrome</label>
-                <input type="text" id="filterHippo" placeholder="Ex: Cagnes" value="">
-            </div>
-            <div class="form-group">
-                <label>Seuil Trio (€)</label>
-                <input type="number" id="minTrio" value="100">
-            </div>
-            <div class="form-group" style="display:flex; flex-direction:column; justify-content:flex-end;">
-                <button id="scanBtn" class="btn-action">🔍 SCANNER</button>
-                <button id="retryBtn" class="btn-action">🔄 REPRENDRE</button>
-                <button id="cacheBtn" class="btn-action">🗑️ VIDER CACHE</button>
-                <div id="cacheStats">Cache: 0 items</div>
-            </div>
-        </div>
+<div class="container">
+    <h2>Scanner PMU (Android Safe)</h2>
 
-        <div id="status"></div>
-        <div id="actionBar" class="action-bar">
-            <button id="exportBtn" class="btn-action">⬇ JSON</button>
-            <button id="printBtn" class="btn-action">🖨️ PDF</button>
-        </div>
-        <div id="resultsContainer"></div>
+    <div id="statusLog">Prêt. Appuyez sur Scanner.</div>
+
+    <div class="stats">
+        <span>Scan: <span id="sScan">0</span></span>
+        <span>Trouvés: <span id="sFound" class="red">0</span></span>
     </div>
-    <script src="fil.js"></script>
+
+    <div class="form-grid">
+        <div>
+            <label>Début (JJMMAAAA)</label>
+            <input type="number" id="dStart" value="01122025">
+        </div>
+        <div>
+            <label>Fin (JJMMAAAA)</label>
+            <input type="number" id="dEnd" value="31122025">
+        </div>
+        <div class="full-width">
+            <label>Hippodrome(s)</label>
+            <input type="text" id="fHippo" value="Cagnes, Pau">
+        </div>
+        <div>
+            <label>Seuil (€)</label>
+            <input type="number" id="threshold" value="100">
+        </div>
+        <div>
+            <label>Pause (ms)</label>
+            <input type="number" id="speed" value="600"> </div>
+    </div>
+
+    <button id="scanBtn" class="btn">LANCER LE SCAN</button>
+    <button id="stopBtn" class="btn">STOPPER</button>
+    <button id="exportBtn" class="btn" disabled>SAUVEGARDER JSON</button>
+
+    <div id="resultsContainer"></div>
+</div>
+
+<script>
+/**
+ * SCRIPT ANDROID ROBUSTE
+ * Gestion stricte des erreurs JSON pour ne pas planter.
+ */
+
+// Liste de proxies. Sur Android, corsproxy est souvent le plus stable.
+const PROXIES = [
+    'https://corsproxy.io/?',
+    'https://api.allorigins.win/raw?url=',
+];
+const API_BASE = 'https://online.turfinfo.api.pmu.fr/rest/client/1/programme';
+
+let STATE = { running: false, results: [] };
+
+// --- DOM UTILS ---
+const el = (id) => document.getElementById(id);
+const log = (msg) => el("statusLog").innerText = msg;
+
+// --- CLICK HANDLERS ---
+el("scanBtn").onclick = async () => {
+    // Récupération valeurs
+    const dStart = el("dStart").value;
+    const dEnd = el("dEnd").value;
+    const hippoFilter = el("fHippo").value.toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
+    const thresh = parseFloat(el("threshold").value);
+    const delay = parseInt(el("speed").value);
+
+    // Initialisation
+    STATE = { running: true, results: [] };
+    el("resultsContainer").innerHTML = "";
+    el("sScan").innerText = "0";
+    el("sFound").innerText = "0";
+    el("scanBtn").style.display = "none";
+    el("stopBtn").style.display = "block";
+
+    const dates = getDates(dStart, dEnd);
+    let scanCount = 0;
+    let foundCount = 0;
+
+    // --- BOUCLE PRINCIPALE ---
+    try {
+        for (const date of dates) {
+            if (!STATE.running) break;
+
+            // On boucle sur R1 à R6
+            for (let r = 1; r <= 6; r++) {
+                if (!STATE.running) break;
+
+                log(`Analyse: ${date} R${r}...`);
+                await sleep(delay);
+
+                // 1. Récupération Programme
+                const prog = await fetchSafe(`${API_BASE}/${date}/R${r}`);
+                
+                // Si échec ou vide, on saute sans planter
+                if (!prog || !prog.courses) continue;
+
+                // 2. Filtre Hippodrome
+                const hName = (prog.hippodrome?.libelleLong + " " + prog.hippodrome?.libelleCourt).toLowerCase();
+                const match = hippoFilter.length === 0 || hippoFilter.some(k => hName.includes(k));
+                
+                if (!match) continue; // Pas le bon hippodrome
+
+                // 3. Boucle sur les courses
+                for (const c of prog.courses) {
+                    if (c.statut === "COURSE_ANNULEE") continue;
+                    
+                    scanCount++;
+                    el("sScan").innerText = scanCount;
+
+                    // Récupération Rapports
+                    await sleep(delay / 2);
+                    const rap = await fetchSafe(`${API_BASE}/${date}/R${r}/C${c.numOrdre}/rapports-definitifs`);
+
+                    if (hasTrio(rap)) {
+                        if (isHighTrio(rap, thresh)) {
+                            log(`>>> TROUVÉ: R${r}C${c.numOrdre}`);
+                            foundCount++;
+                            el("sFound").innerText = foundCount;
+
+                            // Récupération Participants (uniquement si trouvé)
+                            const part = await fetchSafe(`${API_BASE}/${date}/R${r}/C${c.numOrdre}/participants`);
+                            
+                            const raceData = {
+                                date, r, c: c.numOrdre,
+                                nom: c.libelle,
+                                hippo: prog.hippodrome?.libelleCourt,
+                                participants: part?.participants || [],
+                                rapports: rap
+                            };
+                            STATE.results.push(raceData);
+                            renderCard(raceData, thresh);
+                        }
+                    }
+                }
+            }
+        }
+    } catch (err) {
+        log("Erreur fatale : " + err.message);
+    } finally {
+        STATE.running = false;
+        el("scanBtn").style.display = "block";
+        el("stopBtn").style.display = "none";
+        el("exportBtn").disabled = false;
+        log(STATE.results.length > 0 ? "Scan Terminé." : "Aucun résultat trouvé.");
+    }
+};
+
+el("stopBtn").onclick = () => STATE.running = false;
+el("exportBtn").onclick = () => {
+    const blob = new Blob([JSON.stringify(STATE.results, null, 2)], {type: 'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = "PMU_SCAN_ANDROID.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+};
+
+// --- FONCTION FETCH BLINDÉE ---
+async function fetchSafe(url) {
+    // Essai sur chaque proxy
+    for (const proxy of PROXIES) {
+        try {
+            const finalUrl = proxy + encodeURIComponent(url);
+            const res = await fetch(finalUrl);
+            
+            // Si 404 (course n'existe pas), on renvoie null proprement
+            if (res.status === 404) return null;
+            if (!res.ok) throw new Error("Http Error");
+
+            // Lecture en TEXTE d'abord (pour éviter le crash JSON)
+            const text = await res.text();
+            
+            // Vérification si vide ou HTML (erreur proxy)
+            if (!text || text.trim().startsWith("<")) {
+                // Ce n'est pas du JSON, on essaie le proxy suivant
+                continue; 
+            }
+
+            return JSON.parse(text); // Si ça plante ici, le catch le prend
+
+        } catch (e) {
+            // Échec sur ce proxy, on continue vers le suivant
+        }
+    }
+    // Si tout échoue, on renvoie null (skip) au lieu de planter le script
+    return null; 
+}
+
+// --- LOGIQUE METIER ---
+function hasTrio(r) {
+    return r && Array.isArray(r) && r.some(x => x.typePari.includes("TRIO") || x.typePari.includes("TIERCE"));
+}
+
+function isHighTrio(r, thresh) {
+    if (!r) return false;
+    const bets = r.filter(x => x.typePari.includes("TRIO") || x.typePari.includes("TIERCE"));
+    for (const bet of bets) {
+        for (const g of bet.rapports) {
+            let val = g.dividendePourUnEuro ? g.dividendePourUnEuro/100 : g.dividende/((bet.miseBase||100));
+            if (val >= thresh) return true;
+        }
+    }
+    return false;
+}
+
+// --- RENDU UI ---
+function renderCard(data, thresh) {
+    const div = document.createElement("div");
+    div.className = "race-card";
+
+    // Formatage Rapports
+    let gainsHtml = "";
+    const targets = data.rapports.filter(x => x.typePari.includes("TRIO") || x.typePari.includes("TIERCE"));
+    targets.forEach(t => {
+        t.rapports.forEach(g => {
+            let val = g.dividendePourUnEuro ? g.dividendePourUnEuro/100 : g.dividende/((t.miseBase||100));
+            if(val >= thresh) {
+                gainsHtml += `<div>${t.typePari.replace('E_','')} (${g.combinaison}) : <span class="gain-high">${val.toFixed(2)}€</span></div>`;
+            }
+        });
+    });
+
+    // Formatage Partants (Top 10)
+    let partsHtml = "";
+    data.participants.slice(0, 10).forEach(p => {
+        partsHtml += `<tr><td>${p.numPmu}</td><td>${p.nomCheval}</td><td>${p.musique}</td><td style="text-align:right"><b>${p.dernierRapportDirect?.rapport || '-'}</b></td></tr>`;
+    });
+
+    const dateFmt = `${data.date.substring(0,2)}/${data.date.substring(2,4)}`;
+    
+    div.innerHTML = `
+        <div class="race-header">
+            <span>${dateFmt} - ${data.hippo}</span>
+            <span>R${data.r} C${data.c}</span>
+        </div>
+        <div class="gains-box">${gainsHtml}</div>
+        <table>
+            <tr><th width="30">N°</th><th>Cheval</th><th>Musique</th><th align="right">Cote</th></tr>
+            ${partsHtml}
+        </table>
+    `;
+    el("resultsContainer").appendChild(div);
+}
+
+// --- UTILS ---
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function getDates(start, end) {
+    // Format entrée JJMMAAAA -> Date Object
+    const parse = d => new Date(d.substring(4), d.substring(2,4)-1, d.substring(0,2));
+    // Date Object -> Format sortie JJMMAAAA
+    const fmt = d => String(d.getDate()).padStart(2,'0') + String(d.getMonth()+1).padStart(2,'0') + d.getFullYear();
+    
+    let curr = parse(start);
+    const last = parse(end);
+    const list = [];
+    while (curr <= last) {
+        list.push(fmt(curr));
+        curr.setDate(curr.getDate() + 1);
+    }
+    return list;
+}
+</script>
 </body>
 </html>
