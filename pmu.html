@@ -3,60 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PMU Pro - Rapports & Terrain</title>
+    <title>PMU Pro - Résultats Complets</title>
     <style>
-        :root { --primary: #004085; --bg: #f4f6f9; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; background: var(--bg); color: #333; }
-        .container { max-width: 950px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        :root { --primary: #004085; --secondary: #0056b3; --bg: #f4f6f9; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; background: var(--bg); color: #333; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
         
         /* Contrôles */
-        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px; background: #e9ecef; padding: 15px; border-radius: 6px; }
-        input, button { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { background: var(--primary); color: white; border: none; font-weight: bold; cursor: pointer; }
-        button:hover { opacity: 0.9; }
-        #exportBtn { background: #28a745; margin-top: 10px; display: none; }
+        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; background: #e9ecef; padding: 20px; border-radius: 8px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 5px; color: #495057; font-size: 0.9em; }
+        input, button { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
+        button { background: var(--primary); color: white; border: none; font-weight: 700; cursor: pointer; height: 42px; transition: 0.2s; }
+        button:hover { background: var(--secondary); }
+        #exportBtn { background: #28a745; margin-top: 15px; display: none; }
 
         /* Carte Course */
-        .race-card { border: 1px solid #ddd; border-radius: 6px; margin-bottom: 20px; background: white; overflow: hidden; }
-        .race-header { background: #004085; color: white; padding: 10px 15px; display: flex; justify-content: space-between; font-weight: bold; }
-        .race-body { padding: 15px; }
+        .race-card { border: 1px solid #dee2e6; border-radius: 6px; margin-bottom: 30px; background: white; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .race-header { background: var(--primary); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .race-title { font-size: 1.1em; font-weight: bold; }
+        .race-body { padding: 20px; }
 
-        /* Infos Terrain & Conditions */
-        .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; font-size: 0.9em; background: #f8f9fa; padding: 10px; border-radius: 4px; }
-        .meta-item strong { color: #555; }
-        .condition-badge { display: inline-block; background: #e2e6ea; padding: 2px 6px; border-radius: 3px; font-size: 0.85em; margin-right: 5px; margin-bottom: 5px; }
+        /* Méta (Terrain, Conditions) */
+        .meta-box { background: #f8f9fa; border: 1px solid #e9ecef; padding: 15px; border-radius: 6px; margin-bottom: 20px; font-size: 0.9em; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .meta-line { margin-bottom: 5px; }
+        .conditions-text { grid-column: 1 / -1; border-top: 1px solid #eee; padding-top: 10px; color: #666; font-style: italic; }
 
-        /* Tableau Rapports */
-        .reports-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em; }
-        .reports-table th { background: #eee; text-align: left; padding: 6px; border: 1px solid #ddd; }
-        .reports-table td { padding: 6px; border: 1px solid #ddd; }
+        /* Tables Générales */
+        table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 20px; }
+        th { background: #e2e6ea; text-align: left; padding: 8px; color: #495057; font-weight: 700; border: 1px solid #dee2e6; }
+        td { padding: 8px; border: 1px solid #dee2e6; }
+        
+        /* Table Rapports Spécifique */
+        .reports-table th { background: #343a40; color: white; }
         .gain-cell { color: #d63384; font-weight: bold; }
+        
+        /* Table Participants Spécifique */
+        .participants-table th { background: #0056b3; color: white; }
+        .participants-table tr:nth-child(even) { background-color: #f8f9fa; }
+        
+        /* Badges */
+        .badge { padding: 3px 8px; border-radius: 3px; color: white; font-size: 0.8em; font-weight: bold; }
+        .badge-win { background: #28a745; }
+        .badge-place { background: #17a2b8; }
+        .badge-couple { background: #ffc107; color: #333; }
+        .badge-trio { background: #fd7e14; }
 
-        /* Badges Paris */
-        .tag { padding: 2px 6px; border-radius: 3px; color: white; font-size: 0.8em; font-weight: bold; }
-        .tag-win { background: #28a745; }
-        .tag-place { background: #17a2b8; }
-        .tag-couple { background: #ffc107; color: #333; }
-        .tag-trio { background: #fd7e14; }
-
-        details { margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px; }
-        .status-msg { padding: 10px; margin: 10px 0; border-radius: 4px; display: none; text-align: center; }
+        /* Status */
+        #status { padding: 15px; text-align: center; border-radius: 4px; margin-bottom: 20px; display: none; font-weight: 500; }
         .status-loading { background: #cce5ff; color: #004085; }
         .status-error { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2 style="margin-top:0; border-bottom:2px solid #004085; padding-bottom:10px;">PMU : Rapports & Terrain</h2>
+        <h2 style="margin-top:0; color:#004085; border-bottom:2px solid #004085; padding-bottom:15px;">PMU : Programme, Rapports & Participants</h2>
         
         <div class="controls">
-            <div><label>Date (JJMMAAAA)</label><input type="text" id="dateInput" placeholder="ex: 16022020"></div>
-            <div><label>Réunion</label><input type="text" id="reunionInput" placeholder="ex: R1"></div>
-            <div style="display:flex; align-items:end;"><button id="fetchBtn">CHARGER</button></div>
+            <div class="form-group">
+                <label>Date (JJMMAAAA)</label>
+                <input type="text" id="dateInput" placeholder="ex: 07012026" maxlength="8">
+            </div>
+            <div class="form-group">
+                <label>Réunion</label>
+                <input type="text" id="reunionInput" placeholder="ex: R1" maxlength="3">
+            </div>
+            <div class="form-group" style="display:flex; align-items:end;">
+                <button id="fetchBtn">CHARGER LA RÉUNION</button>
+            </div>
         </div>
 
-        <div id="status" class="status-msg"></div>
-        <button id="exportBtn">⬇ Télécharger JSON complet</button>
+        <div id="status"></div>
+        <div style="text-align:right;">
+            <button id="exportBtn">⬇ Télécharger JSON</button>
+        </div>
+        
         <div id="resultsContainer"></div>
     </div>
     <script src="scriptpmu.js"></script>
