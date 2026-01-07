@@ -3,25 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scanner PMU - Stable</title>
+    <title>Scanner PMU - Filtre Hippodrome</title>
     <style>
         :root { --primary: #004085; --secondary: #0056b3; --bg: #f4f6f9; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; background: var(--bg); color: #333; }
         .container { max-width: 1100px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
         
+        /* Stats Dashboard */
+        .stats-box { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; background: #343a40; color: white; padding: 15px; border-radius: 8px; text-align: center; }
+        .stat-item { border-right: 1px solid #555; }
+        .stat-item:last-child { border-right: none; }
+        .stat-val { font-size: 1.5em; font-weight: bold; display: block; }
+        .stat-label { font-size: 0.85em; text-transform: uppercase; letter-spacing: 1px; color: #ccc; }
+        .stat-highlight { color: #d63384; }
+
         /* Contrôles */
-        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 20px; background: #e9ecef; padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary); }
+        .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; background: #e9ecef; padding: 20px; border-radius: 8px; border-left: 5px solid var(--primary); }
         .form-group label { display: block; font-weight: 700; margin-bottom: 5px; color: #495057; font-size: 0.9em; }
         input, button { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
         
+        /* Input spécifique pour le filtre hippo */
+        #filterHippo { border-color: #004085; background-color: #fff; color: #004085; font-weight: 600; }
+        
         .btn-action { border: none; font-weight: 700; cursor: pointer; height: 42px; color: white; transition: 0.2s; }
-        
-        #scanBtn { background: #d63384; } /* Rose */
+        #scanBtn { background: #d63384; }
         #scanBtn:hover { background: #c21b6c; }
-        
-        #retryBtn { background: #fd7e14; display: none; animation: pulse 2s infinite; } /* Orange + Animation */
-        #retryBtn:hover { background: #e36a09; }
-
+        #retryBtn { background: #fd7e14; display: none; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
         
         .action-bar { text-align: right; margin-bottom: 15px; display: none; }
@@ -29,33 +36,29 @@
         #printBtn { background: #dc3545; display: inline-block; width: auto; margin-left: 10px; padding: 0 20px; }
 
         /* Status */
-        #status { padding: 15px; text-align: center; border-radius: 4px; margin-bottom: 20px; display: none; font-weight: 600; border: 1px solid transparent; }
-        .status-loading { background: #cce5ff; color: #004085; border-color: #b8daff; }
-        .status-success { background: #d4edda; color: #155724; border-color: #c3e6cb; }
-        .status-error { background: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+        #status { padding: 10px; text-align: center; border-radius: 4px; margin-bottom: 20px; display: none; font-weight: 600; font-size: 0.9em; }
+        .status-loading { background: #cce5ff; color: #004085; }
+        .status-error { background: #f8d7da; color: #721c24; }
+        .status-success { background: #d4edda; color: #155724; }
 
-        /* Carte Course */
+        /* Race Card */
         .race-card { border: 1px solid #dee2e6; border-radius: 6px; margin-bottom: 30px; background: white; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .race-header { background: var(--primary); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .race-title { font-size: 1.1em; font-weight: bold; }
         .race-body { padding: 20px; }
         
         /* Tables */
         table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin-bottom: 15px; }
         th { background: #e2e6ea; padding: 8px; text-align: left; border: 1px solid #dee2e6; }
         td { padding: 8px; border: 1px solid #dee2e6; vertical-align: middle; }
-        
         .reports-table th { background: #343a40; color: white; }
-        .gain-cell { font-weight: bold; color: #333; }
-        .gain-high { color: #d63384; font-size: 1.1em; text-decoration: underline; }
+        .gain-high { color: #d63384; font-weight: bold; text-decoration: underline; }
         .participants-table th { background: #0056b3; color: white; }
         .participants-table tr:nth-child(even) { background-color: #f8f9fa; }
         .badge { padding: 3px 8px; border-radius: 3px; color: white; font-size: 0.8em; font-weight: bold; }
         .badge-trio { background: #fd7e14; }
 
-        /* Impression */
         @media print {
-            .controls, .action-bar, #status { display: none !important; }
+            .controls, .action-bar, #status, .stats-box { display: none !important; }
             .race-card { break-inside: avoid; border: 1px solid #000; box-shadow: none; }
             .race-header { background: #ccc !important; color: black !important; }
         }
@@ -63,8 +66,23 @@
 </head>
 <body>
     <div class="container">
-        <h2 style="margin-top:0; color:#004085; border-bottom:2px solid #004085; padding-bottom:15px;">Scanner PMU (Stable)</h2>
+        <h2 style="margin-top:0; color:#004085; border-bottom:2px solid #004085; padding-bottom:15px;">Scanner PMU (Target Hippodromes)</h2>
         
+        <div class="stats-box">
+            <div class="stat-item">
+                <span class="stat-val" id="stEligibles">0</span>
+                <span class="stat-label">Courses Scannées</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val stat-highlight" id="stFound">0</span>
+                <span class="stat-label">Retenues (> Seuil)</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-val" id="stRatio">0%</span>
+                <span class="stat-label">Taux</span>
+            </div>
+        </div>
+
         <div class="controls">
             <div class="form-group">
                 <label>Date Début</label>
@@ -75,12 +93,16 @@
                 <input type="text" id="dateEnd" placeholder="ex: 05012024" maxlength="8">
             </div>
             <div class="form-group">
+                <label>Filtre Hippodrome(s)</label>
+                <input type="text" id="filterHippo" placeholder="Ex: Cagnes, Pau" value="Cagnes, Pau">
+            </div>
+            <div class="form-group">
                 <label>Seuil Trio (€)</label>
                 <input type="number" id="minTrio" value="100">
             </div>
             <div class="form-group">
                 <label>Pause (ms)</label>
-                <input type="number" id="apiDelay" value="500" min="100" title="Temps d'attente entre chaque appel">
+                <input type="number" id="apiDelay" value="300" min="100">
             </div>
             <div class="form-group" style="display:flex; align-items:end; gap:5px;">
                 <button id="scanBtn" class="btn-action">🔍 SCANNER</button>
@@ -97,6 +119,6 @@
         
         <div id="resultsContainer"></div>
     </div>
-    <script src="fil.js"></script>
+    <script src="scriptpmu.js"></script>
 </body>
 </html>
