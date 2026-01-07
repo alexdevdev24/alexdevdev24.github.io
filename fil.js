@@ -1,8 +1,16 @@
 /**
- * scriptpmu.js - Version Corrigée (Structure Hippodrome)
+ * scriptpmu.js - Version ROBUSTE MULTI-PROXY
+ * Tente plusieurs chemins pour contourner les blocages.
  */
 
-const PROXY_URL = 'https://corsproxy.io/?';
+// LISTE DES PROXIES (Ordre de priorité)
+const PROXY_LIST = [
+    'https://corsproxy.io/?',                   // Rapide, souvent bloqué
+    'https://api.allorigins.win/raw?url=',      // Plus lent, mais souvent fiable
+    'https://thingproxy.freeboard.io/fetch/',   // Secours
+    ''                                          // Direct (si vous avez une extension CORS installée)
+];
+
 const API_BASE = 'https://online.turfinfo.api.pmu.fr/rest/client/1/programme';
 
 // --- ÉTAT ---
@@ -21,7 +29,7 @@ let state = {
 const dom = {};
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialisation DOM
+    // Init DOM avec sécurité
     const get = (id) => document.getElementById(id);
     
     dom.start = get('dateStart');
@@ -52,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let keywords = [];
         if (dom.filterHippo && dom.filterHippo.value) {
             const rawFilter = dom.filterHippo.value.toLowerCase();
-            // On sépare par virgule et on nettoie
             keywords = rawFilter.split(',').map(s => s.trim()).filter(s => s.length > 0);
         }
 
@@ -74,10 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.retryBtn.style.display = 'none';
         updateStatsUI();
         
+        setStatus("Démarrage du scan multi-proxy...", "status-loading");
         runScanner();
     });
 
-    // --- CLICK REPRENDRE ---
     dom.retryBtn.addEventListener('click', () => {
         state.isRunning = true;
         state.delay = parseInt(dom.delay.value) || 1000;
@@ -107,6 +114,7 @@ async function runScanner() {
 
                 await sleep(state.delay); 
 
+                // Scan Meeting
                 const coursesFound = await scanSingleMeeting(date, rNum, state.threshold);
                 
                 if (coursesFound && coursesFound.length > 0) {
@@ -124,48 +132,36 @@ async function runScanner() {
     } catch (e) {
         state.isRunning = false;
         console.error(e);
-        setStatus(`ERREUR : ${e.message}.`, 'status-error');
+        setStatus(`ERREUR : ${e.message}. Essayez d'augmenter la pause.`, 'status-error');
         dom.retryBtn.style.display = 'inline-block';
         dom.scanBtn.disabled = false;
     }
 }
 
 /**
- * SCAN REUNION (CORRECTION HIPPODROME)
+ * SCAN REUNION
  */
 async function scanSingleMeeting(date, rNum, threshold) {
     try {
         const progUrl = `${API_BASE}/${date}/R${rNum}`;
-        const progData = await fetchAPI(progUrl, true);
+        // On utilise la fonction smartFetch qui essaie plusieurs proxies
+        const progData = await smartFetch(progUrl, true);
 
-        // Si la réunion n'existe pas ou est vide
         if (!progData || !progData.courses) return [];
 
-        // --- CORRECTION DETECTION HIPPODROME ---
-        // Le JSON renvoie "libelleLong" et "libelleCourt". "libelle" n'existe pas.
+        // Filtre Hippodrome
         const hippoObj = progData.hippodrome || {};
-        const hippoNameLong = (hippoObj.libelleLong || "").toLowerCase();
-        const hippoNameShort = (hippoObj.libelleCourt || "").toLowerCase();
+        const fullHippoName = `${hippoObj.libelleLong || ""} ${hippoObj.libelleCourt || ""}`.toLowerCase();
         
-        // On concatène les deux pour être sûr de trouver le mot clé (ex: "cagnes" dans "HIPPODROME DE LA COTE D'AZUR")
-        const fullHippoName = `${hippoNameLong} ${hippoNameShort}`;
-
-        // Filtrage
         if (state.hippoFilter.length > 0) {
-            // On vérifie si l'un des mots clés est présent dans le nom complet
             const isMatch = state.hippoFilter.some(keyword => fullHippoName.includes(keyword));
-            
-            if (!isMatch) {
-                // console.log(`[IGNORE] Hippo: ${fullHippoName} ne contient pas ${state.hippoFilter}`);
-                return []; 
-            }
+            if (!isMatch) return []; 
         }
 
         const found = [];
         const hippoLabel = hippoObj.libelleCourt || hippoObj.libelleLong || "Inconnu";
 
         for (const cInfo of progData.courses) {
-            // Ignorer les courses annulées (Statut vu dans votre JSON : COURSE_ANNULEE)
             if (cInfo.statut === "COURSE_ANNULEE") continue;
 
             const cNum = cInfo.numOrdre;
@@ -173,7 +169,7 @@ async function scanSingleMeeting(date, rNum, threshold) {
             // Rapports
             await sleep(state.delay / 3);
             const rapUrl = `${API_BASE}/${date}/R${rNum}/C${cNum}/rapports-definitifs`;
-            const rapports = await fetchAPI(rapUrl, true);
+            const rapports = await smartFetch(rapUrl, true);
 
             if (hasTrioBet(rapports)) {
                 state.stats.eligibles++;
@@ -186,7 +182,7 @@ async function scanSingleMeeting(date, rNum, threshold) {
                     // Participants
                     await sleep(state.delay / 2);
                     const partUrl = `${API_BASE}/${date}/R${rNum}/C${cNum}/participants`;
-                    const partData = await fetchAPI(partUrl, true);
+                    const partData = await smartFetch(partUrl, true);
 
                     const parts = (partData?.participants || []).map(p => ({
                         num: p.numPmu,
@@ -215,7 +211,42 @@ async function scanSingleMeeting(date, rNum, threshold) {
     } catch (e) { throw e; }
 }
 
-// --- LOGIQUE METIER ---
+// --- SMART FETCH (ROTATION DE PROXIES) ---
+// Cette fonction est le coeur de la réparation
+async function smartFetch(url, ignore404 = false) {
+    let lastError = null;
+
+    for (const proxyBase of PROXY_LIST) {
+        try {
+            const finalUrl = proxyBase + encodeURIComponent(url);
+            
+            // Si le proxy est vide (mode direct), on n'encode pas
+            const fetchUrl = proxyBase === '' ? url : finalUrl;
+
+            const res = await fetch(fetchUrl);
+            
+            if (res.status === 404 && ignore404) return null; // 404 est une réponse valide (pas de course)
+            
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            
+            // Tentative de parsing JSON
+            const data = await res.json();
+            
+            // Si on est là, c'est que ça a marché !
+            return data;
+
+        } catch (e) {
+            // Si ça échoue, on continue à la prochaine boucle (prochain proxy)
+            // console.warn(`Echec proxy ${proxyBase} :`, e);
+            lastError = e;
+        }
+    }
+
+    // Si tous les proxys ont échoué
+    throw new Error(`Echec total (tous proxies bloqués). Dernier: ${lastError.message}`);
+}
+
+// --- LOGIQUE METIER (Inchangée) ---
 
 function hasTrioBet(rapports) {
     if (!rapports || !Array.isArray(rapports)) return false;
@@ -250,8 +281,6 @@ function finishScan() {
     setStatus(msg, type);
     if (state.results.length) dom.actions.style.display = 'block';
 }
-
-// --- RENDU ---
 
 function renderCourses(courses, threshold) {
     courses.forEach(c => {
@@ -305,11 +334,6 @@ function buildPartantsHTML(parts) {
 }
 
 // --- UTILS ---
-async function fetchAPI(url, ignore404 = false) {
-    const res = await fetch(PROXY_URL + encodeURIComponent(url));
-    if (!res.ok) { if (ignore404 && res.status === 404) return null; throw new Error(`HTTP ${res.status}`); }
-    return await res.json();
-}
 function getDatesInRange(start, end) {
     const parse = d => new Date(d.substring(4), d.substring(2,4)-1, d.substring(0,2));
     const fmt = d => String(d.getDate()).padStart(2,'0') + String(d.getMonth()+1).padStart(2,'0') + d.getFullYear();
