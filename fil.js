@@ -1,5 +1,5 @@
 /**
- * scriptpmu.js - Version CIBLEE (Hippodrome Filter)
+ * scriptpmu.js - Version Corrigée (Structure Hippodrome)
  */
 
 const PROXY_URL = 'https://corsproxy.io/?';
@@ -14,46 +14,52 @@ let state = {
     results: [],
     threshold: 0,
     delay: 500,
-    hippoFilter: [], // Liste des mots clés (ex: ['cagnes', 'pau'])
+    hippoFilter: [], 
     stats: { eligibles: 0, found: 0 }
 };
 
 const dom = {};
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Init DOM
-    dom.start = document.getElementById('dateStart');
-    dom.end = document.getElementById('dateEnd');
-    dom.filterHippo = document.getElementById('filterHippo');
-    dom.minTrio = document.getElementById('minTrio');
-    dom.delay = document.getElementById('apiDelay');
-    dom.scanBtn = document.getElementById('scanBtn');
-    dom.retryBtn = document.getElementById('retryBtn');
-    dom.export = document.getElementById('exportBtn');
-    dom.print = document.getElementById('printBtn');
-    dom.status = document.getElementById('status');
-    dom.container = document.getElementById('resultsContainer');
-    dom.actions = document.getElementById('actionBar');
+    // Initialisation DOM
+    const get = (id) => document.getElementById(id);
     
-    // Stats
-    dom.stEligibles = document.getElementById('stEligibles');
-    dom.stFound = document.getElementById('stFound');
-    dom.stRatio = document.getElementById('stRatio');
+    dom.start = get('dateStart');
+    dom.end = get('dateEnd');
+    dom.filterHippo = get('filterHippo');
+    dom.minTrio = get('minTrio');
+    dom.delay = get('apiDelay');
+    dom.scanBtn = get('scanBtn');
+    dom.retryBtn = get('retryBtn');
+    dom.export = get('exportBtn');
+    dom.print = get('printBtn');
+    dom.status = get('status');
+    dom.container = get('resultsContainer');
+    dom.actions = get('actionBar');
+    dom.stEligibles = get('stEligibles');
+    dom.stFound = get('stFound');
+    dom.stRatio = get('stRatio');
 
     if (!dom.scanBtn) return;
 
+    // --- CLICK SCANNER ---
     dom.scanBtn.addEventListener('click', () => {
         const dStart = dom.start.value.trim();
         const dEnd = dom.end.value.trim();
         
-        if (!dStart || !dEnd) return alert('Dates requises (JJMMAAAA).');
+        if (!dStart || !dEnd) return alert('Dates requises (Format JJMMAAAA).');
 
-        // Préparation du filtre Hippodrome
-        const rawFilter = dom.filterHippo.value.toLowerCase();
-        const keywords = rawFilter.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        let keywords = [];
+        if (dom.filterHippo && dom.filterHippo.value) {
+            const rawFilter = dom.filterHippo.value.toLowerCase();
+            // On sépare par virgule et on nettoie
+            keywords = rawFilter.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        }
 
         // RESET
         state.dateList = getDatesInRange(dStart, dEnd);
+        if(state.dateList.length === 0) return alert("Dates invalides.");
+
         state.currDateIdx = 0;
         state.currReunionIdx = 1;
         state.results = [];
@@ -71,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         runScanner();
     });
 
+    // --- CLICK REPRENDRE ---
     dom.retryBtn.addEventListener('click', () => {
         state.isRunning = true;
         state.delay = parseInt(dom.delay.value) || 1000;
@@ -92,17 +99,14 @@ async function runScanner() {
         while (state.currDateIdx < state.dateList.length) {
             const date = state.dateList[state.currDateIdx];
 
-            while (state.currReunionIdx <= 6) { // On check R1 à R6
+            while (state.currReunionIdx <= 6) { 
                 if (!state.isRunning) return;
 
                 const rNum = state.currReunionIdx;
-                
-                // Feedback visuel léger (sans spammer le log)
-                setStatus(`Scan : ${date} - R${rNum}`, 'status-loading');
+                setStatus(`Analyse : ${date} - R${rNum}`, 'status-loading');
 
-                await sleep(state.delay);
+                await sleep(state.delay); 
 
-                // Analyse de la réunion
                 const coursesFound = await scanSingleMeeting(date, rNum, state.threshold);
                 
                 if (coursesFound && coursesFound.length > 0) {
@@ -120,44 +124,50 @@ async function runScanner() {
     } catch (e) {
         state.isRunning = false;
         console.error(e);
-        setStatus(`ERREUR : ${e.message}. Pause.`, 'status-error');
+        setStatus(`ERREUR : ${e.message}.`, 'status-error');
         dom.retryBtn.style.display = 'inline-block';
         dom.scanBtn.disabled = false;
     }
 }
 
 /**
- * SCAN MEETING AVEC FILTRE HIPPODROME
+ * SCAN REUNION (CORRECTION HIPPODROME)
  */
 async function scanSingleMeeting(date, rNum, threshold) {
     try {
-        // 1. Récupération du Programme de la réunion
         const progUrl = `${API_BASE}/${date}/R${rNum}`;
         const progData = await fetchAPI(progUrl, true);
 
         // Si la réunion n'existe pas ou est vide
         if (!progData || !progData.courses) return [];
 
-        // 2. FILTRE HIPPODROME
-        // On récupère le nom de l'hippodrome de la réponse
-        const currentHippoName = (progData.hippodrome?.libelle || "").toLowerCase();
+        // --- CORRECTION DETECTION HIPPODROME ---
+        // Le JSON renvoie "libelleLong" et "libelleCourt". "libelle" n'existe pas.
+        const hippoObj = progData.hippodrome || {};
+        const hippoNameLong = (hippoObj.libelleLong || "").toLowerCase();
+        const hippoNameShort = (hippoObj.libelleCourt || "").toLowerCase();
         
-        // Si l'utilisateur a défini un filtre
+        // On concatène les deux pour être sûr de trouver le mot clé (ex: "cagnes" dans "HIPPODROME DE LA COTE D'AZUR")
+        const fullHippoName = `${hippoNameLong} ${hippoNameShort}`;
+
+        // Filtrage
         if (state.hippoFilter.length > 0) {
-            // On vérifie si le nom de l'hippodrome contient l'un des mots clés (ex: "cagnes" dans "CAGNES-SUR-MER")
-            const isMatch = state.hippoFilter.some(keyword => currentHippoName.includes(keyword));
+            // On vérifie si l'un des mots clés est présent dans le nom complet
+            const isMatch = state.hippoFilter.some(keyword => fullHippoName.includes(keyword));
             
-            // Si ça ne matche pas, on ignore toute la réunion
             if (!isMatch) {
-                // console.log(`Ignoré: ${currentHippoName}`);
+                // console.log(`[IGNORE] Hippo: ${fullHippoName} ne contient pas ${state.hippoFilter}`);
                 return []; 
             }
         }
 
         const found = [];
+        const hippoLabel = hippoObj.libelleCourt || hippoObj.libelleLong || "Inconnu";
 
-        // 3. Boucle sur les courses
         for (const cInfo of progData.courses) {
+            // Ignorer les courses annulées (Statut vu dans votre JSON : COURSE_ANNULEE)
+            if (cInfo.statut === "COURSE_ANNULEE") continue;
+
             const cNum = cInfo.numOrdre;
             
             // Rapports
@@ -165,17 +175,15 @@ async function scanSingleMeeting(date, rNum, threshold) {
             const rapUrl = `${API_BASE}/${date}/R${rNum}/C${cNum}/rapports-definitifs`;
             const rapports = await fetchAPI(rapUrl, true);
 
-            // Est-ce qu'il y a un Trio ?
             if (hasTrioBet(rapports)) {
                 state.stats.eligibles++;
                 updateStatsUI();
 
-                // Est-ce que le gain > seuil ?
                 if (hasHighTrio(rapports, threshold)) {
                     state.stats.found++;
                     updateStatsUI();
 
-                    // Détails + Participants
+                    // Participants
                     await sleep(state.delay / 2);
                     const partUrl = `${API_BASE}/${date}/R${rNum}/C${cNum}/participants`;
                     const partData = await fetchAPI(partUrl, true);
@@ -191,7 +199,7 @@ async function scanSingleMeeting(date, rNum, threshold) {
                     found.push({
                         date: date,
                         id: `R${rNum}C${cNum}`,
-                        hippo: progData.hippodrome?.libelle || "Inconnu",
+                        hippo: hippoLabel,
                         num: cNum,
                         nom: cInfo.libelle,
                         heure: cInfo.heureDepart,
@@ -237,11 +245,13 @@ function finishScan() {
     state.isRunning = false;
     dom.scanBtn.disabled = false;
     dom.retryBtn.style.display = 'none';
-    setStatus(`Scan terminé pour : ${state.hippoFilter.join(', ') || 'TOUS'}.`, state.results.length ? 'status-success' : 'status-error');
+    const msg = state.results.length ? "Scan terminé." : "Aucun résultat trouvé.";
+    const type = state.results.length ? 'status-success' : 'status-error';
+    setStatus(msg, type);
     if (state.results.length) dom.actions.style.display = 'block';
 }
 
-// --- UI HELPERS ---
+// --- RENDU ---
 
 function renderCourses(courses, threshold) {
     courses.forEach(c => {
