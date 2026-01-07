@@ -1,6 +1,5 @@
 /**
- * scriptpmu.js - Version Finale
- * Affichage DIRECT (Sans Dropdown) des Rapports et Participants
+ * scriptpmu.js - Version PDF Ready
  */
 
 const PROXY_URL = 'https://corsproxy.io/?';
@@ -14,21 +13,26 @@ document.addEventListener('DOMContentLoaded', () => {
         reunion: document.getElementById('reunionInput'),
         fetch: document.getElementById('fetchBtn'),
         export: document.getElementById('exportBtn'),
+        print: document.getElementById('printBtn'),
+        actionBar: document.getElementById('actionBar'),
         status: document.getElementById('status'),
         container: document.getElementById('resultsContainer')
     };
 
     if (!dom.fetch) return;
 
+    // 1. CHARGEMENT
     dom.fetch.addEventListener('click', async () => {
         const date = dom.date.value.trim();
         const rStr = dom.reunion.value.trim().toUpperCase();
         const rNum = rStr.replace(/\D/g, '');
 
-        if (!date || !rNum) return alert('Date et Réunion requises (ex: 07012026 / R1)');
+        if (!date || !rNum) return alert('Date et Réunion requises');
 
         setLoading(dom, true);
         dom.container.innerHTML = '';
+        dom.actionBar.style.display = 'none'; // Cacher boutons
+
         globalData = { meta: { date, reunion: rStr }, courses: [] };
 
         try {
@@ -41,18 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             renderUI(dom, globalData.courses);
             
-            dom.export.style.display = 'inline-block';
-            setStatus(dom, `${globalData.courses.length} courses affichées.`, 'status-loading', false);
+            // Mise à jour pour le PDF
+            document.title = `PMU_${date}_${rStr}`; 
+            
+            dom.actionBar.style.display = 'block'; // Afficher boutons
+            setStatus(dom, `${globalData.courses.length} courses chargées.`, 'status-loading', false);
 
         } catch (e) {
             console.error(e);
             setStatus(dom, "Erreur : " + e.message, 'status-error');
-            dom.export.style.display = 'none';
         } finally {
             setLoading(dom, false);
         }
     });
 
+    // 2. EXPORT JSON
     dom.export.addEventListener('click', () => {
         if (!globalData) return;
         const blob = new Blob([JSON.stringify(globalData, null, 2)], {type: 'application/json;charset=utf-8'});
@@ -62,6 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    });
+
+    // 3. IMPRESSION / PDF
+    dom.print.addEventListener('click', () => {
+        window.print();
     });
 });
 
@@ -73,12 +85,14 @@ async function processCourse(date, rNum, cInfo) {
         fetchAPI(`${API_BASE}/${date}/R${rNum}/C${cNum}/rapports-definitifs`).catch(() => null)
     ]);
 
+    // MAP PARTICIPANTS (FIX NOM)
     const parts = (partants.participants || []).map(p => ({
         num: p.numPmu,
-        nom: p.nomCheval,
-        driver: p.driver || p.jockey,
-        entraineur: p.entraineur,
-        musique: p.musique,
+        // Sécurité sur le nom : nomCheval OU nom
+        nom: p.nomCheval || p.nom || "Nom Inconnu", 
+        driver: p.driver || p.jockey || "-",
+        entraineur: p.entraineur || "-",
+        musique: p.musique || "-",
         cote: p.dernierRapportDirect ? p.dernierRapportDirect.rapport : null
     }));
 
@@ -109,7 +123,6 @@ function renderUI(dom, courses) {
         const heure = new Date(c.heure).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         const arriveeTxt = c.arrivee.length ? c.arrivee.join(' - ') : 'En cours';
 
-        // Génération des tableaux HTML
         const htmlRapports = buildRapportsTable(c.rapports);
         const htmlPartants = buildPartantsTable(c.participants);
 
@@ -119,11 +132,10 @@ function renderUI(dom, courses) {
                 <span>${heure}</span>
             </div>
             <div class="race-body">
-                
                 <div class="meta-box">
                     <div>
                         <strong>Discipline :</strong> ${c.discipline}<br>
-                        <strong>Arrivée :</strong> <span style="color:#d63384; font-weight:bold; font-size:1.1em;">${arriveeTxt}</span>
+                        <strong>Arrivée :</strong> <span style="color:#d63384; font-weight:bold;">${arriveeTxt}</span>
                     </div>
                     <div>
                         <strong>Terrain :</strong> ${c.terrain.nature} (${c.terrain.penetrometre})<br>
@@ -132,14 +144,11 @@ function renderUI(dom, courses) {
                     <div class="conditions-text">${c.conditions}</div>
                 </div>
 
-                <h4>Rapports Définitifs (pour 1€)</h4>
+                <h4>Rapports (1€)</h4>
                 ${htmlRapports}
 
-                <h4>Tableau des Partants</h4>
-                <div style="overflow-x:auto;">
-                    ${htmlPartants}
-                </div>
-
+                <h4>Partants</h4>
+                ${htmlPartants}
             </div>
         `;
         dom.container.appendChild(div);
@@ -147,16 +156,16 @@ function renderUI(dom, courses) {
 }
 
 function buildPartantsTable(participants) {
-    if (!participants || participants.length === 0) return '<p>Aucun participant trouvé.</p>';
+    if (!participants || participants.length === 0) return '<p>Aucun participant.</p>';
 
     let html = `<table class="participants-table">
         <thead>
             <tr>
-                <th style="width:50px; text-align:center;">N°</th>
+                <th style="width:40px; text-align:center;">N°</th>
                 <th>Cheval</th>
                 <th>Driver / Jockey</th>
                 <th>Musique</th>
-                <th style="width:80px; text-align:right;">Cote</th>
+                <th style="width:60px; text-align:right;">Cote</th>
             </tr>
         </thead>
         <tbody>`;
@@ -167,7 +176,7 @@ function buildPartantsTable(participants) {
                 <td style="text-align:center; font-weight:bold;">${p.num}</td>
                 <td><strong>${p.nom}</strong></td>
                 <td>${p.driver}</td>
-                <td style="font-size:0.85em; color:#555;">${p.musique || '-'}</td>
+                <td style="font-size:0.85em; color:#555;">${p.musique}</td>
                 <td style="text-align:right; font-weight:bold; color:#0056b3;">${p.cote || '-'}</td>
             </tr>
         `;
@@ -188,9 +197,9 @@ function buildRapportsTable(rapports) {
     let html = `<table class="reports-table">
         <thead>
             <tr>
-                <th>Type de Pari</th>
+                <th>Pari</th>
                 <th>Combinaison</th>
-                <th>Gain (1€)</th>
+                <th>Gain</th>
             </tr>
         </thead>
         <tbody>`;
@@ -198,14 +207,12 @@ function buildRapportsTable(rapports) {
     hits.forEach(r => {
         let badge = 'badge-couple';
         let lbl = r.libelle || r.typePari.replace('E_','');
-
         if (r.typePari.includes('GAGNANT')) badge = 'badge-win';
         else if (r.typePari.includes('PLACE')) badge = 'badge-place';
         else if (r.typePari.includes('TRIO') || r.typePari.includes('TIERCE')) badge = 'badge-trio';
 
         r.rapports.forEach(g => {
             let val = g.dividendePourUnEuro ? g.dividendePourUnEuro / 100 : (g.dividende / (r.miseBase || 100));
-            
             html += `<tr>
                 <td><span class="badge ${badge}">${lbl}</span></td>
                 <td><b>${g.combinaison}</b></td>
@@ -218,7 +225,6 @@ function buildRapportsTable(rapports) {
     return html;
 }
 
-// UTILS
 async function fetchAPI(url) {
     const res = await fetch(PROXY_URL + encodeURIComponent(url));
     if (!res.ok) { if(res.status === 404) return {}; throw new Error(`HTTP ${res.status}`); }
