@@ -1,19 +1,15 @@
 /**
  * scriptpmu.js
- * Version Corrigée : Export JSON renforcé
+ * Fonctionnalités : Proxy CORS, API Online (Client 1), Rapports détaillés, Musique, Export JSON.
  */
 
-// CONFIGURATION
 const PROXY_URL = 'https://corsproxy.io/?';
 const API_BASE = 'https://online.turfinfo.api.pmu.fr/rest/client/1/programme';
 
-// ÉTAT GLOBAL
+// Stockage global pour l'export
 let globalExtractedData = null;
 
-// ATTENTE DU CHARGEMENT DE LA PAGE
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Récupération sécurisée des éléments DOM
     const dom = {
         date: document.getElementById('dateInput'),
         reunion: document.getElementById('reunionInput'),
@@ -23,58 +19,44 @@ document.addEventListener('DOMContentLoaded', () => {
         results: document.getElementById('resultsContainer')
     };
 
-    // Vérification que les éléments existent
-    if (!dom.btnFetch || !dom.btnExport) {
-        console.error("Erreur critique : Boutons introuvables dans le HTML");
-        return;
-    }
+    if (!dom.btnFetch) return;
 
-    // --- EVENEMENTS ---
-
-    // 1. Clic sur "Charger"
+    // --- 1. CHARGEMENT DES DONNÉES ---
     dom.btnFetch.addEventListener('click', async () => {
         const date = dom.date.value.trim();
         const reunionStr = dom.reunion.value.trim().toUpperCase();
         const reunionNum = reunionStr.replace(/\D/g, ''); 
 
         if (!date || !reunionNum) {
-            showStatus(dom, 'Veuillez renseigner la date (ex: 07012026) et la réunion (ex: R1).', 'error');
+            showStatus(dom, 'Format invalide. Utilisez Date: JJMMAAAA et Réunion: R1', 'error');
             return;
         }
 
         setLoading(dom, true);
         
+        // Reset data
         globalExtractedData = { 
-            meta: { 
-                date: date, 
-                reunion: reunionStr, 
-                source: "PMU Online Client 1",
-                generated_at: new Date().toISOString() 
-            }, 
+            meta: { date, reunion: reunionStr, generated_at: new Date().toISOString() }, 
             courses: [] 
         };
 
         try {
-            // Récupération Programme
+            // A. Programme
             const urlProg = `${API_BASE}/${date}/R${reunionNum}`;
             const progData = await fetchWithProxy(urlProg);
 
-            if (!progData.courses || progData.courses.length === 0) {
-                throw new Error("Aucune course trouvée. Vérifiez la date.");
-            }
+            if (!progData.courses || progData.courses.length === 0) throw new Error("Aucune course trouvée.");
 
-            // Récupération Détails (Parallèle)
+            // B. Détails (Parallèle)
             const promises = progData.courses.map(course => processCourse(date, reunionNum, course));
             globalExtractedData.courses = await Promise.all(promises);
-
-            // Tri
+            
+            // Tri par numéro de course
             globalExtractedData.courses.sort((a, b) => a.num_course - b.num_course);
 
-            // Affichage
+            // C. Rendu
             renderResults(dom, globalExtractedData.courses);
             showStatus(dom, `${globalExtractedData.courses.length} courses chargées avec succès.`, 'success');
-            
-            // Afficher le bouton Export
             dom.btnExport.style.display = 'inline-block';
 
         } catch (error) {
@@ -86,59 +68,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Clic sur "Télécharger JSON"
+    // --- 2. EXPORT JSON ---
     dom.btnExport.addEventListener('click', () => {
-        if (!globalExtractedData) {
-            alert("Aucune donnée à télécharger. Veuillez d'abord charger une réunion.");
-            return;
-        }
-
-        try {
-            const fileName = `PMU_${globalExtractedData.meta.date}_${globalExtractedData.meta.reunion}.json`;
-            const dataStr = JSON.stringify(globalExtractedData, null, 2);
-            
-            // Création du Blob avec encodage UTF-8
-            const blob = new Blob([dataStr], { type: 'application/json;charset=utf-8' });
-            
-            // Création du lien de téléchargement temporaire
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            
-            // Ajout au DOM, clic, et nettoyage (Compatible Firefox/Chrome)
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Libération mémoire
-            setTimeout(() => URL.revokeObjectURL(url), 100);
-            
-        } catch (e) {
-            console.error("Erreur Export:", e);
-            alert("Erreur lors de la création du fichier : " + e.message);
-        }
+        if (!globalExtractedData) return;
+        const fileName = `PMU_${globalExtractedData.meta.date}_${globalExtractedData.meta.reunion}.json`;
+        const blob = new Blob([JSON.stringify(globalExtractedData, null, 2)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 100);
     });
-
 });
 
 /**
- * Traite une course individuelle
+ * Récupère les données d'une course spécifique (Participants + Rapports)
  */
 async function processCourse(date, reunionNum, courseInfo) {
     const cNum = courseInfo.numOrdre;
     
-    // URLs
-    const urlParticipants = `${API_BASE}/${date}/R${reunionNum}/C${cNum}/participants`;
-    const urlRapports = `${API_BASE}/${date}/R${reunionNum}/C${cNum}/rapports-definitifs`;
-
-    // Fetch Parallèle
+    // On appelle Participants et Rapports en parallèle pour aller plus vite
     const [partantsData, rapportsData] = await Promise.all([
-        fetchWithProxy(urlParticipants).catch(e => ({ participants: [] })),
-        fetchWithProxy(urlRapports).catch(e => null)
+        fetchWithProxy(`${API_BASE}/${date}/R${reunionNum}/C${cNum}/participants`).catch(() => ({ participants: [] })),
+        fetchWithProxy(`${API_BASE}/${date}/R${reunionNum}/C${cNum}/rapports-definitifs`).catch(() => null)
     ]);
 
-    // Formatage Participants
+    // Nettoyage des participants
     const participantsPropres = (partantsData.participants || []).map(p => ({
         numero: p.numPmu,
         nom: p.nomCheval,
@@ -156,25 +114,11 @@ async function processCourse(date, reunionNum, courseInfo) {
         heure_depart: courseInfo.heureDepart,
         ordre_arrivee: courseInfo.ordreArrivee || [],
         participants: participantsPropres,
-        rapports: rapportsData
+        rapports: rapportsData // On garde l'objet complet pour le JSON
     };
 }
 
-/**
- * Proxy Wrapper
- */
-async function fetchWithProxy(targetUrl) {
-    const finalUrl = PROXY_URL + encodeURIComponent(targetUrl);
-    const response = await fetch(finalUrl);
-    
-    if (!response.ok) {
-        if(response.status === 404) return {}; 
-        throw new Error(`HTTP ${response.status}`);
-    }
-    return await response.json();
-}
-
-// --- FONCTIONS UI ---
+// --- RENDU HTML ---
 
 function renderResults(dom, courses) {
     dom.results.innerHTML = '';
@@ -183,7 +127,8 @@ function renderResults(dom, courses) {
         const div = document.createElement('div');
         div.className = 'race-card';
         
-        const arriveeTxt = course.ordre_arrivee.length > 0 ? course.ordre_arrivee.join(' - ') : 'En cours';
+        const arriveeTxt = course.ordre_arrivee.length > 0 ? course.ordre_arrivee.join(' - ') : 'Arrivée non disponible';
+        const rapportsHtml = generateReportsHtml(course.rapports);
 
         div.innerHTML = `
             <div class="race-header">
@@ -193,19 +138,20 @@ function renderResults(dom, courses) {
             <div class="race-content">
                 <div class="race-meta">
                     <strong>Discipline:</strong> ${course.discipline} | 
-                    <strong>Partants:</strong> ${course.participants.length}
+                    <strong>Partants:</strong> ${course.participants.length} |
+                    <strong>Arrivée:</strong> <span style="color:#d63384; font-weight:bold">${arriveeTxt}</span>
                 </div>
-                <div style="margin-top:5px; color:#0056b3;">
-                    <strong>Arrivée:</strong> ${arriveeTxt}
-                </div>
-                <details style="margin-top:10px;">
-                    <summary>Voir les participants (Premier: ${course.participants[0]?.nom || '?'})</summary>
+
+                ${rapportsHtml}
+
+                <details>
+                    <summary>Voir les ${course.participants.length} partants (Musique & Cotes)</summary>
                     <div>
                         ${course.participants.map(p => `
-                            <div>
-                                <strong>${p.numero}</strong> ${p.nom} 
-                                <span style="color:#666; font-size:0.9em;">(${p.musique})</span> 
-                                <span style="float:right; font-weight:bold;">${p.cote || '-'}</span>
+                            <div class="p-row">
+                                <strong>${p.numero}</strong> 
+                                <span>${p.nom} <span style="color:#666; font-size:0.9em;">(${p.musique})</span></span>
+                                <span style="font-weight:bold;">${p.cote || '-'}</span>
                             </div>
                         `).join('')}
                     </div>
@@ -216,6 +162,55 @@ function renderResults(dom, courses) {
     });
 }
 
+/**
+ * Génère le tableau HTML des rapports financiers
+ */
+function generateReportsHtml(rapports) {
+    if (!rapports || !Array.isArray(rapports)) return '<p style="color:#777; font-style:italic;">Rapports non disponibles.</p>';
+
+    // Filtre des paris demandés
+    const CIBLES = ['SIMPLE_GAGNANT', 'SIMPLE_PLACE', 'COUPLE_GAGNANT', 'COUPLE_PLACE', 'COUPLE_ORDRE', 'TRIO', 'TRIO_ORDRE', 'TIERCE', 'CLASSIC_TIERCE'];
+    const paris = rapports.filter(r => CIBLES.some(c => r.typePari.includes(c)));
+
+    if (paris.length === 0) return '<p style="color:#777; font-style:italic;">Aucun rapport définitif affichable.</p>';
+
+    let html = '<table class="reports-table"><thead><tr><th>Type</th><th>Combinaison</th><th>Rapport (1€)</th></tr></thead><tbody>';
+
+    paris.forEach(p => {
+        let badgeClass = 'bg-couple'; // Defaut jaune
+        let label = p.libelle || p.typePari;
+
+        if (p.typePari.includes('GAGNANT')) badgeClass = 'bg-win';
+        else if (p.typePari.includes('PLACE')) badgeClass = 'bg-place';
+        else if (p.typePari.includes('TRIO') || p.typePari.includes('TIERCE')) badgeClass = 'bg-trio';
+
+        p.rapports.forEach(r => {
+            const gain = (r.dividendePourUnEuro / 100).toFixed(2);
+            html += `
+                <tr>
+                    <td><span class="badge ${badgeClass}">${label}</span></td>
+                    <td><b>${r.combinaison}</b></td>
+                    <td style="color:#d63384; font-weight:bold;">${gain} €</td>
+                </tr>`;
+        });
+    });
+
+    html += '</tbody></table>';
+    return html;
+}
+
+// --- UTILITAIRES ---
+
+async function fetchWithProxy(targetUrl) {
+    const finalUrl = PROXY_URL + encodeURIComponent(targetUrl);
+    const response = await fetch(finalUrl);
+    if (!response.ok) {
+        if(response.status === 404) return {}; 
+        throw new Error(`HTTP ${response.status}`);
+    }
+    return await response.json();
+}
+
 function showStatus(dom, msg, type) {
     dom.status.style.display = 'block';
     dom.status.className = `status-${type}`;
@@ -224,12 +219,9 @@ function showStatus(dom, msg, type) {
 
 function setLoading(dom, isLoading) {
     dom.btnFetch.disabled = isLoading;
-    dom.date.disabled = isLoading;
-    dom.reunion.disabled = isLoading;
-    
     if (isLoading) {
-        showStatus(dom, 'Chargement en cours...', 'loading');
+        showStatus(dom, 'Chargement des données Online...', 'loading');
         dom.results.innerHTML = '';
-        dom.btnExport.style.display = 'none'; // On cache le bouton pendant le chargement
+        dom.btnExport.style.display = 'none';
     }
 }
