@@ -30,6 +30,21 @@ const examData = [
     "explanation": "El patr\u00f3n mixto l\u00edtico-escler\u00f3tico ('apolillado') junto con una reacci\u00f3n peri\u00f3stica agresiva en 'sol naciente' o 'tri\u00e1ngulo de Codman' es altamente sugestivo de malignidad \u00f3sea primaria, t\u00edpicamente osteosarcoma."
   },
   {
+    "number": 3,
+    "text": "Ingresa una paciente de 83 años para tratamiento de aneurisma de aorta abdominal de 50mm de diámetro, por crecimiento rápido en los últimos 6 meses. Entre sus antecedentes destaca: hipertensión arterial, dislipemia, portadora de marcapasos por bloqueo auriculoventricular completo como antecedentes. Veinticuatro horas tras la cirugía la paciente presenta distensión, dolor abdominal y rectorragias, acompañado de leucocitosis 32.100μl, con el 95% de neutrófilos y 278 de LDH como únicas alteraciones analíticas, por lo que se realiza un angio-tomografía computerizada, con la siguiente imagen (IMAGEN 3). ¿Cuál es el diagnóstico más probable?:",
+    "options": {
+      "1": "Isquemia mesentérica aguda.",
+      "2": "Isquemia mesentérica crónica.",
+      "3": "Isquemia mesentérica no oclusiva.",
+      "4": "Colitis isquémica."
+    },
+    "images": [
+      "image_3.jpeg"
+    ],
+    "answer": 4,
+    "explanation": "El diagnóstico más probable es la colitis isquémica. Esta es una complicación clásica tras la cirugía de aneurisma de aorta abdominal (AAA), debido a la manipulación de la aorta o la ligadura de la arteria mesentérica inferior durante el procedimiento. La clínica de dolor abdominal y rectorragia (sangrado rectal) 24 horas después de la intervención, junto con la leucocitosis marcada, es muy sugestiva. La Imagen 3 (angio-TAC) confirma el diagnóstico al mostrar un engrosamiento parietal circunferencial significativo del colon izquierdo con edema de la submucosa (signo de la diana), indicativo de daño isquémico de la pared colónica."
+  },
+  {
     "number": 4,
     "text": "Mujer de 36 a\u00f1os que acude a la consulta por una tumoraci\u00f3n a nivel abdominal... A la exploraci\u00f3n observas los siguientes hallazgos. \u00bfCu\u00e1l es el diagn\u00f3stico m\u00e1s probable?:",
     "options": {
@@ -2661,6 +2676,19 @@ const examData = [
     "images": [],
     "answer": 1,
     "explanation": "Correcto. La ecograf\u00eda-Doppler venosa es la prueba de elecci\u00f3n (Gold Standard cl\u00ednico) por su alta sensibilidad y especificidad. La duraci\u00f3n de la anticoagulaci\u00f3n suele ser de 3-6 meses para un primer episodio provocado, o indefinida en casos recurrentes o no provocados con alto riesgo; '12 meses' no es una norma fija."
+  },
+  {
+    "number": 203,
+    "text": "¿Cuál de los siguientes microorganismos no es habitual en las infecciones del tracto urinario?",
+    "options": {
+      "1": "Clostridium perfringens.",
+      "2": "Klebsiella pneumoniae.",
+      "3": "Pseudomonas aeruginosa.",
+      "4": "Staphylococcus saprophyticus."
+    },
+    "images": [],
+    "answer": 1,
+    "explanation": "Clostridium perfringens es un bacilo grampositivo anaerobio estrecho, causante habitual de gangrena gaseosa e intoxicaciones alimentarias, pero no forma parte de los uropatógenos frecuentes. Por el contrario, Klebsiella pneumoniae y Pseudomonas aeruginosa son bacilos gramnegativos habituales en ITUs complicadas o nosocomiales, y Staphylococcus saprophyticus es una causa común de cistitis en mujeres jóvenes sexualmente activas."
   },
   {
     "number": 204,
