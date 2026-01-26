@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador corrección MIR 2025</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Auto-Correction MIR 2025</h1>
+            <p>Selecciona tu respuesta para cada pregunta y calcula tu puntuación al final.</p>
+            <div class="score-summary" id="score-summary" style="display: none;">
+                <div class="score-card">
+                    <span class="score-label">Puntuación Total</span>
+                    <span class="score-value" id="total-score">0</span>
+                </div>
+                <div class="score-details">
+                    <div class="detail green"><span id="correct-count">0</span> Aciertos (+3)</div>
+                    <div class="detail red"><span id="incorrect-count">0</span> Fallos (-1)</div>
+                    <div class="detail gray"><span id="blank-count">0</span> Blancos (0)</div>
+                </div>
+            </div>
+        </header>
+
+        <form id="exam-form">
+            <div id="questions-container"></div>
+            
+            <div class="actions">
+                <button type="button" id="calculate-btn" class="btn-primary">Calcular Resultados</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Load data first -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
