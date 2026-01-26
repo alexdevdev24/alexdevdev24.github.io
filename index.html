@@ -3,37 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador corrección MIR 2025</title>
+    <title>Simulador Futurista MIR 2025</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for futuristic look -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>Auto-Correction MIR 2025</h1>
-            <p>Selecciona tu respuesta para cada pregunta y calcula tu puntuación al final.</p>
-            <div class="score-summary" id="score-summary" style="display: none;">
-                <div class="score-card">
-                    <span class="score-label">Puntuación Total</span>
-                    <span class="score-value" id="total-score">0</span>
-                </div>
-                <div class="score-details">
-                    <div class="detail green"><span id="correct-count">0</span> Aciertos (+3)</div>
-                    <div class="detail red"><span id="incorrect-count">0</span> Fallos (-1)</div>
-                    <div class="detail gray"><span id="blank-count">0</span> Blancos (0)</div>
-                </div>
-            </div>
-        </header>
 
-        <form id="exam-form">
-            <div id="questions-container"></div>
-            
-            <div class="actions">
-                <button type="button" id="calculate-btn" class="btn-primary">Calcular Resultados</button>
+    <!-- HUD / Sticky Header -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="app-title">MIR 2025 // SIMULATION</h1>
+            <div class="score-hud">
+                <div class="hud-item total">PTS: <span id="hud-score">0</span></div>
+                <div class="hud-item success" style="color: var(--neon-green)">✓ <span id="hud-correct">0</span></div>
+                <div class="hud-item error" style="color: var(--neon-red)">✗ <span id="hud-incorrect">0</span></div>
             </div>
-        </form>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Questions injected here by JS -->
+        <div id="quiz-container">
+            <!-- Dynamic Content -->
+        </div>
+
+        <!-- Controls Area -->
+        <div class="controls-area" id="controls-area">
+            <button id="action-btn" class="btn-futuristic">START SIMULATION</button>
+        </div>
     </div>
 
-    <!-- Load data first -->
+    <!-- Data & Logic -->
     <script src="data.js"></script>
     <script src="script.js"></script>
 </body>

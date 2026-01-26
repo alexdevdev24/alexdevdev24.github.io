@@ -1,139 +1,186 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('questions-container');
-    const calculateBtn = document.getElementById('calculate-btn');
-    const scoreSummary = document.getElementById('score-summary');
+    // State
+    let currentIndex = 0;
+    let score = 0;
+    let correctCount = 0;
+    let incorrectCount = 0;
+    let isQuestionActive = false; // true = waiting for answer, false = showing result
 
-    // Render Questions
-    examData.forEach((q, index) => {
-        const card = document.createElement('div');
-        card.className = 'question-card';
-        card.id = `q-card-${q.number}`;
+    // DOM Elements
+    const container = document.getElementById('quiz-container');
+    const actionBtn = document.getElementById('action-btn');
+    const hudScore = document.getElementById('hud-score');
+    const hudCorrect = document.getElementById('hud-correct');
+    const hudIncorrect = document.getElementById('hud-incorrect');
 
-        // Handle images
+    // Initial Start
+    actionBtn.onclick = startQuiz;
+
+    function startQuiz() {
+        currentIndex = 0;
+        score = 0;
+        correctCount = 0;
+        incorrectCount = 0;
+        updateHUD();
+        loadQuestion(currentIndex);
+    }
+
+    function updateHUD() {
+        // Animate numbers (simple text update for now)
+        hudScore.innerText = score;
+        hudCorrect.innerText = correctCount;
+        hudIncorrect.innerText = incorrectCount;
+    }
+
+    function loadQuestion(index) {
+        if (index >= examData.length) {
+            showSummary();
+            return;
+        }
+
+        const q = examData[index];
+        isQuestionActive = true;
+
+        // Reset button
+        actionBtn.innerText = "VALIDER";
+        actionBtn.onclick = validateAnswer;
+
+        // Create Card HTML
+        // Handle Images
         let imagesHtml = '';
         if (q.images && q.images.length > 0) {
             imagesHtml = `<div class="q-image">`;
             q.images.forEach(img => {
-                // Assuming images are in ../images/ relative to the site folder
-                imagesHtml += `<img src="../images/${img}" alt="Imagen pregunta ${q.number}">`;
+                imagesHtml += `<img src="../images/${img}" alt="Imagen">`;
             });
             imagesHtml += `</div>`;
         }
 
         // Handle Options
         let optionsHtml = '';
-        // Some questions might have options as object or array. Standardize.
-        // The JSON seems to have "options": {"1": "...", "2": "..."}
-
         ['1', '2', '3', '4'].forEach(optNum => {
             if (q.options && q.options[optNum]) {
                 optionsHtml += `
-                    <label class="option-label" data-q="${q.number}" data-opt="${optNum}">
-                        <input type="radio" name="q${q.number}" value="${optNum}">
+                    <label class="option-label" data-opt="${optNum}">
+                        <input type="radio" name="current-q" value="${optNum}">
                         <span class="option-text"><strong>${optNum})</strong> ${q.options[optNum]}</span>
                     </label>
                 `;
             }
         });
 
-        // Blank option
+        // Blank Option
         optionsHtml += `
-            <label class="option-label blank-option" data-q="${q.number}" data-opt="blank">
-                <input type="radio" name="q${q.number}" value="blank" checked>
+            <label class="option-label blank-option" data-opt="blank">
+                <input type="radio" name="current-q" value="blank">
                 <span class="option-text">Dejar en blanco (No contestada)</span>
             </label>
         `;
 
-        card.innerHTML = `
-            <div class="question-header">
-                <span class="q-num">Pregunta ${q.number}</span>
-                <span class="q-status" id="status-${q.number}"></span>
-            </div>
-            ${imagesHtml}
-            <div class="q-text">${q.text}</div>
-            <div class="options-grid">
-                ${optionsHtml}
-            </div>
-            <div class="explanation-box" id="explain-${q.number}">
-                <span class="explanation-title">Explicación:</span>
-                ${q.explanation || "Sin explicación disponible."}
-                <br><br>
-                <strong>Respuesta Correcta: ${q.answer}</strong>
+        const html = `
+            <div class="question-card">
+                <div class="question-header">
+                    <span class="q-num">PREGUNTA ${q.number} / ${examData.length}</span>
+                    <span class="q-status" id="q-status">EN CURSO...</span>
+                </div>
+                ${imagesHtml}
+                <div class="q-text">${q.text}</div>
+                <div class="options-grid">
+                    ${optionsHtml}
+                </div>
+                <div class="explanation-box" id="explanation-box">
+                    <span class="explanation-title">ANÁLISIS</span>
+                    <div id="explanation-text">${q.explanation || "Sin explicación."}</div>
+                    <div style="margin-top:10px; color:var(--text-color)">
+                        Respuesta correcta: <strong>${q.answer}</strong>
+                    </div>
+                </div>
             </div>
         `;
 
-        container.appendChild(card);
-    });
+        container.innerHTML = html;
 
-    // Add click listeners to highlight selection
-    document.querySelectorAll('.option-label').forEach(label => {
-        label.addEventListener('click', function () {
-            // Remove selected class from siblings
-            const parent = this.parentNode;
-            parent.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
-            this.classList.add('selected');
-        });
-        // Initial check for default (blank) is not styled "selected" to keep it clean
-    });
-
-    // Calculate Results
-    calculateBtn.addEventListener('click', () => {
-        let correct = 0;
-        let incorrect = 0;
-        let blank = 0;
-        let totalScore = 0;
-
-        examData.forEach(q => {
-            const selected = document.querySelector(`input[name="q${q.number}"]:checked`);
-            const val = selected ? selected.value : 'blank';
-            const card = document.getElementById(`q-card-${q.number}`);
-            const explanation = document.getElementById(`explain-${q.number}`);
-            const statusLabel = document.getElementById(`status-${q.number}`);
-
-            // Reset styles
-            card.classList.remove('correct', 'incorrect');
-            card.querySelectorAll('.option-label').forEach(l => {
-                l.classList.remove('is-correct-answer', 'is-wrong-selection');
+        // Add selection listeners
+        container.querySelectorAll('.option-label').forEach(label => {
+            label.addEventListener('click', function () {
+                if (!isQuestionActive) return; // Locked after answering
+                // Visual selection
+                container.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+                this.classList.add('selected');
+                // Check radio
+                const radio = this.querySelector('input');
+                radio.checked = true;
             });
-
-            // Show explanation
-            explanation.style.display = 'block';
-
-            // Highlight Correct Answer
-            const correcyOptLabel = card.querySelector(`.option-label[data-opt="${q.answer}"]`);
-            if (correcyOptLabel) correcyOptLabel.classList.add('is-correct-answer');
-
-            if (val === 'blank') {
-                blank++;
-                statusLabel.innerText = 'NO CONTESTADA';
-                statusLabel.style.color = 'gray';
-                statusLabel.style.display = 'inline-block';
-            } else if (parseInt(val) === parseInt(q.answer)) {
-                correct++;
-                totalScore += 3;
-                card.classList.add('correct');
-                statusLabel.innerText = 'CORRECTA (+3)';
-                statusLabel.style.display = 'inline-block';
-            } else {
-                incorrect++;
-                totalScore -= 1;
-                card.classList.add('incorrect');
-                statusLabel.innerText = 'INCORRECTA (-1)';
-                statusLabel.style.display = 'inline-block';
-
-                // Highlight user's wrong selection
-                const selectedLabel = card.querySelector(`.option-label[data-opt="${val}"]`);
-                if (selectedLabel) selectedLabel.classList.add('is-wrong-selection');
-            }
         });
+    }
 
-        // Update Summary
-        document.getElementById('total-score').innerText = totalScore;
-        document.getElementById('correct-count').innerText = correct;
-        document.getElementById('incorrect-count').innerText = incorrect;
-        document.getElementById('blank-count').innerText = blank;
+    function validateAnswer() {
+        const selectedRadio = document.querySelector('input[name="current-q"]:checked');
+        if (!selectedRadio) {
+            alert("Por favor, selecciona una opción o 'Dejar en blanco'.");
+            return;
+        }
 
-        scoreSummary.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+        const val = selectedRadio.value;
+        const q = examData[currentIndex];
+        const statusSpan = document.getElementById('q-status');
+        const explanationBox = document.getElementById('explanation-box');
+
+        // Logic
+        const correctVal = String(q.answer);
+
+        if (val === 'blank') {
+            statusSpan.innerText = "NO CONTESTADA (0)";
+            statusSpan.style.color = "var(--accent-color)";
+            // No score change
+        } else if (val === correctVal) {
+            score += 3;
+            correctCount++;
+            statusSpan.innerText = "CORRECTA (+3)";
+            statusSpan.className = "q-status correct";
+            // Highlight
+            document.querySelector(`.option-label[data-opt="${val}"]`).classList.add('correct-answer');
+        } else {
+            score -= 1;
+            incorrectCount++;
+            statusSpan.innerText = "INCORRECTA (-1)";
+            statusSpan.className = "q-status incorrect";
+            // Highlight Error
+            document.querySelector(`.option-label[data-opt="${val}"]`).classList.add('wrong-selection');
+        }
+
+        // Always highlight correct answer at the end
+        if (val !== correctVal) {
+            const correctLabel = document.querySelector(`.option-label[data-opt="${correctVal}"]`);
+            if (correctLabel) correctLabel.classList.add('correct-answer');
+        }
+
+        // Update State
+        isQuestionActive = false;
+        updateHUD();
+        explanationBox.style.display = "block";
+
+        // Change Button
+        actionBtn.innerText = "SIGUIENTE >>>";
+        actionBtn.onclick = () => {
+            currentIndex++;
+            loadQuestion(currentIndex);
+        };
+    }
+
+    function showSummary() {
+        container.innerHTML = `
+            <div class="summary-screen">
+                <h2>SIMULACIÓN COMPLETADA</h2>
+                <div class="final-score">${score} Puntos</div>
+                <div class="stats-grid">
+                    <p>Aciertos: <strong style="color:var(--neon-green)">${correctCount}</strong></p>
+                    <p>Fallos: <strong style="color:var(--neon-red)">${incorrectCount}</strong></p>
+                    <p>Blancos: <strong>${examData.length - correctCount - incorrectCount}</strong></p>
+                </div>
+                <button class="btn-futuristic" onclick="location.reload()">REINICIAR SISTEMA</button>
+            </div>
+        `;
+        actionBtn.style.display = 'none';
+    }
 });
