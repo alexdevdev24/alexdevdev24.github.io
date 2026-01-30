@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwissReloc | Guía para Médicos Españoles</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Animation Library (AOS) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Swiss</div>
+                <div class="nav-links">
+                    <a href="#info-hub" class="btn btn-ghost">Info Hub</a>
+                    <a href="#action-plan" class="btn btn-primary">Mi Plan</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+
+    <!-- INFO HUB SECTION -->
+    <section id="info-hub" class="section-padding">
+        <div class="container">
+            <!-- Salary Section & Calculator -->
+            <div class="grid-2-col" style="margin-top: 3rem;">
+                <div class="glass-card" data-aos="fade-up">
+                    <h3>💰 Salarios</h3>
+                    <p>Residente R1 (ES) vs Asistente 1er año (CH)</p>
+
+                    <div class="comparison-table">
+                        <table style="width:100%; margin-top:1rem; border-collapse: collapse; font-size: 0.9rem;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--navy-light);">
+                                    <th style="text-align:left; padding: 10px;">Gasto / Concepto</th>
+                                    <th style="text-align:right; width: 35%;">MIR R1 🇪🇸<br><span
+                                            style="font-size:0.8em; font-weight:normal;">(Periferia BCN)</span></th>
+                                    <th style="text-align:right; width: 35%; color:var(--swiss-red);">Asistente 1º
+                                        🇨🇭<br><span
+                                            style="font-size:0.8em; font-weight:normal;">(Valais/Friburgo)</span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background: rgba(16, 185, 129, 0.05);">
+                                    <td style="padding: 8px; font-weight:bold;">Sueldo Neto (Est.)</td>
+                                    <td style="text-align:right;">~ 2.200 €<br><small>(con 5 guardias)</small></td>
+                                    <td style="text-align:right; font-weight:bold; color:var(--swiss-red);">~ 6.800 €
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;">Alquiler</td>
+                                    <td style="text-align:right;">- 900 €</td>
+                                    <td style="text-align:right;">- 630 € <span style="font-size:0.8em">🏠</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;">Transporte</td>
+                                    <td style="text-align:right;">- 20 €</td>
+                                    <td style="text-align:right;">- 0 € 🚶</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;">Supermercado</td>
+                                    <td style="text-align:right;">- 300 €</td>
+                                    <td style="text-align:right;">- 630 €</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;">Seguro Médico</td>
+                                    <td style="text-align:right;">0 € (S. Social)</td>
+                                    <td style="text-align:right;">- 525 €</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px;">Meds (Ontozry)</td>
+                                    <td style="text-align:right;">- 10 €</td>
+                                    <td style="text-align:right;">- 37 €</td>
+                                </tr>
+                                <tr
+                                    style="border-top: 2px solid var(--navy-light); font-weight:bold; font-size: 1.1em;">
+                                    <td style="padding: 12px;">DINERO LIBRE</td>
+                                    <td style="text-align:right;">~ 970 €</td>
+                                    <td style="text-align:right; color:var(--success-green);">~ 5.000 €</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Map Section -->
+            <div class="map-container" style="margin-top: 4rem;" data-aos="fade-up">
+                <h3>🏥 Mapa Estratégico: Hospitales y Alojamiento</h3>
+                <p>Verde = Sin coche OK. Rojo = Coche obligatorio.</p>
+                <div id="map" style="height: 500px; width: 100%; border-radius: 20px; z-index: 1;"></div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ACTION PLAN SECTION -->
+    <section id="action-plan" class="section-padding bg-light">
+        <div class="container">
+            <h2 class="section-title">Plan de Batalla <span class="dot">.</span></h2>
+
+            <div class="phases-container">
+                <!-- Phases will be injected via JS or structured here -->
+                <div id="checklist-container"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SwissReloc. Construido para ayudar.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
