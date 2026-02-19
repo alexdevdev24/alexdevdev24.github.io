@@ -97,8 +97,8 @@ body {
     font-size: 1.5rem;
 }
 
-/* Hospital List Area */
-#hospital-list {
+/* List Area */
+#hospital-list, #airport-list {
     flex: 1;
     overflow-y: auto;
     padding: 24px;
@@ -106,13 +106,13 @@ body {
 }
 
 /* Scrollbar Styling */
-#hospital-list::-webkit-scrollbar {
+#hospital-list::-webkit-scrollbar, #airport-list::-webkit-scrollbar {
     width: 6px;
 }
-#hospital-list::-webkit-scrollbar-track {
+#hospital-list::-webkit-scrollbar-track, #airport-list::-webkit-scrollbar-track {
     background: transparent;
 }
-#hospital-list::-webkit-scrollbar-thumb {
+#hospital-list::-webkit-scrollbar-thumb, #airport-list::-webkit-scrollbar-thumb {
     background-color: #cbd5e1;
     border-radius: 3px;
 }
