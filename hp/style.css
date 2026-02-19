@@ -1,0 +1,332 @@
+/* Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+
+:root {
+    /* Colors - Swiss Professional Palette */
+    --primary-color: #D52B1E; /* Swiss Red */
+    --primary-dark: #b01f14;
+    --secondary-color: #1e293b; /* Slate 800 */
+    --accent-color: #3b82f6; /* Blue 500 */
+    --success-color: #10b981;
+    
+    /* Backgrounds */
+    --bg-body: #f8fafc; /* Slate 50 */
+    --bg-card: #ffffff;
+    --bg-sidebar: #ffffff;
+    
+    /* Text */
+    --text-main: #334155; /* Slate 700 */
+    --text-muted: #64748b; /* Slate 500 */
+    --text-light: #94a3b8; /* Slate 400 */
+    --text-white: #ffffff;
+
+    /* Spacing & Layout */
+    --sidebar-width: 420px;
+    --header-height: 70px;
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-sidebar: 4px 0 24px rgba(0,0,0,0.08);
+
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-main);
+    background-color: var(--bg-body);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Sidebar Styling */
+#sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-sidebar);
+    box-shadow: var(--shadow-sidebar);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform var(--transition-normal);
+}
+
+.sidebar-header {
+    padding: 24px;
+    background: #fff;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sidebar-header h1 {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+}
+
+.header-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.logo-icon {
+    color: var(--primary-color);
+    margin-right: 12px;
+    font-size: 1.5rem;
+}
+
+/* Hospital List Area */
+#hospital-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    background-color: var(--bg-body);
+}
+
+/* Scrollbar Styling */
+#hospital-list::-webkit-scrollbar {
+    width: 6px;
+}
+#hospital-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+#hospital-list::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 3px;
+}
+
+/* Canton Section */
+.canton-section {
+    margin-bottom: 40px;
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.canton-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    position: sticky;
+    top: -24px; /* compensate parent padding */
+    background: var(--bg-body);
+    padding: 10px 0;
+    z-index: 10;
+}
+
+.canton-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.canton-badge {
+    background-color: #e2e8f0;
+    color: var(--secondary-color);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 12px;
+    text-transform: uppercase;
+}
+
+.canton-description {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
+    padding-left: 4px;
+    border-left: 3px solid #e2e8f0;
+    padding-left: 12px;
+}
+
+/* Cards */
+.hospital-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid transparent;
+    transition: all var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+}
+
+.hospital-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: #e2e8f0;
+}
+
+.hospital-card:active {
+    transform: scale(0.99);
+}
+
+.hospital-card.active {
+    border-color: var(--primary-color);
+    background-color: #fff9f9;
+}
+
+.card-content h4 {
+    margin: 0 0 8px 0;
+    color: var(--secondary-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-arrow {
+    opacity: 0;
+    transform: translateX(-5px);
+    transition: all var(--transition-fast);
+    color: var(--primary-color);
+}
+
+.hospital-card:hover .card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.card-description {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0 0 16px 0;
+    line-height: 1.5;
+}
+
+/* Sites Badges */
+.sites-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.site-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #f1f5f9;
+    padding: 6px 10px;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.8rem;
+    color: var(--text-main);
+    font-weight: 500;
+    transition: background var(--transition-fast);
+}
+
+.site-badge:hover {
+    background-color: #e2e8f0;
+}
+
+.site-badge i {
+    margin-right: 6px;
+    font-size: 0.9em;
+    color: var(--text-light);
+}
+
+/* Map */
+#map {
+    flex: 1;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Map Customization */
+.leaflet-popup-content-wrapper {
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    padding: 0;
+}
+
+.leaflet-popup-content {
+    margin: 16px;
+    font-family: 'Inter', sans-serif;
+}
+
+.popup-title {
+    color: var(--secondary-color);
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.popup-subtitle {
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.popup-text {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    #sidebar {
+        width: 100%;
+        height: 50vh;
+        order: 2;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        border-radius: 20px 20px 0 0;
+    }
+
+    #map {
+        height: 50vh;
+        order: 1;
+    }
+
+    .sidebar-header {
+        padding: 16px;
+    }
+    
+    .sidebar-header h1 {
+        font-size: 1.25rem;
+    }
+}
