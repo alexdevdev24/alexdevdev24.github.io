@@ -20,7 +20,7 @@ const clusterGroup = L.markerClusterGroup({
 
 const sidebarMarkers = {};
 
-// Custom Icon definition
+// Custom Icons
 const hospitalIcon = L.divIcon({
     className: 'custom-div-icon',
     html: `<div style="background-color: var(--primary-color); width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
@@ -29,9 +29,34 @@ const hospitalIcon = L.divIcon({
     popupAnchor: [0, -10]
 });
 
+const gymIcon = L.divIcon({
+    className: 'gym-icon',
+    html: `<div style="font-size: 20px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));">🏋️</div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -10]
+});
+
+// Gym Layer Group
+const gymLayer = L.layerGroup().addTo(map);
+
 function initHospitalData(data) {
     const hospitalList = document.getElementById('hospital-list');
     hospitalList.innerHTML = '';
+
+    // Render Gyms
+   /* if (typeof GYM_DATA !== 'undefined') {
+        GYM_DATA.forEach(gym => {
+            const marker = L.marker([gym.lat, gym.lon], { icon: gymIcon });
+            marker.bindPopup(`
+                <div class="popup-content">
+                    <div class="popup-title">🏋️ ${gym.name}</div>
+                    <div class="popup-text">Salle de sport à proximité</div>
+                </div>
+            `);
+            gymLayer.addLayer(marker);
+        });
+    }*/
 
     data.suisse_francophone.forEach((cantonData, cantonIndex) => {
         const cantonSection = document.createElement('div');

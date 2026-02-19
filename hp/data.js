@@ -151,3 +151,446 @@ const ADDRESS_COORDINATES = {
     "Chemin de Beau-Soleil 20, 1206 Genève, Suisse": [46.1884814, 6.1617309],
     "Chemin des Grangettes 7, 1224 Chêne-Bougeries, Suisse": [46.1998578, 6.1819624]
 };
+
+const GYM_DATA = [
+    {
+        "name": "Urakan Crossfit",
+        "lat": 46.792048,
+        "lon": 6.6218204
+    },
+    {
+        "name": "Let's Go Yverdon",
+        "lat": 46.7811894,
+        "lon": 6.6451609
+    },
+    {
+        "name": "Crossfit Urakan",
+        "lat": 46.7917346,
+        "lon": 6.6216617
+    },
+    {
+        "name": "VO2 Sport",
+        "lat": 46.7794472,
+        "lon": 6.6249359
+    },
+    {
+        "name": "Blue Fit",
+        "lat": 46.7905836,
+        "lon": 6.6214129
+    },
+    {
+        "name": "Arcades Fitness",
+        "lat": 46.7816788,
+        "lon": 6.636137
+    },
+    {
+        "name": "Osci fit",
+        "lat": 46.7838167,
+        "lon": 6.6335165
+    },
+    {
+        "name": "Fight Club Champions Boxing",
+        "lat": 46.7845813,
+        "lon": 6.6259283
+    },
+    {
+        "name": "Centre Sportif Régional de Borné-Nau",
+        "lat": 46.8146197,
+        "lon": 6.6486407
+    },
+    {
+        "name": "Fitness Let's Go Villeneuve",
+        "lat": 46.3852307,
+        "lon": 6.9312153
+    },
+    {
+        "name": "Mov'it Fitness",
+        "lat": 46.4235928,
+        "lon": 6.9254653
+    },
+    {
+        "name": "Activ Fitness",
+        "lat": 46.4649519,
+        "lon": 6.8417018
+    },
+    {
+        "name": "Let's Go Fitness",
+        "lat": 46.4642061,
+        "lon": 6.8390923
+    },
+    {
+        "name": "Log 3 Fitness",
+        "lat": 46.4598473,
+        "lon": 6.846989
+    },
+    {
+        "name": "Espace Le Lab",
+        "lat": 46.4654546,
+        "lon": 6.8421996
+    },
+    {
+        "name": "Body Brain",
+        "lat": 46.4585121,
+        "lon": 6.8499147
+    },
+    {
+        "name": "Terre d’Eveil",
+        "lat": 46.4669651,
+        "lon": 6.8443798
+    },
+    {
+        "name": "Pilates25",
+        "lat": 46.4683945,
+        "lon": 6.8424508
+    },
+    {
+        "name": "Terre du Yoga",
+        "lat": 46.4669389,
+        "lon": 6.8444427
+    },
+    {
+        "name": "Iron Body Fit",
+        "lat": 46.4604276,
+        "lon": 6.8444042
+    },
+    {
+        "name": "Salle de gymnastique de Bahyse II (ancienne)",
+        "lat": 46.4667064,
+        "lon": 6.8954625
+    },
+    {
+        "name": "ActivFitness",
+        "lat": 46.8041593,
+        "lon": 7.1507496
+    },
+    {
+        "name": "Ecole du Mouvement",
+        "lat": 46.8007241,
+        "lon": 7.15148
+    },
+    {
+        "name": "Yogiface",
+        "lat": 46.8006939,
+        "lon": 7.1513229
+    },
+    {
+        "name": "Seisler Fit",
+        "lat": 46.8221151,
+        "lon": 7.2094661
+    },
+    {
+        "name": "Physic Club",
+        "lat": 47.0877784,
+        "lon": 6.8048632
+    },
+    {
+        "name": "Let's Go Fitness",
+        "lat": 47.0979498,
+        "lon": 6.8222695
+    },
+    {
+        "name": "Tosal Gym",
+        "lat": 47.105949,
+        "lon": 6.8247921
+    },
+    {
+        "name": "Evolution",
+        "lat": 47.1061455,
+        "lon": 6.8373478
+    },
+    {
+        "name": "DiscountFit",
+        "lat": 47.0999028,
+        "lon": 6.8275076
+    },
+    {
+        "name": "Activ Fitness",
+        "lat": 47.1007008,
+        "lon": 6.8259088
+    },
+    {
+        "name": "Espace Equilibre",
+        "lat": 47.1021298,
+        "lon": 6.8300392
+    },
+    {
+        "name": "Sports Training Center",
+        "lat": 47.0955935,
+        "lon": 6.8168029
+    },
+    {
+        "name": "Raja Yoga",
+        "lat": 47.1013723,
+        "lon": 6.8223866
+    },
+    {
+        "name": "Judo-Karaté Club",
+        "lat": 47.090547,
+        "lon": 6.8062961
+    },
+    {
+        "name": "Street workout",
+        "lat": 47.0914932,
+        "lon": 6.8071233
+    },
+    {
+        "name": "Manawa",
+        "lat": 47.0935356,
+        "lon": 6.8180562
+    },
+    {
+        "name": "FT45",
+        "lat": 47.1016179,
+        "lon": 6.8306446
+    },
+    {
+        "name": "Pacific Fitness",
+        "lat": 47.2720928,
+        "lon": 7.3529175
+    },
+    {
+        "name": "Halle de gymnastique",
+        "lat": 47.2749911,
+        "lon": 7.344519
+    },
+    {
+        "name": "Place de sport",
+        "lat": 47.1574461,
+        "lon": 7.0190741
+    },
+    {
+        "name": "Complexe communal",
+        "lat": 47.1570817,
+        "lon": 7.0191144
+    },
+    {
+        "name": "NonStop Gym Pâquis",
+        "lat": 46.2167065,
+        "lon": 6.1480928
+    },
+    {
+        "name": "Easyfit",
+        "lat": 46.1982163,
+        "lon": 6.241996
+    },
+    {
+        "name": "12a",
+        "lat": 46.2144176,
+        "lon": 6.1484321
+    },
+    {
+        "name": "Digital Fight Club Sports",
+        "lat": 46.1970403,
+        "lon": 6.144486
+    },
+    {
+        "name": "Gym by Harmony",
+        "lat": 46.2148762,
+        "lon": 6.1468282
+    },
+    {
+        "name": "Activ Fitness",
+        "lat": 46.2115211,
+        "lon": 6.1448341
+    },
+    {
+        "name": "Coach Sportif - Marie Trapezaroff",
+        "lat": 46.2041866,
+        "lon": 6.1599555
+    },
+    {
+        "name": "Arnbäck Training",
+        "lat": 46.2006481,
+        "lon": 6.1573169
+    },
+    {
+        "name": "Fitwork",
+        "lat": 46.2132666,
+        "lon": 6.1257279
+    },
+    {
+        "name": "Activ Fitness",
+        "lat": 46.1873324,
+        "lon": 6.1271329
+    },
+    {
+        "name": "Non-Stop Gym",
+        "lat": 46.1934942,
+        "lon": 6.1655859
+    },
+    {
+        "name": "NonStop Gym Jonction",
+        "lat": 46.2016046,
+        "lon": 6.1302496
+    },
+    {
+        "name": "BenfitCoach",
+        "lat": 46.1961408,
+        "lon": 6.2322253
+    },
+    {
+        "name": "Pratibha",
+        "lat": 46.2110474,
+        "lon": 6.1398539
+    },
+    {
+        "name": "À fleur de peau",
+        "lat": 46.2113828,
+        "lon": 6.1408933
+    },
+    {
+        "name": "Basic-Fit",
+        "lat": 46.1963878,
+        "lon": 6.2370358
+    },
+    {
+        "name": "Gravity Functional",
+        "lat": 46.1936179,
+        "lon": 6.1293777
+    },
+    {
+        "name": "Let's Go Fitness - Club de Champel",
+        "lat": 46.1909088,
+        "lon": 6.1549194
+    },
+    {
+        "name": "Shanti Club",
+        "lat": 46.2112984,
+        "lon": 6.1386622
+    },
+    {
+        "name": "Evo",
+        "lat": 46.202284,
+        "lon": 6.1692675
+    },
+    {
+        "name": "Street workout",
+        "lat": 46.2086104,
+        "lon": 6.1646211
+    },
+    {
+        "name": "Swiss Fit",
+        "lat": 46.2114726,
+        "lon": 6.1391612
+    },
+    {
+        "name": "Activ fitness",
+        "lat": 46.2155759,
+        "lon": 6.1348639
+    },
+    {
+        "name": "Non stop gym",
+        "lat": 46.2154328,
+        "lon": 6.1328665
+    },
+    {
+        "name": "Studio Soham",
+        "lat": 46.2115738,
+        "lon": 6.1512611
+    },
+    {
+        "name": "ashtanga passion club",
+        "lat": 46.2122275,
+        "lon": 6.1466313
+    },
+    {
+        "name": "evo fitness",
+        "lat": 46.2011861,
+        "lon": 6.1328352
+    },
+    {
+        "name": "Deva yoga",
+        "lat": 46.1900091,
+        "lon": 6.1342084
+    },
+    {
+        "name": "Atelier Corps et Mouvement",
+        "lat": 46.1899794,
+        "lon": 6.1357598
+    },
+    {
+        "name": "Inshape studio",
+        "lat": 46.2034824,
+        "lon": 6.1632804
+    },
+    {
+        "name": "Akta yoga",
+        "lat": 46.2047967,
+        "lon": 6.1617717
+    },
+    {
+        "name": "Non-Stop Gym",
+        "lat": 46.2095815,
+        "lon": 6.1414401
+    },
+    {
+        "name": "Bodystudio",
+        "lat": 46.24075,
+        "lon": 6.1982717
+    },
+    {
+        "name": "Non Stop Gym",
+        "lat": 46.2164814,
+        "lon": 6.1479365
+    },
+    {
+        "name": "Urban Ride",
+        "lat": 46.2121698,
+        "lon": 6.1504861
+    },
+    {
+        "name": "Yoga Feldenkrais",
+        "lat": 46.2130201,
+        "lon": 6.1382806
+    },
+    {
+        "name": "Studio GVA",
+        "lat": 46.2127255,
+        "lon": 6.1483622
+    },
+    {
+        "name": "Wellness Sport Club",
+        "lat": 46.213902,
+        "lon": 6.1501352
+    },
+    {
+        "name": "Michelle",
+        "lat": 46.2105934,
+        "lon": 6.1398008
+    },
+    {
+        "name": "Bâtiment des Charmettes",
+        "lat": 46.1847848,
+        "lon": 6.1384678
+    },
+    {
+        "name": "Centre sportif de la Queue-d'Arve",
+        "lat": 46.1962968,
+        "lon": 6.1313242
+    },
+    {
+        "name": "Gymnase Bellivier",
+        "lat": 46.1856818,
+        "lon": 6.2162619
+    },
+    {
+        "name": "Gymnase Lucien Veyrat",
+        "lat": 46.1961466,
+        "lon": 6.2219143
+    },
+    {
+        "name": "L'Appart Fitness",
+        "lat": 46.1900275,
+        "lon": 6.235449
+    },
+    {
+        "name": "CrossFit Custom Annemasse",
+        "lat": 46.1866867,
+        "lon": 6.2365097
+    },
+    {
+        "name": "Salle de sport",
+        "lat": 46.1909388,
+        "lon": 6.1225108
+    }
+];
