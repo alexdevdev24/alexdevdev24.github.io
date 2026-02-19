@@ -26,7 +26,22 @@
             </div>
             <div class="logo-icon"><i class="fa-solid fa-hospital-user"></i></div>
         </div>
-        <div id="hospital-list">
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="switchTab('hospitals')">
+                <i class="fas fa-hospital-alt"></i> Hôpitaux
+            </button>
+            <button class="tab-btn" onclick="switchTab('airports')">
+                <i class="fas fa-plane"></i> Aéroports
+            </button>
+        </div>
+
+        <div id="hospital-list" class="list-content active">
+            <!-- Content populated by script.js -->
+        </div>
+        
+        <div id="airport-list" class="list-content" style="display: none;">
             <!-- Content populated by script.js -->
         </div>
     </div>
@@ -37,6 +52,50 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     
+    <!-- Cloud & Cover Letter Modal -->
+    <div id="cover-letter-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-robot"></i> Générateur de Lettre de Motivation IA</h2>
+            <p>Utilisez votre clé API pour générer une lettre personnalisée pour <span id="modal-hospital-name">cet hôpital</span>.</p>
+            
+            <div class="form-group">
+                <label for="api-key">Clé API (OpenAI/Gemini):</label>
+                <input type="password" id="api-key" placeholder="sk-..." value="">
+                <small>Votre clé n'est jamais stockée sur un serveur.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="user-name">Votre Nom & Prénom:</label>
+                <input type="text" id="user-name" placeholder="Dr. Alex...">
+            </div>
+
+            <div class="form-group">
+                <label for="user-details">Vos Points Forts / Expérience:</label>
+                <textarea id="user-details" placeholder="Année de diplôme, spécialité visée, expérience préalable..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="model-select">Modèle:</label>
+                <select id="model-select">
+                    <option value="gpt-4o">GPT-4o</option>
+                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                    <option value="gemini-pro">Gemini Pro</option>
+                </select>
+            </div>
+
+            <button id="generate-btn" class="generate-btn">
+                <i class="fas fa-magic"></i> Générer la Lettre
+            </button>
+
+            <div id="generation-result" class="result-area" style="display:none;">
+                <h3>Résultat:</h3>
+                <textarea id="final-letter" readonly></textarea>
+                <button id="copy-btn" class="secondary-btn"><i class="fas fa-copy"></i> Copier</button>
+            </div>
+        </div>
+    </div>
+
     <!-- App Data & Scripts -->
     <script src="data.js"></script>
     <script src="script.js"></script>
