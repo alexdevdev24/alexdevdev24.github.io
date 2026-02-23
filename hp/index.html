@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ca" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hôpitaux Suisse Romande - Médecins Assistants</title>
+    <title>MedSwiss Finder – Hospitals Cat. B/C | Suïssa Romanda</title>
+    <meta name="description" content="Eina professional de suport a la decisió per a metges buscant un lloc en medicina interna a la Suïssa Romanda.">
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -21,62 +22,128 @@
     <div id="sidebar">
         <div class="sidebar-header">
             <div>
-                <h1>Hôpitaux Romands</h1>
-                <div class="header-subtitle">Guide pour Médecins Assistants</div>
+                <h1>MedSwiss <span style="color: var(--primary-color);">Finder</span></h1>
+                <div class="header-subtitle">Medicina Interna Cat. B/C &bull; Suïssa Romanda</div>
             </div>
-            <div class="logo-icon"><i class="fa-solid fa-hospital-user"></i></div>
+            <div class="header-actions">
+                <button id="export-btn" class="icon-btn" onclick="exportCSV()" title="Exportar la llista filtrada en CSV">
+                    <i class="fas fa-download"></i>
+                </button>
+                <button id="dark-toggle-btn" class="icon-btn" onclick="toggleDarkMode()" title="Mode fosc">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="logo-icon"><i class="fa-solid fa-hospital-user"></i></div>
+            </div>
+        </div>
+
+        <!-- Search bar -->
+        <div class="search-bar-wrap">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="search-input" class="search-input" placeholder="Cercar un hospital o una ciutat..." oninput="onSearchInput()">
+            <button class="search-clear" id="search-clear" onclick="clearSearch()" style="display:none;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <!-- Filters & Sorting -->
+        <div class="filter-bar" id="hospital-filters">
+            <div class="filter-row">
+                <select id="filter-canton" class="filter-select">
+                    <option value="all">Tots els cantons</option>
+                    <option value="Vaud">Vaud</option>
+                    <option value="Genève">Ginebra</option>
+                    <option value="Valais">Valais</option>
+                    <option value="Fribourg">Friburg</option>
+                    <option value="Neuchâtel">Neuchâtel</option>
+                    <option value="Jura">Jura i Jura Bernès</option>
+                </select>
+                <select id="filter-categorie" class="filter-select">
+                    <option value="all">Totes les categories</option>
+                    <option value="B">Categoria B</option>
+                    <option value="C">Categoria C</option>
+                </select>
+            </div>
+            <div class="filter-row filter-row-3">
+                <select id="filter-accessibilite" class="filter-select">
+                    <option value="all">Accessibilitat (Totes)</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Mitjana">Mitjana</option>
+                    <option value="Baixa">Baixa</option>
+                </select>
+                <select id="filter-langue" class="filter-select">
+                    <option value="all">Idioma (Tots)</option>
+                    <option value="B2">B2 mínim</option>
+                    <option value="C1">C1 mínim</option>
+                    <option value="B2/C1">B2/C1</option>
+                </select>
+                <select id="sort-hospitals" class="sort-select">
+                    <option value="score">Millor Coincidència ★</option>
+                    <option value="distance">Proximitat Aeroport</option>
+                    <option value="alpha">Alfabètic</option>
+                    <option value="default">Per defecte</option>
+                </select>
+            </div>
+            <div class="filter-results-meta" id="results-count"></div>
         </div>
 
         <!-- Tab Navigation -->
         <div class="tab-container">
-            <button class="tab-btn active" onclick="switchTab('hospitals')">
-                <i class="fas fa-hospital-alt"></i> Hôpitaux
+            <button class="tab-btn active" id="tab-hospitals" onclick="switchTab('hospitals')">
+                <i class="fas fa-hospital-alt"></i> Hospitals
             </button>
-            <button class="tab-btn" onclick="switchTab('airports')">
-                <i class="fas fa-plane"></i> Aéroports
+            <button class="tab-btn" id="tab-airports" onclick="switchTab('airports')">
+                <i class="fas fa-plane"></i> Aeroports
+            </button>
+            <button class="tab-btn" id="tab-favs" onclick="switchTab('favs')">
+                <i class="fas fa-heart"></i> Favorits
             </button>
         </div>
 
-        <div id="hospital-list" class="list-content active">
-            <!-- Content populated by script.js -->
-        </div>
-        
-        <div id="airport-list" class="list-content" style="display: none;">
-            <!-- Content populated by script.js -->
-        </div>
+        <div id="hospitals-list" class="list-content active"></div>
+        <div id="airports-list" class="list-content" style="display:none;"></div>
+        <div id="favs-list" class="list-content" style="display:none;"></div>
     </div>
 
-    <div id="map"></div>
+    <!-- Map Toggle Button (Airbnb-style) -->
+    <button id="map-toggle-btn" onclick="toggleMap()" title="Mostrar/amagar el mapa">
+        <i class="fas fa-map-marked-alt"></i>
+        <span id="map-toggle-label">Amagar el mapa</span>
+    </button>
+
+    <!-- Map Panel -->
+    <div id="map-panel">
+        <div id="map"></div>
+    </div>
 
     <!-- Leaflet Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     
-    <!-- Cloud & Cover Letter Modal -->
+    <!-- Cover Letter Modal -->
     <div id="cover-letter-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <h2><i class="fas fa-robot"></i> Générateur de Lettre de Motivation IA</h2>
-            <p>Utilisez votre clé API pour générer une lettre personnalisée pour <span id="modal-hospital-name">cet hôpital</span>.</p>
+            <h2><i class="fas fa-robot"></i> Generador de Carta de Presentació amb IA</h2>
+            <p>Genera una carta personalitzada per a <span id="modal-hospital-name">aquest hospital</span>.</p>
             
             <div class="form-group">
-                <label for="api-key">Clé API (OpenAI/Gemini):</label>
+                <label for="api-key">Clau API (OpenAI/Gemini):</label>
                 <input type="password" id="api-key" placeholder="sk-..." value="">
-                <small>Votre clé n'est jamais stockée sur un serveur.</small>
+                <small>La teva clau mai s'emmagatzema en un servidor.</small>
             </div>
 
             <div class="form-group">
-                <label for="user-name">Votre Nom & Prénom:</label>
-                <input type="text" id="user-name" placeholder="Dr. Alex...">
+                <label for="user-name">El Teu Nom &amp; Cognom:</label>
+                <input type="text" id="user-name" placeholder="Dr. Àlex...">
             </div>
 
             <div class="form-group">
-                <label for="user-details">Vos Points Forts / Expérience:</label>
-                <textarea id="user-details" placeholder="Année de diplôme, spécialité visée, expérience préalable..."></textarea>
+                <label for="user-details">Els teus Punts Forts / Experiència:</label>
+                <textarea id="user-details" placeholder="Any de graduació, especialitat desitjada, experiència prèvia..."></textarea>
             </div>
 
             <div class="form-group">
-                <label for="model-select">Modèle:</label>
+                <label for="model-select">Model:</label>
                 <select id="model-select">
                     <option value="gpt-4o">GPT-4o</option>
                     <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
@@ -85,13 +152,13 @@
             </div>
 
             <button id="generate-btn" class="generate-btn">
-                <i class="fas fa-magic"></i> Générer la Lettre
+                <i class="fas fa-magic"></i> Generar la Carta
             </button>
 
             <div id="generation-result" class="result-area" style="display:none;">
-                <h3>Résultat:</h3>
+                <h3>Resultat:</h3>
                 <textarea id="final-letter" readonly></textarea>
-                <button id="copy-btn" class="secondary-btn"><i class="fas fa-copy"></i> Copier</button>
+                <button id="copy-btn" class="secondary-btn"><i class="fas fa-copy"></i> Copiar</button>
             </div>
         </div>
     </div>

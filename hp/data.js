@@ -2,135 +2,473 @@ const HOSPITAL_DATA = {
   "suisse_francophone": [
     {
       "canton": "Vaud",
-      "description": "Très dense en hôpitaux périphériques. L'un des plus grands pourvoyeurs de postes hors centre universitaire.",
+      "description": "Molt dens en hospitals perifèrics. Un dels majors proveïdors de places fora del centre universitari.",
       "hopitaux": [
         {
           "nom": "eHnv (Établissements Hospitaliers du Nord Vaudois)",
           "sites": [
-            {"ville": "Yverdon-les-Bains", "adresse": "Rue d'Entremonts 11, 1400 Yverdon-les-Bains, Suisse"},
-            {"ville": "Saint-Loup", "adresse": "Hôpital de Saint-Loup, 1318 Pompaples, Suisse"}
+            {
+              "ville": "Yverdon-les-Bains",
+              "adresse": "Rue d'Entremonts 11, 1400 Yverdon-les-Bains, Suisse"
+            },
+            {
+              "ville": "Saint-Loup",
+              "adresse": "Hôpital de Saint-Loup, 1318 Pompaples, Suisse"
+            }
           ],
-          "description": "Très réputé pour la formation de base.",
+          "description": "Molt reconegut per la formació bàsica.",
           "chef_service": "Dr. Jean-Christophe Laurent",
-          "email_contact": "jean-christophe.laurent@ehnv.ch"
+          "email_contact": "jean-christophe.laurent@ehnv.ch",
+          "categorie": "B",
+          "accessibilite_etrangers": "Alta",
+          "langue_requise": "B2/C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "45 min",
+          "encadrement_niveau": "Excel·lent",
+          "encadrement_desc": "Sistema de tutoria individual estructurada i supervisió molt acollidora. Perfecte per a debutants."
         },
         {
           "nom": "EHC (Ensemble Hospitalier de la Côte)",
           "sites": [
-            {"ville": "Morges", "adresse": "Chemin du Crêt 2, 1110 Morges, Suisse"}
+            {
+              "ville": "Morges",
+              "adresse": "Chemin du Crêt 2, 1110 Morges, Suisse"
+            }
           ],
-          "description": "Très prisé en raison de sa proximité avec Lausanne et Genève.",
+          "description": "Molt valorat per la seva proximitat a Lausana i Ginebra.",
           "chef_service": "Prof. Oscar Marchetti",
-          "email_contact": "secretariat.departement.medecine@ehc.vd.ch"
+          "email_contact": "secretariat.departement.medecine@ehc.vd.ch",
+          "categorie": "B",
+          "accessibilite_etrangers": "Mitjana",
+          "langue_requise": "B2/C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "30 min",
+          "encadrement_niveau": "Molt bo",
+          "encadrement_desc": "Una persona de referència per a la formació (Dra. Aebischer). Bon esperit d'equip i bon ambient."
         },
         {
           "nom": "HRC (Hôpital Riviera-Chablais)",
           "sites": [
-            {"ville": "Rennaz", "adresse": "Route du Vieux Séquoia 20, 1847 Rennaz, Suisse"},
-            {"ville": "Vevey", "adresse": "Avenue de la Prairie 3, 1800 Vevey, Suisse"},
-            {"ville": "Monthey", "adresse": "Route de Choëx 21, 1870 Monthey, Suisse"}
+            {
+              "ville": "Rennaz",
+              "adresse": "Route du Vieux Séquoia 20, 1847 Rennaz, Suisse"
+            },
+            {
+              "ville": "Vevey",
+              "adresse": "Avenue de la Prairie 3, 1800 Vevey, Suisse"
+            },
+            {
+              "ville": "Monthey",
+              "adresse": "Route de Choëx 21, 1870 Monthey, Suisse"
+            }
           ],
-          "description": "Un grand hôpital intercantonal flambant neuf."
+          "description": "Un gran hospital intercantonal totalment nou.",
+          "categorie": "B",
+          "accessibilite_etrangers": "Alta",
+          "langue_requise": "B2",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "1h",
+          "encadrement_niveau": "Estructurada",
+          "encadrement_desc": "Metge formador dedicat (½ jornada/setmana). Visites diàries supervisades."
         },
         {
           "nom": "HIB (Hôpital Intercantonal de la Broye)",
           "sites": [
-            {"ville": "Payerne", "adresse": "Avenue de la Folie 8, 1530 Payerne, Suisse"}
+            {
+              "ville": "Payerne",
+              "adresse": "Avenue de la Folie 8, 1530 Payerne, Suisse"
+            }
           ],
-          "description": "Excellente pour un encadrement de proximité."
+          "description": "Excel·lent per a una supervisió de proximitat.",
+          "categorie": "B",
+          "accessibilite_etrangers": "Alta",
+          "langue_requise": "B2",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "1h 10min",
+          "encadrement_niveau": "Proximitat",
+          "encadrement_desc": "Excel·lent supervisió: 1 Cap de Clínica per 2 unitats (assistent). Visita gran 2x per setmana."
+        },
+        {
+          "nom": "GHOL (Groupement Hospitalier de l'Ouest Lémanique)",
+          "sites": [
+            {
+              "ville": "Nyon",
+              "adresse": "Chemin Monastier 10, 1260 Nyon, Suisse"
+            }
+          ],
+          "description": "Hospital perifèric molt valorat pels assistents, reconegut categoria B en medicina interna.",
+          "categorie": "B",
+          "accessibilite_etrangers": "Mitjana",
+          "langue_requise": "B2/C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "20 min",
+          "encadrement_niveau": "Excel·lent",
+          "encadrement_desc": "Formació clau, visites supervisades al llit del malalt. Avaluació molt positiva."
+        },
+        {
+          "nom": "Clinique de Genolier",
+          "sites": [
+            {
+              "ville": "Genolier",
+              "adresse": "Route du Muids 3, 1272 Genolier, Suisse"
+            }
+          ],
+          "description": "Clínica privada de referència, amb reconeixement ISFM.",
+          "categorie": "C",
+          "accessibilite_etrangers": "Baixa",
+          "langue_requise": "C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "25 min",
+          "encadrement_niveau": "Privada",
+          "encadrement_desc": "Supervisió directa pels metges tractants. Menys autonomia però entorn tranquil i formatiu."
+        },
+        {
+          "nom": "Clinique de La Source",
+          "sites": [
+            {
+              "ville": "Lausanne",
+              "adresse": "Avenue Vinet 30, 1004 Lausanne, Suisse"
+            }
+          ],
+          "description": "Clínica d'avantguarda que ofereix excel·lents oportunitats d'especialització.",
+          "categorie": "C",
+          "accessibilite_etrangers": "Baixa",
+          "langue_requise": "C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "45 min",
+          "encadrement_niveau": "Privada",
+          "encadrement_desc": "Acompanyament d'alt nivell i molt bons avantatges."
+        },
+        {
+          "nom": "Clinique Cecil",
+          "sites": [
+            {
+              "ville": "Lausanne",
+              "adresse": "Avenue Ruchonnet 53, 1003 Lausanne, Suisse"
+            }
+          ],
+          "description": "Establiment de la xarxa Hirslanden, servei de medicina interna reconegut.",
+          "categorie": "C",
+          "accessibilite_etrangers": "Baixa",
+          "langue_requise": "C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "45 min",
+          "encadrement_niveau": "Privada",
+          "encadrement_desc": "Supervisió propera per la xarxa Hirslanden."
+        },
+        {
+          "nom": "Hôpital de Lavaux",
+          "sites": [
+            {
+              "ville": "Cully",
+              "adresse": "Route de la Petite-Corniche 1, 1096 Bourg-en-Lavaux, Suisse"
+            }
+          ],
+          "description": "Hospital que ofereix sovint rehabilitació i medicina interna amb reconeixement.",
+          "categorie": "C",
+          "accessibilite_etrangers": "Mitjana",
+          "langue_requise": "B2",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "55 min",
+          "encadrement_niveau": "Estàndard",
+          "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps."
         }
       ]
     },
     {
       "canton": "Valais",
-      "description": "La partie francophone recrute énormément de médecins formés à l'étranger.",
+      "description": "La part francòfona recluta molts metges formats a l'estranger.",
       "hopitaux": [
         {
           "nom": "Hôpital du Valais (CHVR)",
           "sites": [
-            {"ville": "Sion", "adresse": "Avenue du Grand-Champsec 80, 1950 Sion, Suisse"},
-            {"ville": "Sierre", "adresse": "Rue Saint-Charles 14, 3960 Sierre, Suisse"},
-            {"ville": "Martigny", "adresse": "Avenue de la Fusion 27, 1920 Martigny, Suisse"}
+            {
+              "ville": "Sion",
+              "adresse": "Avenue du Grand-Champsec 80, 1950 Sion, Suisse"
+            },
+            {
+              "ville": "Sierre",
+              "adresse": "Rue Saint-Charles 14, 3960 Sierre, Suisse"
+            },
+            {
+              "ville": "Martigny",
+              "adresse": "Avenue de la Fusion 27, 1920 Martigny, Suisse"
+            }
           ],
-          "description": "Pour de nombreuses spécialités, Sion fonctionne presque comme un 'petit A'.",
+          "description": "Per a moltes especialitats, Sion funciona gairebé com un 'petit A'.",
           "chef_service": "Prof. Pierre-Auguste Petignat",
-          "email_contact": "p-a.petignat@hopitalvs.ch"
+          "email_contact": "p-a.petignat@hopitalvs.ch",
+          "categorie": "B",
+          "accessibilite_etrangers": "Alta",
+          "langue_requise": "B2",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "1h 50min",
+          "encadrement_niveau": "Millorada (CCT)",
+          "encadrement_desc": "Nova CCT 2025: setmana de 46h de les quals 4h garantides per a la formació postgraduada."
+        },
+        {
+          "nom": "Clinique de Valère",
+          "sites": [
+            {
+              "ville": "Sion",
+              "adresse": "Rue de l'Industrie 29, 1950 Sion, Suisse"
+            }
+          ],
+          "description": "Clínica privada amb infraestructures d'alt nivell i places per a medicina interna.",
+          "categorie": "C",
+          "accessibilite_etrangers": "Mitjana",
+          "langue_requise": "B2/C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "1h 50min",
+          "encadrement_niveau": "Privada",
+          "encadrement_desc": "Supervisió pels metges clínics acreditats de la clínica."
         }
       ]
     },
     {
       "canton": "Fribourg",
-      "description": "Canton bilingue, sites principaux francophones ou bilingues.",
+      "description": "Cantó bilingüe, seus principals francòfones o bilingües.",
       "hopitaux": [
         {
           "nom": "HFR (Hôpital fribourgeois)",
           "sites": [
-            {"ville": "Fribourg", "adresse": "Chemin des Pensionnats 2-6, 1708 Fribourg, Suisse"},
-            {"ville": "Riaz", "adresse": "Rue de l'Hôpital 9, 1632 Riaz, Suisse"},
-            {"ville": "Tavel", "adresse": "Maggenberg 1, 1712 Tafers, Suisse"}
+            {
+              "ville": "Fribourg",
+              "adresse": "Chemin des Pensionnats 2-6, 1708 Fribourg, Suisse"
+            },
+            {
+              "ville": "Riaz",
+              "adresse": "Rue de l'Hôpital 9, 1632 Riaz, Suisse"
+            },
+            {
+              "ville": "Tavel",
+              "adresse": "Maggenberg 1, 1712 Tafers, Suisse"
+            }
           ],
-          "description": "Gros pôle de catégorie B avec des périphériques pour la médecine interne de base."
+          "description": "Gran pol de categoria B amb hospitals perifèrics per a medicina interna bàsica.",
+          "categorie": "B",
+          "accessibilite_etrangers": "Alta",
+          "langue_requise": "B2",
+          "aeroport_proche": "BSL",
+          "temps_aeroport": "1h 30min",
+          "encadrement_niveau": "Estàndard",
+          "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps."
+        },
+        {
+          "nom": "Hôpital Daler",
+          "sites": [
+            {
+              "ville": "Fribourg",
+              "adresse": "Route de Bertigny 34, 1700 Fribourg, Suisse"
+            }
+          ],
+          "description": "Hospital privat de cures agudes que ofereix places en medicina interna (Cat C).",
+          "categorie": "C",
+          "accessibilite_etrangers": "Mitjana",
+          "langue_requise": "B2/C1",
+          "aeroport_proche": "BSL",
+          "temps_aeroport": "1h 30min",
+          "encadrement_niveau": "Estàndard",
+          "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps."
         }
       ]
     },
     {
       "canton": "Neuchâtel",
-      "description": "Établissements très complets.",
+      "description": "Establiments molt complets.",
       "hopitaux": [
         {
           "nom": "RHNe (Réseau Hospitalier Neuchâtelois)",
           "sites": [
-            {"ville": "Neuchâtel (Pourtalès)", "adresse": "Rue de la Maladière 45, 2000 Neuchâtel, Suisse"},
-            {"ville": "La Chaux-de-Fonds", "adresse": "Rue de Chasseral 20, 2300 La Chaux-de-Fonds, Suisse"}
+            {
+              "ville": "Neuchâtel (Pourtalès)",
+              "adresse": "Rue de la Maladière 45, 2000 Neuchâtel, Suisse"
+            },
+            {
+              "ville": "La Chaux-de-Fonds",
+              "adresse": "Rue de Chasseral 20, 2300 La Chaux-de-Fonds, Suisse"
+            }
           ],
-          "description": "Établissements de catégorie B très complets pour la plupart des spécialités.",
+          "description": "Establiments de categoria B molt complets per a la majoria d'especialitats.",
           "chef_service": "Prof. Jacques Donzé",
-          "email_contact": "secretariat.dmi@rhne.ch"
+          "email_contact": "secretariat.dmi@rhne.ch",
+          "categorie": "B",
+          "accessibilite_etrangers": "Alta",
+          "langue_requise": "B2",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "1h 20min",
+          "encadrement_niveau": "Estructurada",
+          "encadrement_desc": "1h de coaching individual/setmana + cursos dedicats. Autonomia progressiva després de la posada al dia."
+        },
+        {
+          "nom": "Hôpital de la Providence",
+          "sites": [
+            {
+              "ville": "Neuchâtel",
+              "adresse": "Faubourg de l'Hôpital 81, 2000 Neuchâtel, Suisse"
+            }
+          ],
+          "description": "Clínica establerta a Neuchâtel, pertanyent al grup Swiss Medical Network.",
+          "categorie": "C",
+          "accessibilite_etrangers": "Mitjana",
+          "langue_requise": "B2/C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "1h 20min",
+          "encadrement_niveau": "Estàndard",
+          "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps."
         }
       ]
     },
     {
       "canton": "Jura & Jura Bernois",
-      "description": "Idéal pour trouver un premier poste plus facilement.",
+      "description": "Ideal per trobar un primer lloc de treball més fàcilment.",
       "hopitaux": [
         {
           "nom": "H-JU (Hôpital du Jura)",
           "sites": [
-            {"ville": "Delémont", "adresse": "Faubourg des Capucins 30, 2800 Delémont, Suisse"},
-            {"ville": "Porrentruy", "adresse": "Chemin de l'Hôpital 9, 2900 Porrentruy, Suisse"}
+            {
+              "ville": "Delémont",
+              "adresse": "Faubourg des Capucins 30, 2800 Delémont, Suisse"
+            },
+            {
+              "ville": "Porrentruy",
+              "adresse": "Chemin de l'Hôpital 9, 2900 Porrentruy, Suisse"
+            }
           ],
-          "description": "Réseau principal du canton du Jura.",
+          "description": "Xarxa principal del cantó del Jura.",
           "chef_service": "Dr. Hervé Duplain",
-          "email_contact": "Herve.Duplain@h-ju.ch"
+          "email_contact": "Herve.Duplain@h-ju.ch",
+          "categorie": "B",
+          "accessibilite_etrangers": "Alta",
+          "langue_requise": "B2",
+          "aeroport_proche": "BSL",
+          "temps_aeroport": "45 min",
+          "encadrement_niveau": "Estàndard",
+          "encadrement_desc": "Supervisió diària per un formador. Estructura més familiar i a escala humana."
         },
         {
           "nom": "Hôpital du Jura Bernois",
           "sites": [
-            {"ville": "Moutier", "adresse": "Beausite 49, 2740 Moutier, Suisse"},
-            {"ville": "Saint-Imier", "adresse": "Les Fontenayes 17, 2610 Saint-Imier, Suisse"}
+            {
+              "ville": "Moutier",
+              "adresse": "Beausite 49, 2740 Moutier, Suisse"
+            },
+            {
+              "ville": "Saint-Imier",
+              "adresse": "Les Fontenayes 17, 2610 Saint-Imier, Suisse"
+            }
           ],
-          "description": "Situé dans la partie francophone du canton de Berne."
+          "description": "Situat a la part francòfona del cantó de Berna.",
+          "categorie": "B",
+          "accessibilite_etrangers": "Alta",
+          "langue_requise": "B2",
+          "aeroport_proche": "BSL",
+          "temps_aeroport": "1h 10min",
+          "encadrement_niveau": "Estàndard",
+          "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps."
         }
       ]
     },
     {
       "canton": "Genève",
-      "description": "Les postes B et C se trouvent principalement dans le privé ou parapublic.",
+      "description": "Les places B i C es troben principalment en el sector privat o parapúblic.",
       "hopitaux": [
         {
           "nom": "Hôpital de La Tour",
           "sites": [
-            {"ville": "Meyrin", "adresse": "Avenue J.-D.-Maillard 3, 1217 Meyrin, Suisse"}
+            {
+              "ville": "Meyrin",
+              "adresse": "Avenue J.-D.-Maillard 3, 1217 Meyrin, Suisse"
+            }
           ],
-          "description": "Le plus grand hôpital privé de Genève avec urgences et soins intensifs."
+          "description": "El més gran hospital privat de Ginebra amb urgències i cures intensives.",
+          "categorie": "B",
+          "accessibilite_etrangers": "Mitjana",
+          "langue_requise": "B2/C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "10 min",
+          "encadrement_niveau": "Estàndard",
+          "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps."
         },
         {
           "nom": "Générale-Beaulieu et Grangettes",
           "sites": [
-            {"ville": "Genève", "adresse": "Chemin de Beau-Soleil 20, 1206 Genève, Suisse"},
-            {"ville": "Chêne-Bougeries", "adresse": "Chemin des Grangettes 7, 1224 Chêne-Bougeries, Suisse"}
+            {
+              "ville": "Genève",
+              "adresse": "Chemin de Beau-Soleil 20, 1206 Genève, Suisse"
+            },
+            {
+              "ville": "Chêne-Bougeries",
+              "adresse": "Chemin des Grangettes 7, 1224 Chêne-Bougeries, Suisse"
+            }
           ],
-          "description": "Établissements privés reconnus pour certaines spécialités."
+          "description": "Establiments privats reconeguts per a certes especialitats.",
+          "categorie": "C",
+          "accessibilite_etrangers": "Baixa",
+          "langue_requise": "C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "25 min",
+          "encadrement_niveau": "Estàndard",
+          "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps."
+        },
+        {
+          "nom": "HUG (Sites Périphériques)",
+          "sites": [
+            {
+              "ville": "Thônex (Trois-Chêne)",
+              "adresse": "Chemin du Pont-Bochet 3, 1226 Thônex, Suisse"
+            },
+            {
+              "ville": "Collonge-Bellerive",
+              "adresse": "Chemin de la Savonnière 11, 1245 Collonge-Bellerive, Suisse"
+            },
+            {
+              "ville": "Bernex (Loëx)",
+              "adresse": "Route de Loëx 151, 1233 Bernex, Suisse"
+            }
+          ],
+          "description": "Ofereixen places d'assistent molt orientades a medicina interna, geriatria i rehabilitació.",
+          "categorie": "B",
+          "accessibilite_etrangers": "Alta",
+          "langue_requise": "B2",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "30 min",
+          "encadrement_niveau": "Estàndard",
+          "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps."
+        },
+        {
+          "nom": "Clinique de Joli-Mont",
+          "sites": [
+            {
+              "ville": "Genève",
+              "adresse": "Avenue Trembley 43, 1209 Genève, Suisse"
+            }
+          ],
+          "description": "Situada davant dels HUG per a sinergies de continuïtat de cures i readaptació.",
+          "categorie": "C",
+          "accessibilite_etrangers": "Mitjana",
+          "langue_requise": "B2",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "15 min",
+          "encadrement_niveau": "Privada",
+          "encadrement_desc": "Supervisió pels metges clínics acreditats de la clínica."
+        },
+        {
+          "nom": "Clinique de Carouge",
+          "sites": [
+            {
+              "ville": "Carouge",
+              "adresse": "Avenue Cardinal-Mermillod 1, 1227 Carouge, Suisse"
+            }
+          ],
+          "description": "Establiment privat que ofereix oportunitats en medicina (Cat C).",
+          "categorie": "C",
+          "accessibilite_etrangers": "Mitjana",
+          "langue_requise": "B2",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "20 min",
+          "encadrement_niveau": "Privada",
+          "encadrement_desc": "Supervisió pels metges clínics acreditats de la clínica."
         }
       ]
     }
@@ -159,7 +497,20 @@ const ADDRESS_COORDINATES = {
     "Les Fontenayes 17, 2610 Saint-Imier, Suisse": [47.1484654, 6.9839743],
     "Avenue J.-D.-Maillard 3, 1217 Meyrin, Suisse": [46.22890962097334, 6.0675822547779505],
     "Chemin de Beau-Soleil 20, 1206 Genève, Suisse": [46.1884814, 6.1617309],
-    "Chemin des Grangettes 7, 1224 Chêne-Bougeries, Suisse": [46.1998578, 6.1819624]
+    "Chemin des Grangettes 7, 1224 Chêne-Bougeries, Suisse": [46.1998578, 6.1819624],
+    "Chemin Monastier 10, 1260 Nyon, Suisse": [46.3832002, 6.2275115],
+    "Route du Muids 3, 1272 Genolier, Suisse": [46.4450124, 6.21617],
+    "Avenue Vinet 30, 1004 Lausanne, Suisse": [46.5273345, 6.6278991],
+    "Avenue Ruchonnet 53, 1003 Lausanne, Suisse": [46.5202695, 6.6215907],
+    "Route de la Petite-Corniche 1, 1096 Bourg-en-Lavaux, Suisse": [46.4987803, 6.7071487],
+    "Chemin du Pont-Bochet 3, 1226 Thônex, Suisse": [46.2084435, 6.2154734],
+    "Chemin de la Savonnière 11, 1245 Collonge-Bellerive, Suisse": [46.2586134, 6.2059847],
+    "Route de Loëx 151, 1233 Bernex, Suisse": [46.1986837, 6.0846064],
+    "Avenue Trembley 43, 1209 Genève, Suisse": [46.2213011, 6.1184724],
+    "Avenue Cardinal-Mermillod 1, 1227 Carouge, Suisse": [46.1867663, 6.1425067],
+    "Route de Bertigny 34, 1700 Fribourg, Suisse": [46.8009218, 7.1407993],
+    "Faubourg de l'Hôpital 81, 2000 Neuchâtel, Suisse": [46.9952645, 6.9394811],
+    "Rue de l'Industrie 29, 1950 Sion, Suisse": [46.2270013, 7.3631468]
 };
 
 
@@ -173,12 +524,12 @@ const AIRPORT_DATA = [
         flightsToBarcelona: {
             airlines: ["EasyJet", "Vueling", "Swiss"],
             duration: "1h 35min",
-            frequency: "Tous les jours (min. 3 vols/jour)",
+            frequency: "Cada dia (mínim 3 vols/dia)",
             avgPrice: "50-150 CHF"
         },
         transport: {
             type: "Train",
-            description: "Gare CFF directement dans l'aéroport (Genève-Aéroport)."
+            description: "Estació CFF directament a l'aeroport (Ginebra-Aeroport)."
         }
     },
     {
@@ -190,12 +541,12 @@ const AIRPORT_DATA = [
         flightsToBarcelona: {
             airlines: ["EasyJet", "Vueling"],
             duration: "1h 40min",
-            frequency: "Tous les jours (min. 2 vols/jour)",
+            frequency: "Cada dia (mínim 2 vols/dia)",
             avgPrice: "40-120 CHF"
         },
         transport: {
             type: "Bus/Train",
-            description: "Bus depuis la gare de Bâle CFF (15 min)."
+            description: "Autobús des de l'estació de Basilea CFF (15 min)."
         }
     },
     {
@@ -207,12 +558,12 @@ const AIRPORT_DATA = [
         flightsToBarcelona: {
             airlines: ["Swiss", "Vueling", "Iberia"],
             duration: "1h 50min",
-            frequency: "Tous les jours (min. 5 vols/jour)",
+            frequency: "Cada dia (mínim 5 vols/dia)",
             avgPrice: "80-200 CHF"
         },
         transport: {
             type: "Train",
-            description: "Gare CFF majeure sous l'aéroport."
+            description: "Gran estació CFF sota l'aeroport."
         }
     }
 ];
