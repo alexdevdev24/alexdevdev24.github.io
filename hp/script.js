@@ -686,7 +686,7 @@ window.exportCSV = function() {
 };
 
 // ── MAP TOGGLE (Airbnb-style) ─────────────────────────────
-let mapVisible = true;
+let mapVisible = false; // Start with list view by default for better mobile/desktop onboarding
 
 window.toggleMap = function() {
     const panel = document.getElementById('map-panel');
@@ -702,11 +702,11 @@ window.toggleMap = function() {
     document.body.classList.toggle('map-hidden', !mapVisible);
 
     if (mapVisible) {
-        label.textContent = 'Amagar el mapa';
-        btn.querySelector('i').className = 'fas fa-map-marked-alt';
+        label.textContent = window.innerWidth < 600 ? 'Llista' : 'Amagar el mapa';
+        btn.querySelector('i').className = 'fas fa-list';
     } else {
-        label.textContent = 'Mostrar el mapa';
-        btn.querySelector('i').className = 'fas fa-map';
+        label.textContent = window.innerWidth < 600 ? 'Mapa' : 'Mostrar el mapa';
+        btn.querySelector('i').className = 'fas fa-map-marked-alt';
     }
 
     // Let Leaflet re-measure after transition
@@ -719,6 +719,14 @@ if (typeof HOSPITAL_DATA !== 'undefined') {
     setupFilters();
     initHospitalData();
 }
+
+// Ensure initial state matches mapVisible=false
+document.body.classList.add('map-hidden');
+document.getElementById('map-panel').classList.add('collapsed');
+if (document.getElementById('map-toggle-label')) {
+    document.getElementById('map-toggle-label').textContent = window.innerWidth < 600 ? 'Mapa' : 'Mostrar el mapa';
+}
+
 
 if (typeof AIRPORT_DATA !== 'undefined') {
     initAirportData();
