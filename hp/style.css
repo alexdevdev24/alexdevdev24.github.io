@@ -145,10 +145,21 @@ body.map-hidden #sidebar {
     box-shadow: 0 8px 24px rgba(213,43,30,0.3);
 }
 
-/* Hide toggle btn when map is collapsed (button is now on the left side) */
+/* Hide toggle btn when map is collapsed or on mobile list view (logic handled by script + css) */
 body.map-hidden #map-toggle-btn {
     right: unset;
     left: 24px;
+}
+@media (max-width: 600px) {
+    #map-toggle-btn {
+        left: 50% !important;
+        right: unset !important;
+        transform: translateX(-50%);
+        bottom: 20px;
+    }
+    #map-toggle-btn:hover {
+        transform: translateX(-50%) translateY(-2px);
+    }
 }
 
 /* ==========================================
@@ -860,20 +871,73 @@ body.map-hidden #map-toggle-btn {
     #sidebar {
         width: 100% !important;
         min-width: unset !important;
-        height: 55vh;
-        order: 2;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-        border-radius: 20px 20px 0 0;
+        height: 100vh;
+        z-index: 100;
+        transition: transform var(--transition-normal);
+    }
+
+    /* Fixed Sidebar width when map is hidden */
+    body.map-hidden #sidebar {
+        height: 100vh;
     }
 
     #map-panel {
-        height: 45vh;
-        order: 1;
-        flex: none;
+        position: absolute;
+        top: 0; left: 0;
         width: 100% !important;
+        height: 100% !important;
+        z-index: 50;
+    }
+
+    /* Logic for mobile toggle: 
+       When mapVisible is true, we want to see the map.
+       We can either hide the sidebar or translate it.
+    */
+    body:not(.map-hidden) #sidebar {
+        transform: translateY(100%); /* Hide list, show map */
+    }
+
+    body.map-hidden #sidebar {
+        transform: translateY(0); /* Hide map (it's behind), show list */
     }
 
     #map-toggle-btn {
-        display: none;
+        display: flex;
+        z-index: 2000;
+    }
+
+    .sidebar-header {
+        padding: 16px 20px;
+    }
+
+    .sidebar-header h1 {
+        font-size: 1.25rem;
+    }
+
+    .header-subtitle {
+        font-size: 0.72rem;
+    }
+
+    .hospital-card {
+        padding: 15px;
+    }
+
+    /* Small screens adjustments */
+    @media (max-width: 480px) {
+        .filter-row-3 {
+            grid-template-columns: 1fr;
+        }
+        .filter-row {
+            grid-template-columns: 1fr;
+        }
+        .tab-btn span {
+            display: none; /* Hide text on very small tabs if needed */
+        }
+        .header-subtitle {
+            display: none; /* Hide subtitle on very small screens to save space */
+        }
+        .icon-btn {
+            width: 32px; height: 32px;
+        }
     }
 }
