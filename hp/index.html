@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="light">
+<html lang="ca" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MedSwiss Finder — Trouve ton hôpital</title>
+<title>MedSwiss Finder — Troba el teu hospital</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -186,7 +186,6 @@ header {
 .back-btn:hover { border-color:var(--primary); color:var(--primary); }
 
 /* ─── MAIN RESULTS ───────────────────────── */
-.results-main {}
 .results-topbar {
   display:flex; align-items:center; justify-content:space-between;
   margin-bottom:16px; flex-wrap:wrap; gap:10px;
@@ -337,6 +336,59 @@ header {
   box-shadow:-8px 0 40px rgba(0,0,0,.12);
   animation: slideIn .25s ease-out;
 }
+#detail-panel .contact-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 12px;
+}
+.contact-header { margin-bottom: 12px; }
+.chef-name { font-weight: 700; color: var(--text); font-size: 1.1rem; }
+.chef-title { font-size: 0.85rem; color: var(--muted); }
+.contact-email-box {
+  background: var(--surface);
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: monospace;
+  font-size: 0.9rem;
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+.copy-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+  font-size: 1rem;
+}
+.copy-btn:hover { background: var(--border); }
+
+/* Email Box on Card */
+.card-email-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  overflow: hidden;
+}
+.card-email-box:hover { border-color: var(--primary); background: var(--surface); }
+.card-email-box span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-email-box .copy-icon { margin-left: 6px; font-style: normal; font-size: 0.8rem; }
 @keyframes slideIn { from { transform:translateX(100%); } to { transform:translateX(0); } }
 
 .detail-hero {
@@ -468,7 +520,7 @@ header {
     <div class="logo-text">MedSwiss <span>Finder</span></div>
   </div>
   <div class="header-right">
-    <div class="mode-badge">Médecine Interne B/C · Suisse Romande</div>
+    <div class="mode-badge">Medicina Interna B/C · Suïssa Romandía</div>
     <button class="dark-btn" onclick="toggleDark()" id="dark-btn">🌙</button>
   </div>
 </header>
@@ -483,12 +535,12 @@ header {
     <div>
 
       <div class="filters-panel">
-        <div class="filters-title">Affiner</div>
+        <div class="filters-title">Afinar</div>
 
         <div class="filter-group">
           <div class="filter-group-label"><div class="dot"></div> Canton</div>
           <div class="filter-chips" data-filter="canton">
-            <div class="f-chip on" data-val="all" onclick="fchip(this,'canton')">Tous</div>
+            <div class="f-chip on" data-val="all" onclick="fchip(this,'canton')">Tots</div>
             <div class="f-chip" data-val="Vaud" onclick="fchip(this,'canton')">Vaud</div>
             <div class="f-chip" data-val="Genève" onclick="fchip(this,'canton')">Genève</div>
             <div class="f-chip" data-val="Valais" onclick="fchip(this,'canton')">Valais</div>
@@ -499,46 +551,46 @@ header {
         </div>
 
         <div class="filter-group">
-          <div class="filter-group-label"><div class="dot"></div> Catégorie</div>
+          <div class="filter-group-label"><div class="dot"></div> Categoria</div>
           <div class="filter-chips" data-filter="cat">
-            <div class="f-chip on" data-val="all" onclick="fchip(this,'cat')">Toutes</div>
+            <div class="f-chip on" data-val="all" onclick="fchip(this,'cat')">Totes</div>
             <div class="f-chip" data-val="B" onclick="fchip(this,'cat')">Cat. B</div>
             <div class="f-chip" data-val="C" onclick="fchip(this,'cat')">Cat. C</div>
           </div>
         </div>
 
         <div class="filter-group">
-          <div class="filter-group-label"><div class="dot"></div> Langue (FR)</div>
+          <div class="filter-group-label"><div class="dot"></div> Idioma (FR)</div>
           <div class="filter-chips" data-filter="langue">
-            <div class="f-chip on" data-val="all" onclick="fchip(this,'langue')">Toutes</div>
+            <div class="f-chip on" data-val="all" onclick="fchip(this,'langue')">Tots</div>
             <div class="f-chip" data-val="B2" onclick="fchip(this,'langue')">B2</div>
             <div class="f-chip" data-val="C1" onclick="fchip(this,'langue')">C1</div>
           </div>
         </div>
 
         <div class="filter-group">
-          <div class="filter-group-label"><div class="dot"></div> Logement & Auto</div>
+          <div class="filter-group-label"><div class="dot"></div> Allotjament i Cotxe</div>
           <div class="filter-chips" data-filter="housing">
-            <div class="f-chip on" data-val="all" onclick="fchip(this,'housing')">Tous</div>
-            <div class="f-chip" data-val="yes" onclick="fchip(this,'housing')">🏠 Logement</div>
+            <div class="f-chip on" data-val="all" onclick="fchip(this,'housing')">Tots</div>
+            <div class="f-chip" data-val="yes" onclick="fchip(this,'housing')">🏠 Allojament</div>
           </div>
           <div class="filter-chips" style="margin-top:8px" data-filter="voiture">
-            <div class="f-chip on" data-val="all" onclick="fchip(this,'voiture')">Tous</div>
-            <div class="f-chip" data-val="no" onclick="fchip(this,'voiture')">🚂 Sans voiture</div>
+            <div class="f-chip on" data-val="all" onclick="fchip(this,'voiture')">Tots</div>
+            <div class="f-chip" data-val="no" onclick="fchip(this,'voiture')">🚂 Sense cotxe</div>
           </div>
         </div>
 
         <div class="filter-group">
-          <div class="filter-group-label"><div class="dot"></div> Budget Loyer</div>
+          <div class="filter-group-label"><div class="dot"></div> Pressupost Lloguer</div>
           <div class="filter-chips" data-filter="budget">
-            <div class="f-chip on" data-val="all" onclick="fchip(this,'budget')">Tous</div>
+            <div class="f-chip on" data-val="all" onclick="fchip(this,'budget')">Tots</div>
             <div class="f-chip" data-val="$" onclick="fchip(this,'budget')">$</div>
             <div class="f-chip" data-val="$$" onclick="fchip(this,'budget')">$$</div>
             <div class="f-chip" data-val="$$$" onclick="fchip(this,'budget')">$$$</div>
           </div>
         </div>
 
-        <button class="reset-link" onclick="resetFilters()">Réinitialiser les filtres</button>
+        <button class="reset-link" onclick="resetFilters()">Restablir els filtres</button>
       </div>
     </div>
 
@@ -546,10 +598,10 @@ header {
     <div>
       <div id="map"></div>
       <div class="results-topbar">
-        <div class="results-count" id="result-count"><strong>—</strong> hôpitaux</div>
+        <div class="results-count" id="result-count"><strong>—</strong> hospitals</div>
         <div class="sort-row">
           <button class="sort-btn active" onclick="setSort('score',this)">⭐ Match</button>
-          <button class="sort-btn" onclick="setSort('airport',this)">✈️ Aéroport</button>
+          <button class="sort-btn" onclick="setSort('airport',this)">✈️ Aeroport</button>
           <button class="sort-btn" onclick="setSort('alpha',this)">A–Z</button>
         </div>
       </div>
@@ -571,20 +623,32 @@ header {
   </div>
   <div class="detail-body">
     <div class="detail-section">
-      <div class="detail-section-title">Chiffres clés</div>
+      <div class="detail-section-title">Xifres clau</div>
       <div class="detail-kv" id="dp-kv"></div>
     </div>
     <div class="detail-section">
-      <div class="detail-section-title">Points forts &amp; défis</div>
+      <div class="detail-section-title">Punts forts i reptes</div>
       <div class="pros-cons" id="dp-proscons"></div>
     </div>
     <div class="detail-section">
-      <div class="detail-section-title">Avis de l'expert</div>
+      <div class="detail-section-title">Opinió de l'expert</div>
       <div class="expert-box" id="dp-expert"></div>
     </div>
+    <div class="detail-section">
+      <div class="detail-section-title">Contacte</div>
+      <div class="contact-card">
+        <div class="contact-header">
+          <div class="chef-name" id="dp-chef"></div>
+          <div class="chef-title">Cap de Servei - Medicina Interna</div>
+        </div>
+        <div class="contact-email-box">
+          <span id="dp-email"></span>
+          <button class="copy-btn" onclick="copyEmail()" title="Copiar correu">📋</button>
+        </div>
+      </div>
+    </div>
     <div class="detail-actions">
-      <button class="det-btn primary" id="dp-apply-btn">📧 Postuler</button>
-      <button class="det-btn sec" onclick="closeDetail()">Fermer</button>
+      <button class="det-btn sec" onclick="closeDetail()" style="width: 100%;">Tancar</button>
     </div>
   </div>
 </div>
@@ -631,6 +695,7 @@ function prepareHospitals() {
         cons: h.points_faibles || [],
         expert: h.avis_expert || h.encadrement_desc || '',
         description: h.avis_assistant_resume || h.description || '',
+        chef_service: h.chef_service || '',
         email: h.email_contact || ''
       });
     });
@@ -799,12 +864,12 @@ function renderCards() {
   updateMapMarkers(list.filter(h => h.isMatch));
 
   document.getElementById('result-count').innerHTML =
-    `<strong>${list.length}</strong> hôpital${list.length > 1 ? 'x' : ''}`;
+    `<strong>${list.length}</strong> hospital${list.length > 1 ? 's' : ''}`;
 
   if (!list.length) {
     container.innerHTML = `<div style="text-align:center;padding:48px 0;color:var(--muted);">
       <div style="font-size:2.5rem;margin-bottom:12px;">🔍</div>
-      <p>Aucun hôpital ne correspond.</p>
+      <p>Cap hospital coincideix.</p>
     </div>`;
     return;
   }
@@ -820,13 +885,13 @@ function buildCard(h) {
 
   // Decision pills
   const pills = [];
-  if (!h.voiture) pills.push({ label:'🚂 Sans voiture', cls:'green' });
-  else            pills.push({ label:'🚗 Voiture nécessaire', cls:'amber' });
-  if (h.housing)  pills.push({ label:'🏠 Logement fourni', cls:'blue' });
-  if (h.acces === 'Alta')     pills.push({ label:'✅ Accueil étrangers', cls:'green' });
-  if (h.acces === 'Mittlana') pills.push({ label:'⚠️ Accueil moyen', cls:'amber' });
-  if (h.acces === 'Baixa')    pills.push({ label:'⛔ Difficile étrangers', cls:'red' });
-  pills.push({ label:`🇫🇷 FR ${h.langue} min.`, cls: h.langue === 'B2' ? 'green' : 'amber' });
+  if (!h.voiture) pills.push({ label:'🚂 Sense cotxe', cls:'green' });
+  else            pills.push({ label:'🚗 Cotxe necessari', cls:'amber' });
+  if (h.housing)  pills.push({ label:'🏠 Allotjament inclòs', cls:'blue' });
+  if (h.acces === 'Alta')     pills.push({ label:'✅ Acollida estrangers', cls:'green' });
+  if (h.acces === 'Mittlana') pills.push({ label:'⚠️ Acollida mitjana', cls:'amber' });
+  if (h.acces === 'Baixa')    pills.push({ label:'⛔ Difícil estrangers', cls:'red' });
+  pills.push({ label:`🇫🇷 FR ${h.langue} mín.`, cls: h.langue === 'B2' ? 'green' : 'amber' });
 
   const card = document.createElement('div');
   card.className = `hosp-card ${cls} ${matchClass}`;
@@ -841,12 +906,12 @@ function buildCard(h) {
         </div>
         <div class="score-block ${cls}">
           <div class="score-num">${sc}</div>
-          <div class="score-lbl">Match %</div>
+          <div class="score-lbl">Coincidència %</div>
         </div>
       </div>
 
       <div class="match-strength">
-        <div class="match-label"><span>Force du match</span> <span>${sc}%</span></div>
+        <div class="match-label"><span>Força de la coincidència</span> <span>${sc}%</span></div>
         <div class="match-bar-bg">
           <div class="match-bar-fill" style="width: ${sc}%"></div>
         </div>
@@ -861,17 +926,17 @@ function buildCard(h) {
         <div class="fact">
           <div class="fact-icon">💶</div>
           <div class="fact-val">${h.budget}</div>
-          <div class="fact-key">Loyer</div>
+          <div class="fact-key">Lloguer</div>
         </div>
         <div class="fact">
           <div class="fact-icon">🎓</div>
           <div class="fact-val">${h.supervision}/5</div>
-          <div class="fact-key">Encadrement</div>
+          <div class="fact-key">Supervisió</div>
         </div>
         <div class="fact">
           <div class="fact-icon">🇫🇷</div>
           <div class="fact-val">${h.langue}</div>
-          <div class="fact-key">Français min.</div>
+          <div class="fact-key">Francès mín.</div>
         </div>
       </div>
 
@@ -882,9 +947,12 @@ function buildCard(h) {
       <p class="card-summary">${h.description}</p>
 
       <div class="card-foot">
-        <button class="card-foot-btn primary" onclick="event.stopPropagation(); openDetail(${h.id})">Voir les détails →</button>
-        <button class="card-foot-btn" onclick="event.stopPropagation(); window.open('mailto:${h.email}')">📧 Postuler</button>
-        <button class="fav-btn-sm ${faved ? 'on' : ''}" onclick="event.stopPropagation(); toggleFav(${h.id}, this)" title="Favori">
+        <button class="card-foot-btn primary" onclick="event.stopPropagation(); openDetail(${h.id})">Veure detalls →</button>
+        <div class="card-email-box" onclick="event.stopPropagation(); copyText('${h.email}', this.querySelector('.copy-icon'))" title="Copiar correu">
+          <span>${h.email}</span>
+          <i class="copy-icon">📋</i>
+        </div>
+        <button class="fav-btn-sm ${faved ? 'on' : ''}" onclick="event.stopPropagation(); toggleFav(${h.id}, this)" title="Favorit">
           ${faved ? '❤️' : '🤍'}
         </button>
       </div>
@@ -906,24 +974,25 @@ function openDetail(id) {
   document.getElementById('dp-loc').textContent  = `📍 ${h.ville}`;
   document.getElementById('dp-score').textContent = sc;
   document.getElementById('dp-expert').textContent = h.expert;
-  document.getElementById('dp-apply-btn').onclick = () => window.open(`mailto:${h.email}`);
+  document.getElementById('dp-chef').textContent = h.chef_service;
+  document.getElementById('dp-email').textContent = h.email;
 
   document.getElementById('dp-kv').innerHTML = `
-    <div class="kv"><div class="kv-val">✈️ ${h.temps}</div><div class="kv-key">Aéroport ${h.airport}</div></div>
-    <div class="kv"><div class="kv-val">💶 ${h.budget}</div><div class="kv-key">Loyer estimé</div></div>
-    <div class="kv"><div class="kv-val">⭐ ${h.supervision}/5</div><div class="kv-key">Encadrement</div></div>
-    <div class="kv"><div class="kv-val">🇫🇷 ${h.langue}</div><div class="kv-key">Français requis</div></div>
-    <div class="kv"><div class="kv-val">${h.housing ? '✅ Oui' : '❌ Non'}</div><div class="kv-key">Logement fourni</div></div>
-    <div class="kv"><div class="kv-val">${h.voiture ? '🚗 Oui' : '🚂 Non'}</div><div class="kv-key">Voiture nécessaire</div></div>
+    <div class="kv"><div class="kv-val">✈️ ${h.temps}</div><div class="kv-key">Aeroport ${h.airport}</div></div>
+    <div class="kv"><div class="kv-val">💶 ${h.budget}</div><div class="kv-key">Lloguer estimat</div></div>
+    <div class="kv"><div class="kv-val">⭐ ${h.supervision}/5</div><div class="kv-key">Supervisió</div></div>
+    <div class="kv"><div class="kv-val">🇫🇷 ${h.langue}</div><div class="kv-key">Francès requerit</div></div>
+    <div class="kv"><div class="kv-val">${h.housing ? '✅ Sí' : '❌ No'}</div><div class="kv-key">Allotjament inclòs</div></div>
+    <div class="kv"><div class="kv-val">${h.voiture ? '🚗 Sí' : '🚂 No'}</div><div class="kv-key">Cotxe necessari</div></div>
   `;
 
   document.getElementById('dp-proscons').innerHTML = `
     <div class="pros">
-      <div class="pc-title">Points forts</div>
+      <div class="pc-title">Punts forts</div>
       ${h.pros.map(p => `<div class="pc-item">${p}</div>`).join('')}
     </div>
     <div class="cons">
-      <div class="pc-title">Défis</div>
+      <div class="pc-title">Reptes</div>
       ${h.cons.map(c => `<div class="pc-item">${c}</div>`).join('')}
     </div>`;
 
@@ -945,6 +1014,21 @@ function closeDetail() {
   if (ov) ov.classList.remove('on');
   document.querySelectorAll('.hosp-card').forEach(c => c.classList.remove('selected'));
   activeDetail = null;
+}
+
+function copyEmail() {
+  const email = document.getElementById('dp-email').textContent;
+  const btnIcon = document.querySelector('.contact-email-box .copy-btn');
+  copyText(email, btnIcon);
+}
+
+function copyText(text, iconEl) {
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const oldText = iconEl.textContent;
+    iconEl.textContent = '✅';
+    setTimeout(() => iconEl.textContent = oldText, 2000);
+  });
 }
 
 /* ─── FAVS ───────────────────────────────── */

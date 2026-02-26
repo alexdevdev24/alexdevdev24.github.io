@@ -15,22 +15,22 @@ const HOSPITAL_DATA = {
               "logement_personnel": false
             }
           ],
-          "description": "Le centre de référence universitaire de Suisse romande.",
-          "chef_service": "Prof. Gérard Waeber",
-          "email_contact": "med-assistants@chuv.ch",
+          "description": "El centre de referència universitari de la Suïssa romandía.",
+          "chef_service": "Prof. Peter Vollenweider",
+          "email_contact": "peter.vollenweider@chuv.ch",
           "categorie": "A",
           "accessibilite_etrangers": "Mittlana",
           "langue_requise": "C1",
           "aeroport_proche": "GVA",
           "temps_aeroport": "45 min",
           "encadrement_niveau": "Académique",
-          "encadrement_desc": "Supervision exceptionnelle mais très exigeante. Idéal pour carrière académique.",
-          "isfm_category": "A (3 ans)",
+          "encadrement_desc": "Supervisió excepcional però molt exigent. Ideal per a una carrera acadèmica.",
+          "isfm_category": "A (3 anys)",
           "supervision_score": 4.9,
-          "points_forts": ["Prestige international", "Recherche de pointe", "Cas complexes"],
-          "points_faibles": ["Très sélectif", "Coût de la vie élevé", "C1 requis strict"],
-          "avis_assistant_resume": "La référence absolue pour se former, si vous avez le niveau et l'ambition.",
-          "logement_type": "Aucun (secteur privé)"
+          "points_forts": ["Prestigi internacional", "Recerca de punta", "Casos complexos"],
+          "points_faibles": ["Molt selectiu", "Cost de vida elevat", "C1 requerit estrictament"],
+          "avis_assistant_resume": "La referència absoluta per formar-se, si tens el nivell i l'ambició.",
+          "logement_type": "Cap (sector privat)"
         },
         {
           "nom": "eHnv (Établissements Hospitaliers du Nord Vaudois)",
@@ -51,8 +51,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Molt reconegut per la formació bàsica.",
-          "chef_service": "Dr. Jean-Christophe Laurent",
-          "email_contact": "jean-christophe.laurent@ehnv.ch",
+          "chef_service": "Dr. Timothée Favre-Bulle",
+          "email_contact": "timothee.favre-bulle@ehnv.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
           "langue_requise": "B2/C1",
@@ -62,10 +62,10 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "Sistema de tutoria individual estructurada i supervisió molt acollidora. Perfecte per a debutants.",
           "isfm_category": "B (2 anys)",
           "supervision_score": 4.8,
-          "points_forts": ["Supervisió de proximité exceptionnelle", "Ambiance très bienveillante", "Hôpital à taille humaine"],
-          "points_faibles": ["Charge de travail parfois élevée", "Éloignement de la ville pour St-Loup"],
-          "avis_assistant_resume": "Idéal pour commencer une carrière en Suisse dans un environnement ultra-encadré et humain.",
-          "logement_type": "Studios meublés disponibles facilement"
+          "points_forts": ["Supervisió de proximitat excepcional", "Ambient molt acollidor", "Hospital a escala humana"],
+          "points_faibles": ["Càrrega de treball de vegades elevada", "Allunyament de la ciutat per a St-Loup"],
+          "avis_assistant_resume": "Ideal per començar una carrera a Suïssa en un entorn molt supervisat i humà.",
+          "logement_type": "Estudis moblats disponibles fàcilment"
         },
         {
           "nom": "EHC (Ensemble Hospitalier de la Côte)",
@@ -79,8 +79,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Molt valorat per la seva proximitat a Lausana i Ginebra.",
-          "chef_service": "Prof. Oscar Marchetti",
-          "email_contact": "secretariat.departement.medecine@ehc.vd.ch",
+          "chef_service": "Dr. Nicole Doser",
+          "email_contact": "nicole.doser@ehc.vd.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Mitjana",
           "langue_requise": "C1",
@@ -90,10 +90,10 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "Una persona de referència per a la formació (Dra. Aebischer). Bon esperit d'equip i bon ambient.",
           "isfm_category": "B (2 anys)",
           "supervision_score": 4.2,
-          "points_forts": ["Proximité immédiate de Lausanne", "Esprit d'équipe dynamique", "Infrastructures modernes"],
-          "points_faibles": ["Chercher un logement est complexe sur Morges", "Pression temporelle aux urgences"],
-          "avis_assistant_resume": "Un excellent équilibre entre exigence clinique et vie lémanique, malgré le coût du logement.",
-          "logement_type": "Aide à la recherche (pas d'internat)"
+          "points_forts": ["Proximitat immediata a Lausana", "Esperit d'equip dinàmic", "Infrastructures modernes"],
+          "points_faibles": ["Buscar allotjament és complex a Morges", "Pressió temporal a les urgències"],
+          "avis_assistant_resume": "Un excel·lent equilibri entre exigència clínica i vida al llac Leman, malgrat el cost de l'allotjament.",
+          "logement_type": "Ajuda a la recerca (sense internat)"
         },
         {
           "nom": "HRC (Hôpital Riviera-Chablais)",
@@ -121,6 +121,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Un gran hospital intercantonal totalment nou.",
+          "chef_service": "Prof. Andrea Orlandini",
+          "email_contact": "andrea.orlandini@hopitalrivierachablais.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
           "langue_requise": "B2",
@@ -130,10 +132,10 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "Metge formador dedicat (½ jornada/setmana). Visites diàries supervisades.",
           "isfm_category": "B (2 anys)",
           "supervision_score": 3.9,
-          "points_forts": ["Infrastructures neuves de haute technologie", "Formateur dédié à temps partiel", "Accès Riviera et Lavaux"],
-          "points_faibles": ["Voiture indispensable pour Rennaz", "Négociations en cours sur les 46h"],
-          "avis_assistant_resume": "Hôpital magnifique et moderne, idéal pour la technique, mais l'accès routier est un point noir.",
-          "logement_type": "Logements rares (prévoir secteur privé)"
+          "points_forts": ["Infrastructures noves de darrera tecnologia", "Formador dedicat a temps parcial", "Accés a la Riviera i al Lavaux"],
+          "points_faibles": ["Cotxe indispensable per a Rennaz", "Negociacions en curs sobre les 46h"],
+          "avis_assistant_resume": "Hospital magnífic i modern, ideal per a la tècnica, però l'accés per carretera és un punt negre.",
+          "logement_type": "Allotjaments rars (preveure sector privat)"
         },
         {
           "nom": "HIB (Hôpital Intercantonal de la Broye)",
@@ -147,6 +149,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Excel·lent per a una supervisió de proximitat.",
+          "chef_service": "Dr. David Chabanel",
+          "email_contact": "consultation.chabanel@hibroye.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
           "langue_requise": "B2",
@@ -156,10 +160,10 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "Excel·lent supervisió: 1 Cap de Clínica per 2 unitats (assistent). Visita gran 2x per setmana.",
           "isfm_category": "B (2 anys)",
           "supervision_score": 4.5,
-          "points_forts": ["Supervision très présente (CDC/2 unités)", "Ambiance de travail chaleureuse", "Région calme et loyers bas"],
-          "points_faibles": ["Moins de cas ultra-complexes", "Isolement géographique relatif"],
-          "avis_assistant_resume": "Un lieu idéal pour apprendre les bases avec une supervision de proximité rassurance.",
-          "logement_type": "Studios temporaires sur site"
+          "points_forts": ["Supervisió molt present (CDC/2 unitats)", "Ambient de treball càlid", "Regió calmada i lloguers baixos"],
+          "points_faibles": ["Menys casos ultra-complexos", "Aïllament geogràfic relatiu"],
+          "avis_assistant_resume": "Un lloc ideal per aprendre les bases amb una supervisió de proximitat tranquil·litzadora.",
+          "logement_type": "Estudis temporals al lloc"
         },
         {
           "nom": "GHOL (Groupement Hospitalier de l'Ouest Lémanique)",
@@ -173,6 +177,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Hospital perifèric molt valorat pels assistents, reconegut categoria B en medicina interna.",
+          "chef_service": "Dr. Marcos Schwab",
+          "email_contact": "marcos.schwab@ghol.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Mitjana",
           "langue_requise": "B2/C1",
@@ -182,10 +188,10 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "Formació clau, visites supervisades al llit del malalt. Avaluació molt positiva.",
           "isfm_category": "B (2 anys)",
           "supervision_score": 4.7,
-          "points_forts": ["Enseignement clinique de haute qualité", "Équipe jeune et soudée", "Accès facile depuis Genève"],
-          "points_faibles": ["Stress lié au flux d'urgences", "Vie chère à Nyon"],
-          "avis_assistant_resume": "Probablement l'un des services de médecine les plus stimulants et formateurs de la région.",
-          "logement_type": "Pas de logement propre (privé nécessaire)"
+          "points_forts": ["Ensenyament clínic d'alta qualitat", "Equip jove i unit", "Accés fàcil des de Ginebra"],
+          "points_faibles": ["Estrès lligat al flux d'urgències", "Vida cara a Nyon"],
+          "avis_assistant_resume": "Probablement un dels serveis de medicina més estimulants i formadors de la regió.",
+          "logement_type": "Sense allotjament propi (necessari privat)"
         },
         {
           "nom": "Clinique de Genolier",
@@ -199,6 +205,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Clínica privada de referència, amb reconeixement ISFM.",
+          "chef_service": "Dr. Jacques Meizoz",
+          "email_contact": "jmeizoz@genolier.net",
           "categorie": "C",
           "accessibilite_etrangers": "Baixa",
           "langue_requise": "C1",
@@ -206,12 +214,12 @@ const HOSPITAL_DATA = {
           "temps_aeroport": "25 min",
           "encadrement_niveau": "Privada",
           "encadrement_desc": "Supervisió directa pels metges tractants. Menys autonomia però entorn tranquil i formatiu.",
-          "isfm_category": "C (1 an)",
+          "isfm_category": "C (1 any)",
           "supervision_score": 3.8,
-          "points_forts": ["Cadre de travail luxueux", "Supervision directe par des experts", "Rythme plus serein"],
-          "points_faibles": ["Autonomie limitée", "Moins de cas aigus"],
-          "avis_assistant_resume": "Idéal pour approfondir la sémiologie et les dossiers complexes dans un cadre paisible.",
-          "logement_type": "Aucun"
+          "points_forts": ["Entorn de treball luxuriós", "Supervisió directa per experts", "Ritme més serè"],
+          "points_faibles": ["Autonomia limitada", "Menys casos aguts"],
+          "avis_assistant_resume": "Ideal per aprofundir en la semiologia i els expedients complexos en un entorn tranquil.",
+          "logement_type": "Cap"
         },
         {
           "nom": "Clinique de La Source",
@@ -225,6 +233,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Clínica d'avantguarda que ofereix excel·lents oportunitats d'especialització.",
+          "chef_service": "Dr. Daniel V. Caviedes",
+          "email_contact": "dcaviedes@lasource.ch",
           "categorie": "C",
           "accessibilite_etrangers": "Baixa",
           "langue_requise": "C1",
@@ -232,12 +242,12 @@ const HOSPITAL_DATA = {
           "temps_aeroport": "45 min",
           "encadrement_niveau": "Privada",
           "encadrement_desc": "Acompanyament d'alt nivell i molt bons avantatges.",
-          "isfm_category": "C (1 an)",
+          "isfm_category": "C (1 any)",
           "supervision_score": 3.9,
-          "points_forts": ["Centre-ville de Lausanne", "Avantages sociaux premium", "Techniques de pointe"],
-          "points_faibles": ["Coût de la vie lausannois", "Peu d'autonomie garde"],
-          "avis_expert": "Une clinique historique avec un cadre de soin d'exception.",
-          "logement_type": "Aucun"
+          "points_forts": ["Centre-vila de Lausana", "Avantatges socials premium", "Tècniques de punta"],
+          "points_faibles": ["Cost de la vida lausanès", "Poca autonomia de guàrdia"],
+          "avis_expert": "Una clínica històrica amb un entorn de cura excepcional.",
+          "logement_type": "Cap"
         },
         {
           "nom": "Clinique Cecil",
@@ -251,6 +261,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Establiment de la xarxa Hirslanden, servei de medicina interna reconegut.",
+          "chef_service": "Dr. Gaël Bryois",
+          "email_contact": "gael.bryois@hirslanden.ch",
           "categorie": "C",
           "accessibilite_etrangers": "Baixa",
           "langue_requise": "C1",
@@ -258,12 +270,12 @@ const HOSPITAL_DATA = {
           "temps_aeroport": "45 min",
           "encadrement_niveau": "Privada",
           "encadrement_desc": "Supervisió propera per la xarxa Hirslanden.",
-          "isfm_category": "C (1 an)",
+          "isfm_category": "C (1 any)",
           "supervision_score": 3.9,
-          "points_forts": ["Réseau Hirslanden réputé", "Équipement haut de gamme", "Lausanne centre"],
-          "points_faibles": ["Autonomie garde limitée", "Logement très onéreux"],
-          "avis_expert": "Une immersion dans le secteur privé de qualité, idéal pour le réseautage.",
-          "logement_type": "Aucun"
+          "points_forts": ["Xarxa Hirslanden de renom", "Equipament de gamma alta", "Lausana centre"],
+          "points_faibles": ["Autonomia de guàrdia limitada", "Allotjament molt car"],
+          "avis_expert": "Una immersió en el sector privat de qualitat, ideal per al networking.",
+          "logement_type": "Cap"
         },
         {
           "nom": "Hôpital de Lavaux",
@@ -277,6 +289,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Hospital que ofereix sovint rehabilitació i medicina interna amb reconeixement.",
+          "chef_service": "Dr. Pierre Guillemin",
+          "email_contact": "pierre.guillemin@hopitaldelavaux.ch",
           "categorie": "C",
           "accessibilite_etrangers": "Mitjana",
           "langue_requise": "B2",
@@ -318,7 +332,7 @@ const HOSPITAL_DATA = {
           ],
           "description": "Per a moltes especialitats, Sion funciona gairebé com un 'petit A'.",
           "chef_service": "Prof. Pierre-Auguste Petignat",
-          "email_contact": "p-a.petignat@hopitalvs.ch",
+          "email_contact": "pierre-auguste.petignat@hopitalvs.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
           "langue_requise": "C1",
@@ -328,10 +342,10 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "Nova CCT 2025: setmana de 46h de les quals 4h garantides per a la formació postgraduada.",
           "isfm_category": "B (2 anys)",
           "supervision_score": 4.4,
-          "points_forts": ["CCT 2025 (46h avec formation payée)", "Sion = 'Petite A' de qualité", "Équipes accessibles"],
-          "points_faibles": ["Turnover élevé", "Grosse charge administrative"],
-          "avis_assistant_resume": "Une infrastructure robuste et un apprentissage rapide grâce à la variété des cas cliniques.",
-          "logement_type": "Internats à Sion, Martigny et Monthey"
+          "points_forts": ["CCT 2025 (46h amb formació pagada)", "Sion = 'Petita A' de qualitat", "Equips accessibles"],
+          "points_faibles": ["Rotació elevada", "Gran càrrega administrativa"],
+          "avis_assistant_resume": "Una infraestructura robusta i un aprenentatge ràpid gràcies a la varietat de casos clínics.",
+          "logement_type": "Internats a Sion, Martigny i Monthey"
         },
         {
           "nom": "Clinique de Valère",
@@ -345,6 +359,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Clínica privada amb infraestructures d'alt nivell i places per a medicina interna.",
+          "chef_service": "Dr. Stephane Zermatten",
+          "email_contact": "szermatten@cliniquevalere.ch",
           "categorie": "C",
           "accessibilite_etrangers": "Mitjana",
           "langue_requise": "B2/C1",
@@ -385,6 +401,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Gran pol de categoria B amb hospitals perifèrics per a medicina interna bàsica.",
+          "chef_service": "Prof. Julien Vaucher",
+          "email_contact": "julien.vaucher@h-fr.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
           "langue_requise": "C1",
@@ -392,12 +410,12 @@ const HOSPITAL_DATA = {
           "temps_aeroport": "1h 30min",
           "encadrement_niveau": "Estàndard",
           "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps.",
-          "isfm_category": "A/B (selon site)",
+          "isfm_category": "A/B (segons l'emplaçament)",
           "supervision_score": 4.1,
-          "points_forts": ["Hôpital bilingue", "Volume de cas important", "Accès Universitaire"],
-          "points_faibles": ["Surcharge aux urgences", "Turnover des cadres"],
-          "avis_assistant_resume": "Une formation solide dans un environnement bilingue stimulant mais exigeant physiquement.",
-          "logement_type": "Fribourg (internat meublé) et Riaz/Tavel"
+          "points_forts": ["Hospital bilingüe", "Volum de casos important", "Accés Universitari"],
+          "points_faibles": ["Sobrecàrrega a les urgències", "Rotació dels quadres"],
+          "avis_assistant_resume": "Una formació sòlida en un entorn bilingüe estimulant però exigent físicament.",
+          "logement_type": "Friburg (internat moblat) i Riaz/Tavel"
         },
         {
           "nom": "Hôpital Daler",
@@ -411,6 +429,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Hospital privat de cures agudes que ofereix places en medicina interna (Cat C).",
+          "chef_service": "Dr. Marc-Antoine Gasser",
+          "email_contact": "magasser@daler.ch",
           "categorie": "C",
           "accessibilite_etrangers": "Mitjana",
           "langue_requise": "B2/C1",
@@ -445,7 +465,7 @@ const HOSPITAL_DATA = {
           ],
           "description": "Establiments de categoria B molt complets per a la majoria d'especialitats.",
           "chef_service": "Prof. Jacques Donzé",
-          "email_contact": "secretariat.dmi@rhne.ch",
+          "email_contact": "jacques.donze@rhne.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
           "langue_requise": "C1",
@@ -455,10 +475,10 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "1h de coaching individual/setmana + cursos dedicats. Autonomia progressiva després de la posada al dia.",
           "isfm_category": "B (2 anys)",
           "supervision_score": 4.6,
-          "points_forts": ["Coaching individuel hebdomadaire", "Autonomie progressive guidée", "Bonne ambiance"],
-          "points_faibles": ["Isolement des sites", "Météo"],
-          "avis_assistant_resume": "Le coaching est un atout majeur pour les nouveaux arrivants en Suisse.",
-          "logement_type": "Studios disponibles (Neuchâtel/Chaux-de-Fonds)"
+          "points_forts": ["Coaching individual setmanal", "Autonomia progressiva guiada", "Bon ambient"],
+          "points_faibles": ["Aïllament dels centres", "Meteorologia"],
+          "avis_assistant_resume": "El coaching és un actiu important per als nouvinguts a Suïssa.",
+          "logement_type": "Estudis disponibles (Neuchâtel/Chaux-de-Fonds)"
         },
         {
           "nom": "Hôpital de la Providence",
@@ -472,6 +492,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Clínica establerta a Neuchâtel, pertanyent al grup Swiss Medical Network.",
+          "chef_service": "Dr. Jean-Louis Zufferey",
+          "email_contact": "jlzufferey@providence.ch",
           "categorie": "C",
           "accessibilite_etrangers": "Mitjana",
           "langue_requise": "B2/C1",
@@ -506,7 +528,7 @@ const HOSPITAL_DATA = {
           ],
           "description": "Xarxa principal del cantó del Jura.",
           "chef_service": "Dr. Hervé Duplain",
-          "email_contact": "Herve.Duplain@h-ju.ch",
+          "email_contact": "herve.duplain@h-ju.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
           "langue_requise": "B2",
@@ -516,10 +538,10 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "Supervisió diària per un formador. Estructura més familiar i a escala humana.",
           "isfm_category": "B (2 anys)",
           "supervision_score": 4.1,
-          "points_forts": ["Atmosphère familiale", "Faible coût de la vie", "Hiérarchie très accessible"],
-          "points_faibles": ["Éloignement des grands centres", "Météo rude"],
-          "avis_assistant_resume": "Une école de médecine de proximité rassurante pour une première année.",
-          "logement_type": "Logements disponibles sur demande"
+          "points_forts": ["Atmosfera familiar", "Baix cost de la vida", "Jerarquia molt accessible"],
+          "points_faibles": ["Allunyament dels grans centres", "Clima dur"],
+          "avis_assistant_resume": "Una escola de medicina de proximitat tranquil·litzadora per a un primer any.",
+          "logement_type": "Allotjaments disponibles sota petició"
         },
         {
           "nom": "Hôpital du Jura Bernois",
@@ -540,6 +562,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Situat a la part francòfona del cantó de Berna.",
+          "chef_service": "Dr. Kafui Houegnifioh",
+          "email_contact": "kafui.houegnifioh@reseaudelarc.net",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
           "langue_requise": "B2",
@@ -566,6 +590,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "El més gran hospital privat de Ginebra amb urgències i cures intensives.",
+          "chef_service": "Dr. Lauriane Poli",
+          "email_contact": "lauriane.poli@latour.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Mitjana",
           "langue_requise": "B2/C1",
@@ -574,10 +600,10 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps.",
           "isfm_category": "B (2 anys)",
           "supervision_score": 4.3,
-          "points_forts": ["Hôpital privé de pointe", "Urgence et réanimation sur site", "Accès aéroport imbattable"],
-          "points_faibles": ["Exigence élevée", "Rythme soutenu"],
-          "avis_assistant_resume": "La pointe du privé avec une structure qui n'a rien à envier au public.",
-          "logement_type": "Secteur privé uniquement"
+          "points_forts": ["Hospital privat de punta", "Urgència i reanimació al lloc", "Accés a l'aeroport immillorable"],
+          "points_faibles": ["Exigència elevada", "Ritme sostingut"],
+          "avis_assistant_resume": "La punta del privat amb una estructura que no té res a envejar al públic.",
+          "logement_type": "Sector privat exclusivament"
         },
         {
           "nom": "Générale-Beaulieu et Grangettes",
@@ -598,6 +624,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Establiments privats reconeguts per a certes especialitats.",
+          "chef_service": "Dr. Patrick Saudan",
+          "email_contact": "psaudan@beaulieu.ch",
           "categorie": "C",
           "accessibilite_etrangers": "Baixa",
           "langue_requise": "C1",
@@ -617,22 +645,22 @@ const HOSPITAL_DATA = {
               "logement_personnel": false
             }
           ],
-          "description": "Principal centre hospitalier académique de Genève.",
-          "chef_service": "Prof. Arnaud Perrier",
-          "email_contact": "med-assistants@hug.ch",
+          "description": "Principal centre hospitalari acadèmic de Ginebra.",
+          "chef_service": "Pr Jean-Luc Reny",
+          "email_contact": "jean-luc.reny@hcuge.ch",
           "categorie": "A",
           "accessibilite_etrangers": "Mittlana",
           "langue_requise": "C1",
           "aeroport_proche": "GVA",
           "temps_aeroport": "15 min",
           "encadrement_niveau": "Universitaire",
-          "encadrement_desc": "Structure de formation de haut niveau. C1 strictement requis pour l'admission AOS.",
-          "isfm_category": "A (3 ans)",
+          "encadrement_desc": "Estructura de formació d'alt nivell. C1 estrictament requerit per a l'admissió AOS.",
+          "isfm_category": "A (3 anys)",
           "supervision_score": 4.7,
-          "points_forts": ["Label HUG prestigieux", "Réseau international", "Proximité Aéroport"],
-          "points_faibles": ["Vie à Genève très chère", "Sélectivité maximale"],
-          "avis_assistant_resume": "Le choix numéro 1 pour ceux qui veulent être au cœur de l'action médicale genevoise.",
-          "logement_type": "Réserve de logements limitée (très longue attente)"
+          "points_forts": ["Segell HUG prestigiós", "Xarxa internacional", "Proximitat Aeroport"],
+          "points_faibles": ["Vida a Ginebra molt cara", "Selectivitat màxima"],
+          "avis_assistant_resume": "L'opció número 1 per a aquells que volen estar al cor de l'acció mèdica ginebrina.",
+          "logement_type": "Reserva d'allotjaments limitada (espera molt llarga)"
         },
         {
           "nom": "HUG (Sites Périphériques)",
@@ -660,6 +688,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Ofereixen places d'assistent molt orientades a medicina interna, geriatria i rehabilitació.",
+          "chef_service": "Pr Christophe Luthy",
+          "email_contact": "christophe.luthy@hcuge.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
           "langue_requise": "C1",
@@ -668,10 +698,10 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps.",
           "isfm_category": "B (2 anys)",
           "supervision_score": 4.2,
-          "points_forts": ["Prestige HUG", "Réseau académique", "Formation structurée"],
-          "points_faibles": ["Lourdeur administrative", "Logement très complexe à Genève"],
-          "avis_assistant_resume": "L'assurance du label HUG avec une pratique plus clinique que sur le site central.",
-          "logement_type": "Réseau internat HUG (longue attente)"
+          "points_forts": ["Prestigi HUG", "Xarxa acadèmica", "Formació estructurada"],
+          "points_faibles": ["Pesadesa administrativa", "Allotjament molt complex a Ginebra"],
+          "avis_assistant_resume": "L'assegurança del segell HUG amb una pràctica més clínica que al lloc central.",
+          "logement_type": "Xarxa d'internats HUG (llarga espera)"
         },
         {
           "nom": "Clinique de Joli-Mont",
@@ -685,6 +715,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Situada davant dels HUG per a sinergies de continuïtat de cures i readaptació.",
+          "chef_service": "Dr. Pierre-Olivier Lang",
+          "email_contact": "pierre-olivier.lang@jolimont.ch",
           "categorie": "C",
           "accessibilite_etrangers": "Mitjana",
           "langue_requise": "B2",
@@ -705,6 +737,8 @@ const HOSPITAL_DATA = {
             }
           ],
           "description": "Establiment privat que ofereix oportunitats en medicina (Cat C).",
+          "chef_service": "Dr. Jean-Luc Kurth",
+          "email_contact": "jlkurth@cliniquecarouge.ch",
           "categorie": "C",
           "accessibilite_etrangers": "Mitjana",
           "langue_requise": "B2",
@@ -761,7 +795,7 @@ const ADDRESS_COORDINATES = {
 
 const AIRPORT_DATA = [
     {
-        name: "Aéroport de Genève (GVA)",
+        name: "Aeroport de Ginebra (GVA)",
         code: "GVA",
         lat: 46.2304,
         lon: 6.1102,
@@ -778,7 +812,7 @@ const AIRPORT_DATA = [
         }
     },
     {
-        name: "Aéroport de Bâle-Mulhouse (BSL)",
+        name: "Aeroport de Basilea-Mulhouse (BSL)",
         code: "BSL",
         lat: 47.5900,
         lon: 7.5290,
@@ -795,7 +829,7 @@ const AIRPORT_DATA = [
         }
     },
     {
-        name: "Aéroport de Zurich (ZRH)",
+        name: "Aeroport de Zuric (ZRH)",
         code: "ZRH",
         lat: 47.4647,
         lon: 8.5492,
