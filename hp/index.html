@@ -759,6 +759,7 @@ function getFiltered() {
   // We keep everyone now (except search if it was implemented, but let's keep it simple)
   // Canton remains a "Hard" filter because usually people stick to a canton
   return HOSPITALS.filter(h => {
+    if (h.cat === 'A') return false; // Exclure les Cat. A car non accessibles aux débutants directs
     if (filters.canton !== 'all' && h.canton !== filters.canton) return false;
     return true; 
   }).map(h => {
@@ -938,8 +939,10 @@ function openDetail(id) {
 }
 
 function closeDetail() {
-  document.getElementById('detail-panel').style.display = 'none';
-  document.getElementById('overlay').classList.remove('on');
+  const panel = document.getElementById('detail-panel');
+  const ov    = document.getElementById('overlay');
+  if (panel) panel.style.display = 'none';
+  if (ov) ov.classList.remove('on');
   document.querySelectorAll('.hosp-card').forEach(c => c.classList.remove('selected'));
   activeDetail = null;
 }
