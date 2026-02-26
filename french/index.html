@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Objectiu DALF C1 | Temps Verbals</title>
+    <meta name="description" content="Aprèn els temps verbals francesos per al DALF C1 amb repetició espaciada i pràctica activa.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+
+    <!-- Session Progress Bar (visible during quiz/flashcards) -->
+    <div id="session-progress-bar" class="session-bar hidden">
+        <div class="session-bar-fill" id="session-bar-fill"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation (Desktop) -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="icon">🇫🇷</span>
+                    <h1>DALF C1</h1>
+                </div>
+            </div>
+            <ul class="nav-links">
+                <li class="active" data-section="dashboard">
+                    <span class="icon">📊</span> <span class="nav-label">Dashboard</span>
+                </li>
+                <li data-section="learn">
+                    <span class="icon">📚</span> <span class="nav-label">Aprèn</span>
+                </li>
+                <li data-section="explorer">
+                    <span class="icon">🔍</span> <span class="nav-label">Explorador</span>
+                </li>
+                <li data-section="flashcards">
+                    <span class="icon">⚡</span> <span class="nav-label">Memoritza</span>
+                </li>
+                <li data-section="quiz">
+                    <span class="icon">✏️</span> <span class="nav-label">Pràctica</span>
+                </li>
+                <li data-section="c1-special">
+                    <span class="icon">🏆</span> <span class="nav-label">Nivell C1</span>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span>Progrés Global</span>
+                        <span id="global-progress-text">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="global-progress-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="content-header">
+                <h2 id="section-title">Dashboard</h2>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <span class="icon">🔥</span> <span id="streak-count">0</span> dies
+                    </div>
+                </div>
+            </header>
+
+            <div id="content-area">
+                <!-- Sections will be injected here by app.js -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <button class="bottom-nav-item active" data-section="dashboard">
+            <span class="bottom-nav-icon">📊</span>
+            <span class="bottom-nav-label">Inici</span>
+        </button>
+        <button class="bottom-nav-item" data-section="learn">
+            <span class="bottom-nav-icon">📚</span>
+            <span class="bottom-nav-label">Aprèn</span>
+        </button>
+        <button class="bottom-nav-item" data-section="flashcards">
+            <span class="bottom-nav-icon">⚡</span>
+            <span class="bottom-nav-label">Memoritza</span>
+        </button>
+        <button class="bottom-nav-item" data-section="quiz">
+            <span class="bottom-nav-icon">✏️</span>
+            <span class="bottom-nav-label">Pràctica</span>
+        </button>
+        <button class="bottom-nav-item" data-section="c1-special">
+            <span class="bottom-nav-icon">🏆</span>
+            <span class="bottom-nav-label">C1</span>
+        </button>
+    </nav>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
