@@ -275,12 +275,33 @@ window.searchVerb = function() {
 
 // =================== FLASHCARDS ===================
 
+// Track selected tense filter for flashcards
+let flashcardTenseFilter = null;
+
+function getFlashcardTenses() {
+    return [...new Set(FLASHCARDS.map(f => f.tense))].sort();
+}
+
 function renderFlashcards(container) {
-    const queue = getSRSQueue(FLASHCARDS.map((f, i) => ({ ...f, id: 'fc-' + i })));
-    const card = queue[0] || FLASHCARDS[0];
+    const allTenses = getFlashcardTenses();
+    const filtered = flashcardTenseFilter
+        ? FLASHCARDS.filter(f => f.tense === flashcardTenseFilter)
+        : FLASHCARDS;
+    const queue = getSRSQueue(filtered.map((f, i) => ({ ...f, id: 'fc-' + i })));
+    const card = queue[0] || filtered[0];
 
     container.innerHTML = `
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <h4 style="margin-bottom: 0.8rem; color: var(--text-secondary); font-size: 0.9rem;">🎯 Filtra per temps:</h4>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="chip ${!flashcardTenseFilter ? 'active-chip' : ''}" onclick="window.setFlashcardFilter(null)">Tots</button>
+                ${allTenses.map(t => `<button class="chip ${flashcardTenseFilter === t ? 'active-chip' : ''}" onclick="window.setFlashcardFilter('${t}')">${t}</button>`).join('')}
+            </div>
+        </div>
         <div class="card" style="max-width: 600px; margin: 0 auto; text-align: center;">
+            <div style="margin-bottom: 1rem;">
+                <span class="badge" style="background: var(--accent-blue); color: white; font-size: 0.8rem;">🕐 ${card.tense}</span>
+            </div>
             <h3 style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 1rem;">Completa la frase:</h3>
             <p style="font-size: 1.3rem; font-weight: 500; line-height: 1.8;">${card.prompt}</p>
             <div style="margin-top: 2rem;">
@@ -304,6 +325,11 @@ function renderFlashcards(container) {
         if (e.key === 'Enter') document.getElementById('fc-submit').click();
     });
 }
+
+window.setFlashcardFilter = function(tense) {
+    flashcardTenseFilter = tense;
+    window.renderSection('flashcards');
+};
 
 window.checkFlashcard = function() {
     const container = document.getElementById('content-area');
@@ -338,38 +364,71 @@ window.checkFlashcard = function() {
 
 // =================== QUIZ (SESSION) ===================
 
+let quizTenseFilter = null;
+
+function getExerciseTenses() {
+    return [...new Set(PRACTICE_EXERCISES.map(e => e.tense))].sort();
+}
+
 function renderQuiz(container) {
+    const allTenses = getExerciseTenses();
+    const filtered = quizTenseFilter
+        ? PRACTICE_EXERCISES.filter(e => e.tense === quizTenseFilter)
+        : PRACTICE_EXERCISES;
+    const availableCount = filtered.length;
+
     container.innerHTML = `
-        <div class="card" style="text-align: center; padding: 2.5rem 1.5rem;">
+        <div class="card" style="margin-bottom: 1.5rem;">
+            <h4 style="margin-bottom: 0.8rem; color: var(--text-secondary); font-size: 0.9rem;">🎯 Filtra per temps:</h4>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="chip ${!quizTenseFilter ? 'active-chip' : ''}" onclick="window.setQuizFilter(null)">Tots (${PRACTICE_EXERCISES.length})</button>
+                ${allTenses.map(t => {
+                    const c = PRACTICE_EXERCISES.filter(e => e.tense === t).length;
+                    return `<button class="chip ${quizTenseFilter === t ? 'active-chip' : ''}" onclick="window.setQuizFilter('${t}')">${t} (${c})</button>`;
+                }).join('')}
+            </div>
+        </div>
+        <div class="card" style="text-align: center; padding: 2rem 1.5rem;">
             <h3 style="font-size: 1.8rem; margin-bottom: 0.8rem; color: var(--accent-gold);">Pràctica C1</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 1rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            <p style="color: var(--text-secondary); margin-bottom: 0.5rem; font-size: 1rem;">
+                ${quizTenseFilter ? '📌 ' + quizTenseFilter : 'Tots els temps'} — ${availableCount} exercicis disponibles
+            </p>
+            <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.85rem;">
                 Producció real sense opcions. Tria quantes preguntes vols fer.
             </p>
             <div class="session-selector">
-                <button class="session-option" onclick="window.startQuiz(5)">
+                <button class="session-option" onclick="window.startQuiz(5)" ${availableCount < 5 ? 'disabled style="opacity:0.4;pointer-events:none"' : ''}>
                     5
                     <span class="label">Ràpid</span>
                 </button>
-                <button class="session-option" onclick="window.startQuiz(10)">
+                <button class="session-option" onclick="window.startQuiz(10)" ${availableCount < 10 ? 'disabled style="opacity:0.4;pointer-events:none"' : ''}>
                     10
                     <span class="label">Normal</span>
                 </button>
-                <button class="session-option" onclick="window.startQuiz(20)">
-                    20
-                    <span class="label">Intensiu</span>
+                <button class="session-option" onclick="window.startQuiz(${Math.min(20, availableCount)})">
+                    ${Math.min(20, availableCount)}
+                    <span class="label">${availableCount <= 20 ? 'Tot' : 'Intensiu'}</span>
                 </button>
             </div>
         </div>
     `;
 }
 
+window.setQuizFilter = function(tense) {
+    quizTenseFilter = tense;
+    window.renderSection('quiz');
+};
+
 window.startQuiz = function(count) {
     let currentQ = 0;
     let score = 0;
     const container = document.getElementById('content-area');
 
-    // Get exercises sorted by SRS (weakest first) then pick 'count'
-    const queue = getSRSQueue(PRACTICE_EXERCISES);
+    // Filter by selected tense, then SRS sort
+    const pool = quizTenseFilter
+        ? PRACTICE_EXERCISES.filter(e => e.tense === quizTenseFilter)
+        : PRACTICE_EXERCISES;
+    const queue = getSRSQueue(pool);
     const exercises = queue.slice(0, count);
 
     showSessionBar(true);
@@ -387,7 +446,10 @@ window.startQuiz = function(count) {
             <div class="card fade-in" style="max-width: 700px; margin: 0 auto;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem;">
                     <span style="color: var(--text-secondary); font-size: 0.9rem;">Exercici ${currentQ + 1} de ${exercises.length}</span>
-                    <span class="badge" style="background: var(--accent-blue); color: white;">${q.type}</span>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <span class="badge" style="background: var(--accent-gold); color: var(--bg-primary);">🕐 ${q.tense}</span>
+                        <span class="badge" style="background: var(--accent-blue); color: white;">${q.type}</span>
+                    </div>
                 </div>
                 <h3 style="margin-bottom: 1.5rem; line-height: 1.7; font-size: 1.2rem;">${q.prompt}</h3>
                 <div style="margin-top: 1.5rem;">
