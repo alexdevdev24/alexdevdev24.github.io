@@ -5,6 +5,34 @@ const HOSPITAL_DATA = {
       "description": "Molt dens en hospitals perifèrics. Un dels majors proveïdors de places fora del centre universitari.",
       "hopitaux": [
         {
+          "nom": "CHUV (Centre Hospitalier Universitaire Vaudois)",
+          "sites": [
+            {
+              "ville": "Lausanne",
+              "adresse": "Rue du Bugnon 46, 1011 Lausanne, Suisse",
+              "voiture_necessaire": false,
+              "budget_loyer": "$$$$",
+              "logement_personnel": false
+            }
+          ],
+          "description": "Le centre de référence universitaire de Suisse romande.",
+          "chef_service": "Prof. Gérard Waeber",
+          "email_contact": "med-assistants@chuv.ch",
+          "categorie": "A",
+          "accessibilite_etrangers": "Mittlana",
+          "langue_requise": "C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "45 min",
+          "encadrement_niveau": "Académique",
+          "encadrement_desc": "Supervision exceptionnelle mais très exigeante. Idéal pour carrière académique.",
+          "isfm_category": "A (3 ans)",
+          "supervision_score": 4.9,
+          "points_forts": ["Prestige international", "Recherche de pointe", "Cas complexes"],
+          "points_faibles": ["Très sélectif", "Coût de la vie élevé", "C1 requis strict"],
+          "avis_assistant_resume": "La référence absolue pour se former, si vous avez le niveau et l'ambition.",
+          "logement_type": "Aucun (secteur privé)"
+        },
+        {
           "nom": "eHnv (Établissements Hospitaliers du Nord Vaudois)",
           "sites": [
             {
@@ -55,7 +83,7 @@ const HOSPITAL_DATA = {
           "email_contact": "secretariat.departement.medecine@ehc.vd.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Mitjana",
-          "langue_requise": "B2/C1",
+          "langue_requise": "C1",
           "aeroport_proche": "GVA",
           "temps_aeroport": "30 min",
           "encadrement_niveau": "Molt bo",
@@ -293,7 +321,7 @@ const HOSPITAL_DATA = {
           "email_contact": "p-a.petignat@hopitalvs.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
-          "langue_requise": "B2",
+          "langue_requise": "C1",
           "aeroport_proche": "GVA",
           "temps_aeroport": "1h 50min",
           "encadrement_niveau": "Millorada (CCT)",
@@ -359,7 +387,7 @@ const HOSPITAL_DATA = {
           "description": "Gran pol de categoria B amb hospitals perifèrics per a medicina interna bàsica.",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
-          "langue_requise": "B2",
+          "langue_requise": "C1",
           "aeroport_proche": "BSL",
           "temps_aeroport": "1h 30min",
           "encadrement_niveau": "Estàndard",
@@ -420,7 +448,7 @@ const HOSPITAL_DATA = {
           "email_contact": "secretariat.dmi@rhne.ch",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
-          "langue_requise": "B2",
+          "langue_requise": "C1",
           "aeroport_proche": "GVA",
           "temps_aeroport": "1h 20min",
           "encadrement_niveau": "Estructurada",
@@ -579,6 +607,34 @@ const HOSPITAL_DATA = {
           "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps."
         },
         {
+          "nom": "HUG (Hôpitaux Universitaires de Genève)",
+          "sites": [
+            {
+              "ville": "Genève",
+              "adresse": "Rue Gabrielle-Perret-Gentil 4, 1205 Genève, Suisse",
+              "voiture_necessaire": false,
+              "budget_loyer": "$$$$",
+              "logement_personnel": false
+            }
+          ],
+          "description": "Principal centre hospitalier académique de Genève.",
+          "chef_service": "Prof. Arnaud Perrier",
+          "email_contact": "med-assistants@hug.ch",
+          "categorie": "A",
+          "accessibilite_etrangers": "Mittlana",
+          "langue_requise": "C1",
+          "aeroport_proche": "GVA",
+          "temps_aeroport": "15 min",
+          "encadrement_niveau": "Universitaire",
+          "encadrement_desc": "Structure de formation de haut niveau. C1 strictement requis pour l'admission AOS.",
+          "isfm_category": "A (3 ans)",
+          "supervision_score": 4.7,
+          "points_forts": ["Label HUG prestigieux", "Réseau international", "Proximité Aéroport"],
+          "points_faibles": ["Vie à Genève très chère", "Sélectivité maximale"],
+          "avis_assistant_resume": "Le choix numéro 1 pour ceux qui veulent être au cœur de l'action médicale genevoise.",
+          "logement_type": "Réserve de logements limitée (très longue attente)"
+        },
+        {
           "nom": "HUG (Sites Périphériques)",
           "sites": [
             {
@@ -606,7 +662,7 @@ const HOSPITAL_DATA = {
           "description": "Ofereixen places d'assistent molt orientades a medicina interna, geriatria i rehabilitació.",
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
-          "langue_requise": "B2",
+          "langue_requise": "C1",
           "aeroport_proche": "GVA",
           "encadrement_niveau": "Estàndard",
           "encadrement_desc": "Supervisió hospitalària clàssica per caps de clínica i metges caps.",
@@ -697,7 +753,9 @@ const ADDRESS_COORDINATES = {
     "Avenue Cardinal-Mermillod 1, 1227 Carouge, Suisse": [46.1867663, 6.1425067],
     "Route de Bertigny 34, 1700 Fribourg, Suisse": [46.8009218, 7.1407993],
     "Faubourg de l'Hôpital 81, 2000 Neuchâtel, Suisse": [46.9952645, 6.9394811],
-    "Rue de l'Industrie 29, 1950 Sion, Suisse": [46.2270013, 7.3631468]
+    "Rue de l'Industrie 29, 1950 Sion, Suisse": [46.2270013, 7.3631468],
+    "Rue du Bugnon 46, 1011 Lausanne, Suisse": [46.5255, 6.6416],
+    "Rue Gabrielle-Perret-Gentil 4, 1205 Genève, Suisse": [46.1931, 6.1479]
 };
 
 
