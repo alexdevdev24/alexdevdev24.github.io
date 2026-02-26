@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrice Comparative C1 - Français ↔ Catalan</title>
+    <style>
+        :root {
+            --bg-color: #0D0D0D;
+            --text-color: #E8E0D0;
+            --header-bg: rgba(13, 13, 13, 0.95);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --card-bg: rgba(255, 255, 255, 0.025);
+            --card-border: rgba(255, 255, 255, 0.07);
+            --input-bg: rgba(255, 255, 255, 0.04);
+            --font-main: 'Georgia', 'Times New Roman', serif;
+            --font-mono: monospace;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .bg-texture {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 20%, rgba(74,144,217,0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(231,76,60,0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+        }
+
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-left { display: flex; flex-direction: column; gap: 4px; }
+        .flag-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .flag-chip {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            letter-spacing: 1px;
+        }
+        .flag-sep { color: #555; font-size: 14px; }
+        .title {
+            margin: 0;
+            font-size: clamp(18px, 4vw, 26px);
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            color: #F5F0E8;
+        }
+        .subtitle {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+            font-family: var(--font-mono);
+            letter-spacing: 0.05em;
+        }
+
+        .toggle-btn {
+            display: block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            letter-spacing: 0.05em;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .controls {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 24px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-wrap {
+            position: relative;
+            margin-bottom: 12px;
+        }
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #555;
+            pointer-events: none;
+        }
+        .search-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 17px;
+            padding: 12px 40px 12px 44px;
+            outline: none;
+            font-family: var(--font-main);
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .clear-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding-bottom: 16px;
+        }
+        .filter-btn {
+            background: var(--input-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            color: #888;
+            font-size: 14px;
+            padding: 5px 14px;
+            cursor: pointer;
+            font-family: var(--font-mono);
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s;
+        }
+        .filter-btn.active {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.3);
+            color: #F5F0E8;
+        }
+        .filter-count {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 1px 6px;
+            font-size: 10px;
+        }
+
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px 40px;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .card-header {
+            width: 100%;
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px 0 0;
+            text-align: left;
+            gap: 12px;
+        }
+
+        .card-header-left {
+            display: flex;
+            align-items: stretch;
+            gap: 16px;
+            flex: 1;
+            min-width: 0;
+        }
+        .color-bar {
+            width: 4px;
+            flex-shrink: 0;
+            border-radius: 0 2px 2px 0;
+        }
+        .card-meta {
+            padding: 16px 0;
+            flex: 1;
+            min-width: 0;
+        }
+        .card-top-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .system-label {
+            font-size: 12px;
+            color: #555;
+            font-family: var(--font-mono);
+            letter-spacing: 0.1em;
+        }
+        .tag {
+            font-size: 12px;
+            font-family: var(--font-mono);
+            letter-spacing: 0.08em;
+            border: 1px solid;
+            border-radius: 4px;
+            padding: 1px 7px;
+            font-weight: 700;
+        }
+        .card-title {
+            margin: 0 0 6px;
+            font-size: clamp(18px, 3vw, 22px);
+            font-weight: 400;
+            color: #F0EAE0;
+            letter-spacing: 0.01em;
+        }
+        .card-pattern {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+            font-family: var(--font-mono);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .pattern-label { color: #444; }
+        .chevron {
+            font-size: 18px;
+            color: #444;
+            flex-shrink: 0;
+            transition: transform 0.25s;
+            user-select: none;
+        }
+
+        .card-body {
+            padding: 0 20px 20px 20px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .piege {
+            display: flex;
+            gap: 12px;
+            background: rgba(231,76,60,0.08);
+            border: 1px solid rgba(231,76,60,0.25);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 16px 0;
+            align-items: flex-start;
+        }
+        .piege-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+        .piege-text {
+            margin: 0;
+            font-size: 15px;
+            color: #E8A090;
+            line-height: 1.6;
+            font-family: var(--font-main);
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+        @media (max-width: 600px) {
+            .two-col { grid-template-columns: 1fr; }
+        }
+
+        .section-title {
+            margin: 0 0 10px;
+            font-size: 15px;
+            color: #888;
+            font-family: var(--font-mono);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border-bottom: 1px solid;
+            padding-bottom: 6px;
+        }
+        .rule-text {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.7;
+            color: #C8C0B0;
+            font-family: var(--font-main);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .verb-section { margin-top: 20px; }
+        .verb-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .verb-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 6px;
+            font-size: 15px;
+            align-items: center;
+        }
+        .verb-fr { color: #AAD4FF; font-style: italic; }
+        .verb-ca { color: #FCDD09; font-style: italic; }
+        .verb-en { color: #666; font-family: var(--font-mono); font-size: 14px; }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: #333;
+            font-size: 14px;
+            font-family: var(--font-mono);
+            letter-spacing: 0.08em;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            position: relative;
+            z-index: 10;
+        }
+
+        .hidden { display: none !important; }
+        .empty {
+            text-align: center;
+            padding: 60px 0;
+            color: #444;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-texture"></div>
+
+    <header>
+        <div class="header-inner">
+            <div class="header-left">
+                <div class="flag-bar">
+                    <span class="flag-chip" style="background: #002395; color: white;">FR</span>
+                    <span class="flag-sep">↔</span>
+                    <span class="flag-chip" style="background: #FCDD09; color: #003399;">CA</span>
+                </div>
+                <h1 class="title">Matrice Comparative C1</h1>
+                <p class="subtitle" id="stats-subtitle"></p>
+            </div>
+            <div class="toggle-wrap">
+                <button id="toggle-ca" class="toggle-btn"></button>
+            </div>
+        </div>
+    </header>
+
+    <div class="controls">
+        <div class="search-wrap">
+            <span class="search-icon">⌕</span>
+            <input type="text" id="search-input" class="search-input" placeholder="Rechercher un temps, un verbe, une règle...">
+            <button id="clear-search" class="clear-btn hidden">×</button>
+        </div>
+        <div class="filter-row" id="filter-row"></div>
+    </div>
+
+    <div class="content" id="card-container"></div>
+
+    <footer id="footer"></footer>
+
+    <script>
+        const DATA = [
+            {
+                id: "present",
+                system: "indicatif",
+                name: "Présent de l'Indicatif",
+                tag: "BASE",
+                color: "#4A90D9",
+                rule: `Formation par 3 groupes :\n• Groupe 1 (-ER) : radical + -e, -es, -e, -ons, -ez, -ent\n• Groupe 2 (-IR régulier) : radical + -is, -is, -it, -issons, -issez, -issent\n• Groupe 3 (irréguliers) : patterns propres à chaque verbe`,
+                pattern: "Radical + Terminaison (-e / -is / variable)",
+                catalan: `Équivalent direct. Même usage.\n• Groupe 1 (-AR) : parl-o, parl-es, parl-a, parl-em, parl-eu, parl-en\n• Groupe 2 (-IR) : tem-o, tem-s, tem, tem-em, tem-eu, tem-en\n⚠️ Accent tonique identique mais orthographe diverge`,
+                piege: null,
+                verbs: [
+                    { fr: "je parle", ca: "jo parlo", en: "I speak" },
+                    { fr: "tu finis", ca: "tu acabes", en: "you finish" },
+                    { fr: "il vend", ca: "ell ven", en: "he sells" },
+                    { fr: "nous allons", ca: "nosaltres anem", en: "we go" },
+                    { fr: "vous êtes", ca: "vosaltres sou", en: "you are" },
+                    { fr: "ils font", ca: "ells fan", en: "they do" },
+                    { fr: "je suis", ca: "jo sóc", en: "I am" },
+                    { fr: "tu as", ca: "tu tens", en: "you have" },
+                    { fr: "elle veut", ca: "ella vol", en: "she wants" },
+                    { fr: "nous pouvons", ca: "nosaltres podem", en: "we can" },
+                    { fr: "ils prennent", ca: "ells prenen", en: "they take" },
+                    { fr: "je viens", ca: "jo vinc", en: "I come" },
+                ],
+            },
+            {
+                id: "imparfait",
+                system: "indicatif",
+                name: "Imparfait",
+                tag: "DURÉE",
+                color: "#7B68EE",
+                rule: `Radical de la 1ère pers. pluriel du présent + terminaisons :\n-ais, -ais, -ait, -ions, -iez, -aient\n\nUsages :\n• Description dans le passé (état, habitude)\n• Action en cours interrompue\n• Politesse atténuante (je voulais vous demander...)`,
+                pattern: "Rad. présent (nous) + -AIS / -AIS / -AIT / -IONS / -IEZ / -AIENT",
+                catalan: `Correspondance : Imperfet d'indicatiu\n• Groupe -AR : parl-ava, parl-aves, parl-ava, parl-àvem, parl-àveu, parl-aven\n• Groupe -ER/-IR : tem-ia, tem-ies, tem-ia, tem-íem, tem-íeu, tem-ien\n⚠️ Terminaison FR -ais ≠ CA -ava/-ia : ne pas confondre les patterns !`,
+                piege: "Attention : l'imparfait FR = -ais (toujours), jamais -ava. Le -ava catalan n'existe pas en français.",
+                verbs: [
+                    { fr: "je parlais", ca: "jo parlava", en: "I was speaking" },
+                    { fr: "tu finissais", ca: "tu acabaves", en: "you were finishing" },
+                    { fr: "il vendait", ca: "ell venia", en: "he was selling" },
+                    { fr: "nous allions", ca: "nosaltres anàvem", en: "we were going" },
+                    { fr: "vous étiez", ca: "vosaltres éreu", en: "you were" },
+                    { fr: "ils faisaient", ca: "ells feien", en: "they were doing" },
+                    { fr: "j'avais", ca: "jo tenia", en: "I had" },
+                    { fr: "elle pouvait", ca: "ella podia", en: "she could" },
+                    { fr: "nous voulions", ca: "nosaltres volíem", en: "we wanted" },
+                    { fr: "ils prenaient", ca: "ells prenien", en: "they were taking" },
+                ],
+            },
+            {
+                id: "passe-compose",
+                system: "indicatif",
+                name: "Passé Composé",
+                tag: "ACTION RÉVOLUE",
+                color: "#E67E22",
+                rule: `Auxiliaire (ÊTRE ou AVOIR) au présent + Participe Passé\n\nRègle ÊTRE : Dr & Mrs Vandertramp + tous les pronominaux\n(Devenir, Revenir, Mourir, Retourner, Sortir, Venir, Aller, Naître, Descendre, Entrer, Rentrer, Tomber, Rester, Arriver, Monter, Partir)\n\nAccord PP avec ÊTRE : PP s'accorde avec le sujet\nAccord PP avec AVOIR : PP s'accorde avec le COD si placé avant`,
+                pattern: "AVOIR/ÊTRE (présent) + Participe Passé",
+                catalan: `Équivalent : Pretèrit perfet perifràstic (le plus courant à l'oral)\n• Auxiliaire : anar (aller au présent — usage unique au catalan !)\n  jo vaig parlar / tu vas parlar / ell va parlar\n  nosaltres vam parlar / vosaltres vau parlar / ells van parlar\n⚠️ DIFFÉRENCE MAJEURE : CA utilise «anar» comme auxiliaire, FR utilise «avoir/être»`,
+                piege: "Le choix ÊTRE/AVOIR est un piège majeur. En catalan, on n'a pas ce choix. En français, confondre les deux change le sens (il est monté = mouvement / il a monté = a transporté).",
+                verbs: [
+                    { fr: "j'ai parlé", ca: "jo vaig parlar", en: "I spoke" },
+                    { fr: "tu as fini", ca: "tu vas acabar", en: "you finished" },
+                    { fr: "il est allé", ca: "ell va anar", en: "he went" },
+                    { fr: "elle est née", ca: "ella va néixer", en: "she was born" },
+                    { fr: "nous avons fait", ca: "nosaltres vam fer", en: "we did" },
+                    { fr: "vous êtes partis", ca: "vosaltres vau partir", en: "you left" },
+                    { fr: "ils ont pris", ca: "ells van prendre", en: "they took" },
+                    { fr: "je me suis levé(e)", ca: "jo em vaig aixecar", en: "I got up" },
+                    { fr: "tu t'es souvenu(e)", ca: "tu et vas recordar", en: "you remembered" },
+                    { fr: "il est tombé", ca: "ell va caure", en: "he fell" },
+                ],
+            },
+            {
+                id: "passe-simple",
+                system: "indicatif",
+                name: "Passé Simple",
+                tag: "LITTÉRAIRE",
+                color: "#8B4513",
+                rule: `Temps littéraire (récit écrit, roman, presse soutenue). Jamais à l'oral.\n\nTerminaisons :\n• Groupe 1 (-ER) : -ai, -as, -a, -âmes, -âtes, -èrent\n• Groupe 2 (-IR) : -is, -is, -it, -îmes, -îtes, -irent\n• Groupe 3 irrég. : -us, -us, -ut, -ûmes, -ûtes, -urent\n\nMême valeur que le passé composé mais en registre soutenu.`,
+                pattern: "Rad. + -AI/-IS/-US | -AS/-IS/-US | -A/-IT/-UT | ...",
+                catalan: `Équivalent : Pretèrit indefinit (RARE au catalan moderne, surtout à l'écrit)\n• Groupe -AR : parl-í, parl-ares, parl-à, parl-àrem, parl-àreu, parl-aren\n• Groupe -IR : tem-í, tem-eres, tem-é, tem-érem, tem-éreu, tem-eren\n⚠️ En catalan moderne, ce temps est quasi remplacé par le perifràstic à l'écrit aussi`,
+                piege: "Ne jamais utiliser le passé simple à l'oral en français — c'est une erreur de registre très marquée. En catalan, même remarque mais encore plus prononcée.",
+                verbs: [
+                    { fr: "je parlai", ca: "jo parlí", en: "I spoke (literary)" },
+                    { fr: "tu finis", ca: "tu temeres", en: "you finished" },
+                    { fr: "il vint", ca: "ell vingué", en: "he came" },
+                    { fr: "elle eut", ca: "ella hagué", en: "she had" },
+                    { fr: "nous fûmes", ca: "nosaltres fórem", en: "we were" },
+                    { fr: "ils prirent", ca: "ells prengueren", en: "they took" },
+                    { fr: "je dus", ca: "jo haguí de", en: "I had to" },
+                    { fr: "il mourut", ca: "ell morí", en: "he died" },
+                    { fr: "elle naquit", ca: "ella nasqué", en: "she was born" },
+                    { fr: "ils surent", ca: "ells saberen", en: "they knew" },
+                ],
+            },
+            {
+                id: "plus-que-parfait",
+                system: "indicatif",
+                name: "Plus-que-parfait",
+                tag: "ANTÉRIORITÉ",
+                color: "#9B59B6",
+                rule: `Imparfait de l'auxiliaire + Participe Passé\n\nExprime une action ANTÉRIEURE à une autre action passée.\n• «Quand il arriva, elle ÉTAIT PARTIE» (partie avant son arrivée)\n• Utilisé en discours indirect pour le passé du passé\n• Condition irréelle dans le passé (si + PQP → Cond. Passé)`,
+                pattern: "AVOIR/ÊTRE (imparfait) + Participe Passé",
+                catalan: `Équivalent : Pretèrit plusquamperfet\n• Auxiliaire haver à l'imperfet : havia / havies / havia / havíem / havíeu / havien\n  jo havia parlat / tu havies acabat / ell havia fet\n✓ Structure identique à la logique française — transfert direct possible`,
+                piege: null,
+                verbs: [
+                    { fr: "j'avais parlé", ca: "jo havia parlat", en: "I had spoken" },
+                    { fr: "tu avais fini", ca: "tu havies acabat", en: "you had finished" },
+                    { fr: "il était allé", ca: "ell havia anat", en: "he had gone" },
+                    { fr: "nous avions fait", ca: "nosaltres havíem fet", en: "we had done" },
+                    { fr: "vous étiez partis", ca: "vosaltres havíeu marxat", en: "you had left" },
+                    { fr: "ils avaient pris", ca: "ells havien pres", en: "they had taken" },
+                    { fr: "elle s'était levée", ca: "ella s'havia aixecat", en: "she had gotten up" },
+                    { fr: "j'avais voulu", ca: "jo havia volgut", en: "I had wanted" },
+                    { fr: "tu avais su", ca: "tu havies sabut", en: "you had known" },
+                    { fr: "il avait dû", ca: "ell havia hagut de", en: "he had had to" },
+                ],
+            },
+            {
+                id: "passe-anterieur",
+                system: "indicatif",
+                name: "Passé Antérieur",
+                tag: "LITTÉRAIRE",
+                color: "#6C3483",
+                rule: `Passé simple de l'auxiliaire + Participe Passé\n\nUsage EXCLUSIVEMENT littéraire. Exprime une action passée immédiatement antérieure à une autre au passé simple.\n\nTrigger : après «quand», «dès que», «aussitôt que», «lorsque» + Passé Simple dans la principale\n\nEx : «Dès qu'il EUT FINI, il partit.»`,
+                pattern: "AVOIR/ÊTRE (passé simple) + Participe Passé",
+                catalan: `Équivalent : Pretèrit anterior (également littéraire et rare)\n• hagui/hagueres/hagué parlat...\n⚠️ Même rareté qu'en français — usage quasi exclusivement littéraire des deux côtés`,
+                piege: "Ce temps n'existe qu'à l'écrit littéraire. L'objectif C1 est la RECONNAISSANCE, pas la production active.",
+                verbs: [
+                    { fr: "j'eus parlé", ca: "jo haguí parlat", en: "I had spoken (lit.)" },
+                    { fr: "tu eus fini", ca: "tu hagueres acabat", en: "you had finished" },
+                    { fr: "il eut fait", ca: "ell hagué fet", en: "he had done" },
+                    { fr: "elle fut partie", ca: "ella hagué marxat", en: "she had left" },
+                    { fr: "nous eûmes pris", ca: "nosaltres haguérem pres", en: "we had taken" },
+                    { fr: "ils eurent su", ca: "ells hagueren sabut", en: "they had known" },
+                ],
+            },
+            {
+                id: "futur-simple",
+                system: "indicatif",
+                name: "Futur Simple",
+                tag: "PROJECTION",
+                color: "#27AE60",
+                rule: `Infinitif + Terminaisons : -ai, -as, -a, -ons, -ez, -ont\n\n⚠️ Verbes irréguliers (infinitif modifié) :\nêtre → ser- | avoir → aur- | aller → ir- | faire → fer-\nvouloir → voudr- | pouvoir → pourr- | venir → viendr-\ndevoir → devr- | savoir → saur- | voir → verr-\n\nUsages : événement futur, ordre atténué, certitude`,
+                pattern: "INFINITIF + -AI / -AS / -A / -ONS / -EZ / -ONT",
+                catalan: `Équivalent : Futur simple\n• Groupe -AR : parl-aré, parl-aràs, parl-arà, parl-arem, parl-areu, parl-aran\n• Groupe -ER/-IR : tem-eré, tem-eràs, tem-erà...\n✓ Même logique : base + terminaisons\n⚠️ Différence : en catalan moderne, le futur est souvent remplacé par «anar a + infinitif» à l'oral`,
+                piege: null,
+                verbs: [
+                    { fr: "je parlerai", ca: "jo parlaré", en: "I will speak" },
+                    { fr: "tu finiras", ca: "tu acabaràs", en: "you will finish" },
+                    { fr: "il sera", ca: "ell serà", en: "he will be" },
+                    { fr: "elle aura", ca: "ella tindrà", en: "she will have" },
+                    { fr: "nous irons", ca: "nosaltres anirem", en: "we will go" },
+                    { fr: "vous ferez", ca: "vosaltres fareu", en: "you will do" },
+                    { fr: "ils voudront", ca: "ells voldran", en: "they will want" },
+                    { fr: "je pourrai", ca: "jo podré", en: "I will be able to" },
+                    { fr: "tu sauras", ca: "tu sabràs", en: "you will know" },
+                    { fr: "elle viendra", ca: "ella vindrà", en: "she will come" },
+                    { fr: "nous devrons", ca: "nosaltres haurem de", en: "we will have to" },
+                    { fr: "ils verront", ca: "ells veuran", en: "they will see" },
+                ],
+            },
+            {
+                id: "futur-anterieur",
+                system: "indicatif",
+                name: "Futur Antérieur",
+                tag: "ANTÉRIORITÉ FUTURE",
+                color: "#1ABC9C",
+                rule: `Futur simple de l'auxiliaire + Participe Passé\n\nUsages :\n• Action future antérieure à une autre action future\n  «Quand tu AURAS FINI, appelle-moi» (finir avant d'appeler)\n• Conjecture sur le passé (valeur modale)\n  «Il AURA OUBLIÉ» (= il a sûrement oublié)`,
+                pattern: "AVOIR/ÊTRE (futur simple) + Participe Passé",
+                catalan: `Équivalent : Futur perfet\n• jo hauré parlat / tu hauràs acabat / ell haurà fet\n✓ Structure identique — transfert direct\n• Même double usage : antériorité future + conjecture sur le passé`,
+                piege: null,
+                verbs: [
+                    { fr: "j'aurai parlé", ca: "jo hauré parlat", en: "I will have spoken" },
+                    { fr: "tu auras fini", ca: "tu hauràs acabat", en: "you will have finished" },
+                    { fr: "il sera parti", ca: "ell haurà marxat", en: "he will have left" },
+                    { fr: "nous aurons fait", ca: "nosaltres haurem fet", en: "we will have done" },
+                    { fr: "vous serez arrivés", ca: "vosaltres haureu arribat", en: "you will have arrived" },
+                    { fr: "ils auront pris", ca: "ells hauran pres", en: "they will have taken" },
+                    { fr: "elle aura voulu", ca: "ella haurà volgut", en: "she will have wanted" },
+                    { fr: "j'aurai su", ca: "jo hauré sabut", en: "I will have known" },
+                ],
+            },
+            {
+                id: "subj-present",
+                system: "subjonctif",
+                name: "Subjonctif Présent",
+                tag: "CŒUR C1",
+                color: "#E74C3C",
+                rule: `Radical de la 3ème pers. pluriel du présent + terminaisons :\n-e, -es, -e, -ions, -iez, -ent\n\nIRRÉGULIERS incontournables :\nêtre : sois, sois, soit, soyons, soyez, soient\navoir : aie, aies, ait, ayons, ayez, aient\naller : aille, ailles, aille, allions, alliez, aillent\nfaire : fasse, fasses, fasse, fassions, fassiez, fassent\npouvoir : puisse, puisses, puisse, puissions, puissiez, puissent\nvouloir : veuille, veuilles, veuille, voulions, vouliez, veuillent\nsavoir : sache, saches, sache, sachions, sachiez, sachent\nprendre : prenne, prennes, prenne, prenions, preniez, prennent\nvenir : vienne, viennes, vienne, venions, veniez, viennent\n\nTRIGGERS obligatoires :\n• Volonté/désir : vouloir que, souhaiter que, désirer que\n• Doute/crainte : douter que, craindre que, avoir peur que\n• Nécessité : il faut que, il est nécessaire que\n• Émotion : être content/triste/surpris que\n• Conjonctions : bien que, quoique, pour que, afin que, avant que, à moins que, à condition que, pourvu que`,
+                pattern: "Rad. 3PP (présent) + -E / -ES / -E / -IONS / -IEZ / -ENT",
+                catalan: `⚠️⚠️ PIÈGE MAJEUR FR↔CA ⚠️⚠️\n\nLe CA utilise le subjonctif après «si» conditionnel dans certains dialectes, mais le FR l'INTERDIT formellement après «si».\n\nEquivalent CA : Subjuntiu present\n• Groupe -AR : parl-i, parl-is, parl-i, parl-em, parl-eu, parl-in\n• Groupe -IR : tem-i, tem-is, tem-i, tem-em, tem-eu, tem-in\n\nTriggers communs FR=CA : vouloir que / voler que, craindre que / témer que, bien que / tot i que`,
+                piege: "⚠️ PIÈGE CRITIQUE : En français, JAMAIS de subjonctif après «si» conditionnel. Si je serais = FAUX. Si j'étais = CORRECT. Le catalan a des usages différents du «si» — ne pas transférer !",
+                verbs: [
+                    { fr: "que je parle", ca: "que jo parli", en: "that I speak" },
+                    { fr: "que tu finisses", ca: "que tu acabis", en: "that you finish" },
+                    { fr: "qu'il soit", ca: "que ell sigui", en: "that he be" },
+                    { fr: "qu'elle ait", ca: "que ella tingui", en: "that she have" },
+                    { fr: "que nous allions", ca: "que nosaltres anem", en: "that we go" },
+                    { fr: "que vous fassiez", ca: "que vosaltres feu", en: "that you do" },
+                    { fr: "qu'ils puissent", ca: "que ells puguin", en: "that they can" },
+                    { fr: "que je veuille", ca: "que jo vulgui", en: "that I want" },
+                    { fr: "qu'elle sache", ca: "que ella sàpiga", en: "that she know" },
+                    { fr: "qu'il vienne", ca: "que ell vingui", en: "that he come" },
+                    { fr: "que tu prennes", ca: "que tu prenguis", en: "that you take" },
+                    { fr: "qu'ils soient", ca: "que ells siguin", en: "that they be" },
+                ],
+            },
+            {
+                id: "subj-passe",
+                system: "subjonctif",
+                name: "Subjonctif Passé",
+                tag: "ANTÉRIORITÉ",
+                color: "#C0392B",
+                rule: `Subjonctif présent de l'auxiliaire + Participe Passé\n\nExprime une action antérieure à celle de la principale, dans un contexte qui requiert le subjonctif.\n\nEx : «Je suis content qu'il SOIT VENU» (il est venu avant que je sois content)\n\nMêmes triggers que le subjonctif présent, mais pour une action passée.`,
+                pattern: "AVOIR/ÊTRE (subj. présent) + Participe Passé",
+                catalan: `Équivalent : Subjuntiu passat\n• jo hagi parlat / tu hagis acabat / ell hagi fet\n✓ Structure identique : auxiliaire haver au subj. présent + participi`,
+                piege: null,
+                verbs: [
+                    { fr: "que j'aie parlé", ca: "que jo hagi parlat", en: "that I have spoken" },
+                    { fr: "que tu aies fini", ca: "que tu hagis acabat", en: "that you have finished" },
+                    { fr: "qu'il soit allé", ca: "que ell hagi anat", en: "that he has gone" },
+                    { fr: "qu'elle ait fait", ca: "que ella hagi fet", en: "that she has done" },
+                    { fr: "que nous ayons pris", ca: "que nosaltres haguem pres", en: "that we have taken" },
+                    { fr: "qu'ils soient venus", ca: "que ells hagin vingut", en: "that they have come" },
+                    { fr: "que tu aies su", ca: "que tu hagis sabut", en: "that you have known" },
+                    { fr: "qu'elle soit partie", ca: "que ella hagi marxat", en: "that she has left" },
+                ],
+            },
+            {
+                id: "subj-imparfait",
+                system: "subjonctif",
+                name: "Subjonctif Imparfait",
+                tag: "RECONNAISSANCE",
+                color: "#A93226",
+                rule: `Usage LITTÉRAIRE — objectif : RECONNAISSANCE, pas production.\n\nFormation : Passé simple (1ère pers. sing.) - dernière lettre + terminaisons :\n-sse, -sses, -ˆt (avec accent), -ssions, -ssiez, -ssent\n\nEx : parler → parlai → parlass-e\n      venir → vins → vinsses → vinssent\n      être → fus → fusse → fussent\n\nUsage : dans la proposition subordonnée quand la principale est au passé, en discours soutenu.`,
+                pattern: "Base P.S. (1PP) + -SSE / -SSES / -ˆT / -SSIONS / -SSIEZ / -SSENT",
+                catalan: `Équivalent : Subjuntiu imperfet (également littéraire)\n• Groupe -AR : parlés, parlesses, parlés, parléssim, parléssiu, parlessin\n• Groupe -IR : temés, temesses, temés, teméssim, teméssiu, temessin\n⚠️ Même statut : littéraire et archaïsant des deux côtés`,
+                piege: "Ne jamais produire ce temps en conversation ou en écrit standard. La reconnaissance suffit pour C1.",
+                verbs: [
+                    { fr: "(qu'il) parlât", ca: "(que ell) parlés", en: "(that he) might speak" },
+                    { fr: "(qu'il) fût", ca: "(que ell) fos", en: "(that he) might be" },
+                    { fr: "(qu'il) eût", ca: "(que ell) hagués", en: "(that he) might have" },
+                    { fr: "(qu'elle) pût", ca: "(que ella) pogués", en: "(that she) might be able" },
+                    { fr: "(qu'ils) vinssent", ca: "(que ells) vinguessin", en: "(that they) might come" },
+                    { fr: "(qu'il) fît", ca: "(que ell) fes", en: "(that he) might do" },
+                ],
+            },
+            {
+                id: "subj-pqp",
+                system: "subjonctif",
+                name: "Subjonctif Plus-que-parfait",
+                tag: "RECONNAISSANCE",
+                color: "#922B21",
+                rule: `Usage LITTÉRAIRE RARE — objectif : RECONNAISSANCE uniquement.\n\nFormation : Subjonctif imparfait de l'auxiliaire + Participe Passé\n\nEx : «Bien qu'il EÛT PARLÉ, personne ne l'avait écouté»\n\nParfois remplace le conditionnel passé dans un style très soutenu\n(= «il aurait parlé»).`,
+                pattern: "AVOIR/ÊTRE (subj. imparfait) + Participe Passé",
+                catalan: `Équivalent : Subjuntiu plusquamperfet (rarissime)\n• jo hagués parlat / tu haguessis acabat / ell hagués fet\n✓ Même rareté et même usage littéraire`,
+                piege: null,
+                verbs: [
+                    { fr: "(qu'il) eût parlé", ca: "(que ell) hagués parlat", en: "(that he) had spoken" },
+                    { fr: "(qu'elle) fût venue", ca: "(que ella) hagués vingut", en: "(that she) had come" },
+                    { fr: "(qu'ils) eussent fait", ca: "(que ells) haguessin fet", en: "(that they) had done" },
+                    { fr: "(qu'il) eût été", ca: "(que ell) hagués estat", en: "(that he) had been" },
+                ],
+            },
+            {
+                id: "cond-present",
+                system: "conditionnel",
+                name: "Conditionnel Présent",
+                tag: "HYPOTHÈSE",
+                color: "#F39C12",
+                rule: `Base du futur simple + Terminaisons de l'imparfait :\n-ais, -ais, -ait, -ions, -iez, -aient\n\n= FUTUR (base) + IMPARFAIT (terminaisons) — formule mnémotechnique parfaite !\n\nUsages :\n• Hypothèse (si + imparfait → conditionnel présent)\n• Politesse (je voudrais, je pourrais)\n• Information non confirmée (journalistique : «il serait»)\n• Souhait/reproche (tu pourrais faire attention !)`,
+                pattern: "BASE FUTUR + -AIS / -AIS / -AIT / -IONS / -IEZ / -AIENT",
+                catalan: `Équivalent : Condicional simple\n• Groupe -AR : parl-aria, parl-aries, parl-aria, parl-aríem, parl-aríeu, parl-arien\n• Groupe -ER/-IR : tem-eria, tem-eries, tem-eria...\n\n⚠️ Différence structurelle : CA utilise -aria (aller/aria), FR utilise base futur + terminaisons imparfait\nLa logique est similaire mais les formes divergent.`,
+                piege: "⚠️ ERREUR FRÉQUENTE : «Si j'aurais su...» = FAUX en français. Après «si» conditionnel, toujours l'imparfait (SI + imparfait → conditionnel présent). Jamais de conditionnel dans la proposition en «si».",
+                verbs: [
+                    { fr: "je parlerais", ca: "jo parlaria", en: "I would speak" },
+                    { fr: "tu finirais", ca: "tu acabaries", en: "you would finish" },
+                    { fr: "il serait", ca: "ell seria", en: "he would be" },
+                    { fr: "elle aurait", ca: "ella tindria", en: "she would have" },
+                    { fr: "nous irions", ca: "nosaltres aniríem", en: "we would go" },
+                    { fr: "vous feriez", ca: "vosaltres faríeu", en: "you would do" },
+                    { fr: "ils voudraient", ca: "ells voldrien", en: "they would want" },
+                    { fr: "je pourrais", ca: "jo podria", en: "I could / would be able" },
+                    { fr: "tu saurais", ca: "tu sabries", en: "you would know" },
+                    { fr: "elle viendrait", ca: "ella vindria", en: "she would come" },
+                    { fr: "nous devrions", ca: "nosaltres hauríem de", en: "we should" },
+                    { fr: "ils verraient", ca: "ells veurien", en: "they would see" },
+                ],
+            },
+            {
+                id: "cond-passe",
+                system: "conditionnel",
+                name: "Conditionnel Passé",
+                tag: "REGRET / IRRÉEL",
+                color: "#D68910",
+                rule: `Conditionnel présent de l'auxiliaire + Participe Passé\n\nUsages :\n• Condition irréelle dans le passé (si + PQP → Cond. Passé)\n  «Si j'avais étudié, j'aurais réussi»\n• Regret, reproche sur le passé\n  «Tu aurais pu me le dire !»\n• Information journalistique passée non confirmée\n  «Il aurait menti»\n\nCONDITIONNEL PASSÉ 2ÈME FORME (littéraire) = Subj. PQP\n  «Il eût mieux valu partir» (= il aurait mieux valu)`,
+                pattern: "AVOIR/ÊTRE (cond. présent) + Participe Passé",
+                catalan: `Équivalent : Condicional compost\n• jo hauria parlat / tu hauries acabat / ell hauria fet\n✓ Structure identique — auxiliaire haver au conditionnel + participi\nMême usage pour les hypothèses irréelles du passé`,
+                piege: "La 2ème forme du conditionnel passé (eût fait) = subjonctif PQP en apparence mais valeur conditionnelle. Reconnaissance suffisante pour C1.",
+                verbs: [
+                    { fr: "j'aurais parlé", ca: "jo hauria parlat", en: "I would have spoken" },
+                    { fr: "tu aurais fini", ca: "tu hauries acabat", en: "you would have finished" },
+                    { fr: "il serait allé", ca: "ell hauria anat", en: "he would have gone" },
+                    { fr: "elle aurait fait", ca: "ella hauria fet", en: "she would have done" },
+                    { fr: "nous aurions pris", ca: "nosaltres hauríem pres", en: "we would have taken" },
+                    { fr: "vous seriez partis", ca: "vosaltres hauríeu marxat", en: "you would have left" },
+                    { fr: "ils auraient su", ca: "ells haurien sabut", en: "they would have known" },
+                    { fr: "j'aurais pu", ca: "jo hauria pogut", en: "I would have been able" },
+                    { fr: "tu aurais dû", ca: "tu hauries hagut de", en: "you should have" },
+                    { fr: "elle serait venue", ca: "ella hauria vingut", en: "she would have come" },
+                ],
+            },
+            {
+                id: "piege-si",
+                system: "vigilance",
+                name: "Le Piège du «SI» conditionnel",
+                tag: "⚠️ DANGER",
+                color: "#E74C3C",
+                rule: `RÈGLE ABSOLUE en français :\nAprès «SI» conditionnel, JAMAIS de conditionnel ni de subjonctif.\n\nSystème complet des hypothèses :\n\n• Hypothèse réalisable (présent/futur) :\n  SI + Présent → Futur simple\n  «Si tu travailles, tu réussiras»\n\n• Hypothèse improbable (présent/futur) :\n  SI + Imparfait → Conditionnel présent\n  «Si tu travaillais, tu réussirais»\n\n• Hypothèse irréelle (passé) :\n  SI + Plus-que-parfait → Conditionnel passé\n  «Si tu avais travaillé, tu aurais réussi»\n\n• Hypothèse mixte :\n  SI + Plus-que-parfait → Conditionnel présent\n  «Si tu avais travaillé, tu réussirais (aujourd'hui)»`,
+                pattern: "SI + [Pst/Imp/PQP] → [Fut/Cond.Pst/Cond.Passé]",
+                catalan: `En catalan, le «si» fonctionne différemment :\n• «si» + imperfet subjuntiu → condicional (registre littéraire)\n• «si» + imperfet indicatiu → condicional (registre courant)\n\n⚠️ NE PAS TRANSFÉRER la logique catalan→français !\nFR : «Si j'avais le temps...» (imparfait indicatif) ✓\nFR : «Si j'eusse le temps...» (subj. imp.) = archaïque/faux en contexte normal`,
+                piege: "«Si j'aurais su» = FAUTE GRAVE très fréquente chez les locuteurs de langues romanes. À éradiquer absolument.",
+                verbs: [
+                    { fr: "Si tu travailles, tu réussiras", ca: "Si treballes, tindràs èxit", en: "If you work, you will succeed" },
+                    { fr: "Si tu travaillais, tu réussirais", ca: "Si treballessis, tindries èxit", en: "If you worked, you would succeed" },
+                    { fr: "Si tu avais travaillé, tu aurais réussi", ca: "Si haguessis treballat, hauries tingut èxit", en: "If you had worked, you would have succeeded" },
+                    { fr: "Si j'avais su, je serais venu", ca: "Si ho hagués sabut, hauria vingut", en: "If I had known, I would have come" },
+                    { fr: "Si elle était là, tout irait mieux", ca: "Si ella fos aquí, tot aniria millor", en: "If she were here, everything would be better" },
+                ],
+            },
+            {
+                id: "voix-passive",
+                system: "vigilance",
+                name: "La Voix Passive",
+                tag: "STRUCTURE",
+                color: "#2ECC71",
+                rule: `VOIX PASSIVE en français :\nÊTRE + Participe Passé (accordé avec le sujet) + «par» + agent\n\nEx : «Le livre est lu par tous les étudiants»\n\nTransformations des temps :\n• Présent passif : est lu\n• Imparfait passif : était lu\n• Passé composé passif : a été lu\n• Plus-que-parfait passif : avait été lu\n• Futur passif : sera lu\n• Conditionnel passif : serait lu\n\nÉVITER la voix passive — préférer «on» actif :\n«On a réparé la voiture» plutôt que «La voiture a été réparée»\n\nPassif d'état vs passif d'action :\n«La porte est fermée» (état) vs «La porte a été fermée par Paul» (action)`,
+                pattern: "ÊTRE (temps voulu) + PP accordé + PAR + agent",
+                catalan: `Équivalent : Veu passiva en catalan\nÉSSER/ÉSSER + Participi (acordat) + per + agent\n«El llibre és llegit per tots els estudiants»\n\n⚠️ En catalan, la voix passive est encore plus évitée qu'en français.\nAlternatif CA préféré : «Es + verbe» (passif pronominal)\n«Es llegeix molt» (= On lit beaucoup)`,
+                piege: "Ne pas confondre être + PP passif et être + PP des verbes de mouvement (passé composé). «Il est parti» = passé composé, pas passif.",
+                verbs: [
+                    { fr: "Le rapport est rédigé par Paul", ca: "L'informe és redactat per en Paul", en: "The report is written by Paul" },
+                    { fr: "La loi a été votée hier", ca: "La llei va ser votada ahir", en: "The law was voted on yesterday" },
+                    { fr: "Les résultats seront publiés demain", ca: "Els resultats seran publicats demà", en: "Results will be published tomorrow" },
+                    { fr: "On parle français ici", ca: "Aquí es parla francès", en: "French is spoken here" },
+                    { fr: "Cette décision était attendue", ca: "Aquesta decisió era esperada", en: "This decision was expected" },
+                ],
+            },
+            {
+                id: "participe-gerondif",
+                system: "vigilance",
+                name: "Participe Présent vs Gérondif",
+                tag: "NUANCE C1",
+                color: "#3498DB",
+                rule: `PARTICIPE PRÉSENT = Radical + -ANT (invariable)\nFonction : adjectif verbal ou proposition relative réduite\n«Les étudiants comprenant le sujet...» (= qui comprennent)\n«Une situation inquiétante» (adj.)\n\nGÉRONDIF = EN + Participe Présent\nFonction : circonstanciel (manière, simultanéité, condition, cause)\n«Elle travaille EN chantant» (simultanéité)\n«EN travaillant, tu réussiras» (condition/moyen)\n«C'est EN forgeant qu'on devient forgeron»\n\nDIFFÉRENCE CLÉ :\n• Participe présent : sujet propre ou référent explicite\n  «Voyant la pluie, il prit son parapluie» (il a vu)\n• Gérondif : même sujet que le verbe principal (obligatoire !)\n  «En voyant la pluie, il prit son parapluie» (il a vu ET a pris)`,
+                pattern: "PP = Rad.-ANT | Gérondif = EN + Rad.-ANT",
+                catalan: `Équivalent : Gerundi en catalan\n• Formation : radical + -ant (identique !)\n• Usage du gérondif : «cantant» = en chantant\n\nDifférence : en CA, le gérondif s'emploie SANS «en» prépositionnel\n«Cantant, ella treballa» = En chantant, elle travaille\nEn FR, le «en» est OBLIGATOIRE pour le gérondif (sans «en» = participe présent)`,
+                piege: "ERREUR FRÉQUENTE : oublier le «en» du gérondif français par interférence du catalan qui n'en a pas besoin.",
+                verbs: [
+                    { fr: "En parlant lentement, il se fait comprendre", ca: "Parlant lentament, es fa entendre", en: "By speaking slowly, he makes himself understood" },
+                    { fr: "Elle est tombée en courant", ca: "Va caure corrent", en: "She fell while running" },
+                    { fr: "C'est en lisant qu'on apprend", ca: "És llegint que s'aprèn", en: "It's by reading that one learns" },
+                    { fr: "Les enfants jouant dans le parc (ceux qui jouent)", ca: "Els nens jugant al parc", en: "The children playing in the park" },
+                    { fr: "Tout en écoutant, il prenait des notes", ca: "Alhora que escoltava, prenia notes", en: "While listening, he was taking notes" },
+                ],
+            },
+        ];
+
+        const SYSTEMS = [
+            { id: "all", label: "Tous" },
+            { id: "indicatif", label: "Indicatif" },
+            { id: "subjonctif", label: "Subjonctif" },
+            { id: "conditionnel", label: "Conditionnel" },
+            { id: "vigilance", label: "⚠️ Vigilance" },
+        ];
+
+        // State
+        let search = "";
+        let activeSystem = "all";
+        let openIds = new Set(["present"]);
+        let showCA = true;
+
+        // Elements
+        const searchInput = document.getElementById('search-input');
+        const clearSearchBtn = document.getElementById('clear-search');
+        const filterRow = document.getElementById('filter-row');
+        const cardContainer = document.getElementById('card-container');
+        const toggleCABtn = document.getElementById('toggle-ca');
+        const statsSubtitle = document.getElementById('stats-subtitle');
+        const footer = document.getElementById('footer');
+
+        // Functions
+        function init() {
+            renderFilters();
+            render();
+            
+            searchInput.addEventListener('input', (e) => {
+                search = e.target.value;
+                clearSearchBtn.classList.toggle('hidden', !search);
+                render();
+            });
+
+            clearSearchBtn.addEventListener('click', () => {
+                search = "";
+                searchInput.value = "";
+                clearSearchBtn.classList.add('hidden');
+                render();
+            });
+
+            toggleCABtn.addEventListener('click', () => {
+                showCA = !showCA;
+                render();
+            });
+        }
+
+        function renderFilters() {
+            filterRow.innerHTML = "";
+            const counts = {};
+            DATA.forEach(d => counts[d.system] = (counts[d.system] || 0) + 1);
+
+            SYSTEMS.forEach(s => {
+                const btn = document.createElement('button');
+                btn.className = `filter-btn ${activeSystem === s.id ? 'active' : ''}`;
+                btn.innerHTML = `${s.label}${s.id !== 'all' ? ` <span class="filter-count">${counts[s.id] || 0}</span>` : ''}`;
+                btn.onclick = () => {
+                    activeSystem = s.id;
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    render();
+                };
+                filterRow.appendChild(btn);
+            });
+        }
+
+        function toggleOpen(id) {
+            if (openIds.has(id)) openIds.delete(id);
+            else openIds.add(id);
+            render();
+        }
+
+        function render() {
+            // Update Toggle Button
+            toggleCABtn.style.background = showCA ? "#FCDD09" : "#333";
+            toggleCABtn.style.color = showCA ? "#003399" : "#aaa";
+            toggleCABtn.innerText = showCA ? "🇪🇸 CA visible" : "🇪🇸 CA masqué";
+
+            // Filter Data
+            const filtered = DATA.filter(item => {
+                const matchSystem = activeSystem === "all" || item.system === activeSystem;
+                const q = search.toLowerCase();
+                const matchSearch = !q || 
+                    item.name.toLowerCase().includes(q) ||
+                    item.rule.toLowerCase().includes(q) ||
+                    item.pattern.toLowerCase().includes(q) ||
+                    item.verbs.some(v => 
+                        v.fr.toLowerCase().includes(q) || 
+                        v.ca.toLowerCase().includes(q) || 
+                        v.en.toLowerCase().includes(q)
+                    );
+                return matchSystem && matchSearch;
+            });
+
+            // Update Subtitle
+            statsSubtitle.innerText = `Encyclopédie grammaticale · Français ↔ Catalan · ${DATA.length} fiches`;
+            footer.innerText = `Matrice C1 · ${DATA.length} temps & structures · Préparation DALF C1`;
+
+            // Render Cards
+            cardContainer.innerHTML = "";
+            if (filtered.length === 0) {
+                cardContainer.innerHTML = `<div class="empty"><p>Aucun résultat pour «${search}»</p></div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const isOpen = openIds.has(item.id);
+                const card = document.createElement('div');
+                card.className = "card";
+                
+                let verbsHtml = item.verbs.map(v => `
+                    <div class="verb-row">
+                        <span class="verb-fr">${v.fr}</span>
+                        ${showCA ? `<span class="verb-ca">${v.ca}</span>` : ''}
+                        <span class="verb-en">${v.en}</span>
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <button class="card-header" onclick="toggleOpen('${item.id}')">
+                        <div class="card-header-left">
+                            <div class="color-bar" style="background: ${item.color}"></div>
+                            <div class="card-meta">
+                                <div class="card-top-row">
+                                    <span class="system-label">${item.system.toUpperCase()}</span>
+                                    <span class="tag" style="border-color: ${item.color}; color: ${item.color}">${item.tag}</span>
+                                </div>
+                                <h2 class="card-title">${item.name}</h2>
+                                <p class="card-pattern">
+                                    <span class="pattern-label">Pattern : </span>
+                                    ${item.pattern}
+                                </p>
+                            </div>
+                        </div>
+                        <span class="chevron" style="transform: rotate(${isOpen ? 180 : 0}deg)">▾</span>
+                    </button>
+                    <div class="card-body ${isOpen ? '' : 'hidden'}">
+                        ${item.piege ? `
+                            <div class="piege">
+                                <span class="piege-icon">⚠️</span>
+                                <p class="piege-text">${item.piege}</p>
+                            </div>
+                        ` : ''}
+                        <div class="two-col">
+                            <div class="rule-block">
+                                <h3 class="section-title" style="border-color: ${item.color}">🇫🇷 Règle & Usage</h3>
+                                <pre class="rule-text">${item.rule}</pre>
+                            </div>
+                            <div class="rule-block ${showCA ? '' : 'hidden'}">
+                                <h3 class="section-title" style="border-color: #FCDD09">🇪🇸 Équivalent Catalan</h3>
+                                <pre class="rule-text">${item.catalan}</pre>
+                            </div>
+                        </div>
+                        <div class="verb-section">
+                            <h3 class="section-title" style="border-color: ${item.color}">📋 Conjugaisons Modèles</h3>
+                            <div class="verb-grid">
+                                ${verbsHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                cardContainer.appendChild(card);
+            });
+        }
+
+        window.toggleOpen = toggleOpen;
+        init();
+    </script>
+</body>
+</html>

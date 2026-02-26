@@ -714,3 +714,135 @@ body {
         height: 28px;
     }
 }
+/* =================== COMPARATIVE MATRIX STYLES =================== */
+
+.matrix-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.5rem;
+}
+
+.matrix-card {
+    border-top: 4px solid var(--accent-gold);
+}
+
+.matrix-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+}
+
+.fr-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+}
+
+.ca-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.matrix-arrow {
+    color: var(--accent-blue);
+    font-weight: 800;
+}
+
+.matrix-body .usage-text {
+    margin-bottom: 1rem;
+}
+
+.c1-note {
+    background: var(--accent-blue-light);
+    border-left: 4px solid var(--accent-blue);
+    padding: 0.8rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+}
+
+.interference-note {
+    background: var(--accent-red-light);
+    border-left: 4px solid var(--accent-red);
+    padding: 0.8rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+/* Connectors Table */
+.connectors-table-container {
+    overflow-x: auto;
+}
+
+.connectors-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+}
+
+.connectors-table th {
+    text-align: left;
+    padding: 1rem;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.connectors-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.fr-cell {
+    font-weight: 700;
+    color: var(--accent-gold);
+}
+
+.ca-cell {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.note-cell {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Interferences */
+.interferences-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.info-card {
+    border-top: 4px solid var(--accent-blue);
+}
+
+.examples-box {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 1rem;
+}
+
+.example-item {
+    background: var(--bg-tertiary);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+}
+
+.ex-fr { font-weight: 700; margin-bottom: 0.3rem; }
+.ex-ca { color: var(--text-secondary); margin-bottom: 0.3rem; }
+.ex-note { font-size: 0.8rem; color: var(--accent-gold); font-weight: 600; }
+
+@media (max-width: 768px) {
+    .matrix-grid {
+        grid-template-columns: 1fr;
+    }
+}
