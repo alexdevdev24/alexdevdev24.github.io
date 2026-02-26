@@ -459,6 +459,7 @@ header {
 /* ─── OVERLAY ────────────────────────────── */
 #overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:998; }
 #overlay.on { display:block; }
+#overlay.high { z-index:1999; }
 
 /* ─── MATCH BANNER ───────────────────────── */
 .match-banner {
@@ -510,6 +511,44 @@ header {
 .leaflet-popup-content-wrapper { border-radius: 12px; font-family: 'Sora', sans-serif; }
 .popup-h-name { font-weight: 700; color: var(--primary); margin-bottom: 4px; }
 .popup-h-info { font-size: 0.8rem; color: var(--muted); }
+/* ─── HOUSING MODAL ───────────────────────── */
+#housing-modal {
+  display:none;
+  position:fixed;
+  top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  width:90%; max-width:600px;
+  max-height:85vh;
+  background:var(--surface);
+  border-radius:24px;
+  box-shadow:var(--shadow-lg);
+  z-index:2000;
+  overflow-y:auto;
+  padding:32px;
+  border: 1px solid var(--border);
+}
+#housing-modal.on { display:block; animation: modalPop 0.3s cubic-bezier(.34,1.56,.64,1); }
+@keyframes modalPop { from { opacity:0; transform:translate(-50%, -46%) scale(0.96); } to { opacity:1; transform:translate(-50%, -50%) scale(1); } }
+
+.h-modal-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; }
+.h-modal-title { font-family:'Instrument Serif', serif; font-size:2rem; line-height:1.1; }
+.h-modal-close { background:var(--bg); border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:18px; display:grid; place-items:center; color:var(--muted); transition:.2s; }
+.h-modal-close:hover { background:var(--border); color:var(--text); }
+
+.h-info-grid { display:flex; flex-direction:column; gap:16px; }
+.h-option-card { background:var(--bg); border:1px solid var(--border); border-radius:16px; padding:16px; }
+.h-option-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.h-option-site { font-size:0.75rem; font-weight:700; text-transform:uppercase; color:var(--primary); letter-spacing:0.05em; }
+.h-option-price { font-size:1rem; font-weight:800; color:var(--success); }
+.h-option-type { font-size:1.1rem; font-weight:700; margin-bottom:8px; }
+
+.h-features { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+.h-feat { font-size:0.75rem; background:var(--surface); padding:4px 10px; border-radius:99px; border:1px solid var(--border); color:var(--muted); }
+
+.h-contact-box { margin-top:24px; padding-top:24px; border-top:1px dashed var(--border); }
+.h-contact-title { font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+
+.housing-btn { margin-top:16px; width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:var(--primary-l); color:var(--primary); }
 </style>
 </head>
 <body>
@@ -653,6 +692,25 @@ header {
   </div>
 </div>
 
+<!-- ═══ HOUSING MODAL ═══ -->
+<div id="housing-modal">
+  <div class="h-modal-head">
+    <div>
+      <div style="font-size:0.8rem; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:4px;">Detalls d'Allotjament</div>
+      <div class="h-modal-title" id="hm-name"></div>
+    </div>
+    <button class="h-modal-close" onclick="closeHousingModal()">✕</button>
+  </div>
+  <div id="hm-content"></div>
+  <div class="h-contact-box">
+    <div class="h-contact-title">Contacte Allotjament</div>
+    <div class="contact-email-box" id="hm-contact-box">
+      <span id="hm-contact-mail"></span>
+      <button class="copy-btn" onclick="copyHousingEmail()" title="Copiar correu">📋</button>
+    </div>
+  </div>
+</div>
+
 <script src="data.js"></script>
 <script>
 /* ─── STATE ──────────────────────────────── */
@@ -696,7 +754,8 @@ function prepareHospitals() {
         expert: h.avis_expert || h.encadrement_desc || '',
         description: h.avis_assistant_resume || h.description || '',
         chef_service: h.chef_service || '',
-        email: h.email_contact || ''
+        email: h.email_contact || '',
+        logement_info: h.logement_info || null
       });
     });
   });
@@ -986,6 +1045,14 @@ function openDetail(id) {
     <div class="kv"><div class="kv-val">${h.voiture ? '🚗 Sí' : '🚂 No'}</div><div class="kv-key">Cotxe necessari</div></div>
   `;
 
+  if (h.logement_info && h.logement_info.has_logement) {
+    document.getElementById('dp-kv').innerHTML += `
+      <button class="det-btn sec housing-btn" onclick="openHousingModal(${h.id})">
+        🏡 Veure detalls allotjament
+      </button>
+    `;
+  }
+
   document.getElementById('dp-proscons').innerHTML = `
     <div class="pros">
       <div class="pc-title">Punts forts</div>
@@ -1029,6 +1096,58 @@ function copyText(text, iconEl) {
     iconEl.textContent = '✅';
     setTimeout(() => iconEl.textContent = oldText, 2000);
   });
+}
+
+/* ─── HOUSING MODAL LOGIC ────────────────── */
+function openHousingModal(id) {
+  const h = HOSPITALS.find(x => x.id === id);
+  if (!h || !h.logement_info) return;
+  const info = h.logement_info;
+
+  document.getElementById('hm-name').textContent = h.nom;
+  document.getElementById('hm-contact-mail').textContent = info.contact ? (info.contact.mail || 'No disponible') : 'No disponible';
+
+  let html = `<p style="font-size:0.95rem; color:var(--muted); margin-bottom:20px; line-height:1.6;">${info.summary}</p>`;
+  
+  if (info.options && info.options.length) {
+    html += `<div class="h-info-grid">`;
+    info.options.forEach(opt => {
+      html += `
+        <div class="h-option-card">
+          <div class="h-option-top">
+            <div class="h-option-site">${opt.site || h.ville}</div>
+            <div class="h-option-price">${opt.prix}</div>
+          </div>
+          <div class="h-option-type">${opt.type}</div>
+          ${opt.services ? `<div class="h-features">${opt.services.map(s => `<span class="h-feat">${s}</span>`).join('')}</div>` : ''}
+          ${opt.delai ? `<div style="font-size:0.75rem; color:var(--warn); font-weight:600; margin-top:10px;">⏳ ${opt.delai}</div>` : ''}
+        </div>
+      `;
+    });
+    html += `</div>`;
+  }
+
+  if (info.details) {
+    html += `<div style="margin-top:20px; padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:12px; font-size:0.85rem; line-height:1.5;">
+      <strong>📝 Nota adicional:</strong><br>${info.details}
+    </div>`;
+  }
+
+  document.getElementById('hm-content').innerHTML = html;
+  
+  document.getElementById('housing-modal').classList.add('on');
+  document.getElementById('overlay').classList.add('high');
+}
+
+function closeHousingModal() {
+  document.getElementById('housing-modal').classList.remove('on');
+  document.getElementById('overlay').classList.remove('high');
+}
+
+function copyHousingEmail() {
+  const email = document.getElementById('hm-contact-mail').textContent;
+  const btnIcon = document.querySelector('#housing-modal .copy-btn');
+  copyText(email, btnIcon);
 }
 
 /* ─── FAVS ───────────────────────────────── */

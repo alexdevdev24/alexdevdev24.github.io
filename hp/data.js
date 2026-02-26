@@ -30,7 +30,16 @@ const HOSPITAL_DATA = {
           "points_forts": ["Prestigi internacional", "Recerca de punta", "Casos complexos"],
           "points_faibles": ["Molt selectiu", "Cost de vida elevat", "C1 requerit estrictament"],
           "avis_assistant_resume": "La referència absoluta per formar-se, si tens el nivell i l'ambició.",
-          "logement_type": "Cap (sector privat)"
+          "logement_type": "Cap (sector privat)",
+          "logement_info": {
+            "has_logement": true,
+            "summary": "El CHUV disposa d'un Bureau des Logements que gestiona uns 376 estudis moblats a Lausana.",
+            "options": [
+              { "type": "Estudi moblat (15-34m²)", "prix": "650 - 1200 CHF/mes", "services": ["Cunina equipada", "Bany privat", "Moblat", "Traster"], "delai": "Prioritat a estrangers (permís B/L)" }
+            ],
+            "details": "Contractes de màxim 2 anys. No inclou Wifi (a càrrec de l'inquilí). Lloguer deduït del salari.",
+            "contact": { "tel": "021 314 55 55", "mail": "bureau.logements@chuv.ch" }
+          }
         },
         {
           "nom": "eHnv (Établissements Hospitaliers du Nord Vaudois)",
@@ -65,7 +74,17 @@ const HOSPITAL_DATA = {
           "points_forts": ["Supervisió de proximitat excepcional", "Ambient molt acollidor", "Hospital a escala humana"],
           "points_faibles": ["Càrrega de treball de vegades elevada", "Allunyament de la ciutat per a St-Loup"],
           "avis_assistant_resume": "Ideal per començar una carrera a Suïssa en un entorn molt supervisat i humà.",
-          "logement_type": "Estudis moblats disponibles fàcilment"
+          "logement_type": "Estudis moblats disponibles fàcilment",
+          "logement_info": {
+            "has_logement": true,
+            "summary": "Allotjament disponible a Yverdon, Orbe i Saint-Loup per a col·laboradors i metges assistents.",
+            "options": [
+              { "site": "Yverdon", "type": "Estudi amb balcó (26m²)", "prix": "1026 CHF/mes", "services": ["Moblat", "Cuina", "Bugaderia", "Pàrquing (+80 CHF)"] },
+              { "site": "Saint-Loup", "type": "Habitació amb bany", "prix": "250 CHF/mes", "services": ["Wifi", "Cuina comunitària", "Saló comú", "Bugaderia"] }
+            ],
+            "details": "L'allotjament a Saint-Loup és ideal per als qui no tenen cotxe inicialment ja que l'hospital està aïllat.",
+            "contact": { "tel": "024 424 53 51", "mail": "inforh@ehnv.ch" }
+          }
         },
         {
           "nom": "EHC (Ensemble Hospitalier de la Côte)",
@@ -163,7 +182,15 @@ const HOSPITAL_DATA = {
           "points_forts": ["Supervisió molt present (CDC/2 unitats)", "Ambient de treball càlid", "Regió calmada i lloguers baixos"],
           "points_faibles": ["Menys casos ultra-complexos", "Aïllament geogràfic relatiu"],
           "avis_assistant_resume": "Un lloc ideal per aprendre les bases amb una supervisió de proximitat tranquil·litzadora.",
-          "logement_type": "Estudis temporals al lloc"
+          "logement_type": "Estudis temporals al lloc",
+          "logement_info": {
+              "has_logement": true,
+              "summary": "Disposen d'estudis temporals per a nous col·laboradors al mateix lloc de Payerne.",
+              "options": [
+                  { "type": "Estudi temporal moblat", "prix": "Preus atractius (consultar RH)", "services": ["A prop de l'hospital", "Bàsics inclosos"] }
+              ],
+              "contact": { "mail": "info@hibroye.ch" }
+          }
         },
         {
           "nom": "GHOL (Groupement Hospitalier de l'Ouest Lémanique)",
@@ -345,7 +372,18 @@ const HOSPITAL_DATA = {
           "points_forts": ["CCT 2025 (46h amb formació pagada)", "Sion = 'Petita A' de qualitat", "Equips accessibles"],
           "points_faibles": ["Rotació elevada", "Gran càrrega administrativa"],
           "avis_assistant_resume": "Una infraestructura robusta i un aprenentatge ràpid gràcies a la varietat de casos clínics.",
-          "logement_type": "Internats a Sion, Martigny i Monthey"
+          "logement_type": "Internats a Sion, Martigny i Monthey",
+          "logement_info": {
+            "has_logement": true,
+            "summary": "L'Hospital del Valais ofereix nombroses habitacions i apartaments als seus 3 llocs principals.",
+            "options": [
+              { "site": "Sion (Préjeux)", "type": "Habitació (15m²)", "prix": "490 CHF/mes", "services": ["Bany privat", "Moblat", "Cuina comunitària", "Sense Wifi"] },
+              { "site": "Sierre", "type": "Habitació / Estudi", "prix": "415 - 670 CHF/mes", "services": ["Wifi (+20 CHF)", "Moblat"] },
+              { "site": "Martigny", "type": "Habitació / Estudi", "prix": "310 - 680 CHF/mes", "services": ["Moblat", "Bugaderia", "Opció Wifi"] }
+            ],
+            "details": "El pagament es fa normalment mitjançant deducció directa del salari.",
+            "contact": { "tel": "027 603 97 97", "mail": "logements.chvr@hopitalvs.ch" }
+          }
         },
         {
           "nom": "Clinique de Valère",
@@ -415,7 +453,17 @@ const HOSPITAL_DATA = {
           "points_forts": ["Hospital bilingüe", "Volum de casos important", "Accés Universitari"],
           "points_faibles": ["Sobrecàrrega a les urgències", "Rotació dels quadres"],
           "avis_assistant_resume": "Una formació sòlida en un entorn bilingüe estimulant però exigent físicament.",
-          "logement_type": "Friburg (internat moblat) i Riaz/Tavel"
+          "logement_type": "Friburg (internat moblat) i Riaz/Tavel",
+          "logement_info": {
+            "has_logement": true,
+            "summary": "L'HFR gestiona diverses residències a Friburg i allotjament al mateix recinte a Riaz.",
+            "options": [
+              { "site": "Fribourg", "type": "Estudi / Habitació", "prix": "570 - 880 CHF/mes", "services": ["Moblat", "Despeses incloses", "A prop del transport"] },
+              { "site": "Riaz", "type": "Habitació Agoriaz", "prix": "640 CHF/mes", "services": ["Al recinte hospitalari", "Bany privat", "Cuina compartida"] }
+            ],
+            "details": "L'oferta està pensada principalment per als primers mesos d'instal·lació.",
+            "contact": { "tel": "026 306 05 60", "mail": "service.logement@h-fr.ch" }
+          }
         },
         {
           "nom": "Hôpital Daler",
@@ -478,7 +526,15 @@ const HOSPITAL_DATA = {
           "points_forts": ["Coaching individual setmanal", "Autonomia progressiva guiada", "Bon ambient"],
           "points_faibles": ["Aïllament dels centres", "Meteorologia"],
           "avis_assistant_resume": "El coaching és un actiu important per als nouvinguts a Suïssa.",
-          "logement_type": "Estudis disponibles (Neuchâtel/Chaux-de-Fonds)"
+          "logement_type": "Estudis disponibles (Neuchâtel/Chaux-de-Fonds)",
+          "logement_info": {
+            "has_logement": true,
+            "summary": "El RHNe disposa de servei de reserves específic per a habitacions i estudis de col·laboradors.",
+            "options": [
+              { "type": "Habitació / Estudi moblat", "prix": "Aprox. 400-600 CHF/mes", "services": ["Prop de Pourtalès/CdF", "Gestionat per l'hospital"] }
+            ],
+            "contact": { "tel": "032 713 30 37", "mail": "reservations@rhne.ch" }
+          }
         },
         {
           "nom": "Hôpital de la Providence",
@@ -541,7 +597,16 @@ const HOSPITAL_DATA = {
           "points_forts": ["Atmosfera familiar", "Baix cost de la vida", "Jerarquia molt accessible"],
           "points_faibles": ["Allunyament dels grans centres", "Clima dur"],
           "avis_assistant_resume": "Una escola de medicina de proximitat tranquil·litzadora per a un primer any.",
-          "logement_type": "Allotjaments disponibles sota petició"
+          "logement_type": "Allotjaments disponibles sota petició",
+          "logement_info": {
+            "has_logement": true,
+            "summary": "L'Hôpital du Jura disposa de 150 habitacions per a personal i estudiants.",
+            "options": [
+              { "site": "Delémont", "type": "Habitació", "prix": "310 - 350 CHF/mes", "services": ["Internet inclòs", "TV digital", "Moblat"] },
+              { "site": "Porrentruy", "type": "Habitació / Estudi", "prix": "360 - 460 CHF/mes", "services": ["Bany privat (estudis)", "Internet"] }
+            ],
+            "contact": { "tel": "032 421 21 21", "mail": "aurelie.dobler@h-ju.ch" }
+          }
         },
         {
           "nom": "Hôpital du Jura Bernois",
@@ -564,6 +629,15 @@ const HOSPITAL_DATA = {
           "description": "Situat a la part francòfona del cantó de Berna.",
           "chef_service": "Dr. Kafui Houegnifioh",
           "email_contact": "kafui.houegnifioh@reseaudelarc.net",
+          "logement_info": {
+            "has_logement": true,
+            "summary": "L'HJB ofereix habitacions i apartaments tant a Moutier com a Saint-Imier.",
+            "options": [
+              { "site": "Moutier", "type": "Habitació / Apto 2p", "prix": "310 - 890 CHF/mes", "services": ["Maison du personnel", "Apartaments moblats"] },
+              { "site": "Saint-Imier", "type": "Habitació / Estudi", "prix": "360 - 600 CHF/mes", "services": ["A prop de l'hospital", "Estudis disponibles"] }
+            ],
+            "contact": { "tel": "032 494 30 29", "mail": "carole.gobat@hjbe.ch" }
+          },
           "categorie": "B",
           "accessibilite_etrangers": "Alta",
           "langue_requise": "B2",
