@@ -136,7 +136,7 @@ let favorites = JSON.parse(localStorage.getItem('medswiss_favs') || '[]');
 let searchQuery = '';
 
 const state = {
-    filters: { canton: 'all', categorie: 'all', accessibilite: 'all', langue: 'all' },
+    filters: { canton: 'all', categorie: 'all', accessibilite: 'all', langue: 'all', voiture: 'all' },
     sort: 'score'
 };
 
@@ -170,6 +170,11 @@ function applyFiltersAndSort(data) {
             if (state.filters.langue !== 'all') {
                 if (!h.langue_requise) return false;
                 if (!h.langue_requise.includes(state.filters.langue)) return false;
+            }
+            if (state.filters.voiture !== 'all') {
+                const needsCar = h.sites.some(s => s.voiture_necessaire);
+                if (state.filters.voiture === 'necessaire' && !needsCar) return false;
+                if (state.filters.voiture === 'pas-necessaire' && needsCar) return false;
             }
             if (!matchesSearch(h)) return false;
             return true;
@@ -221,7 +226,10 @@ function buildCard(hospital, hospitalId, cantonSection, cantonIndex, hospitalInd
     card.style.animationDelay = `${hospitalIndex * 0.04}s`;
 
     const sitesHtml = hospital.sites.map(s =>
-        `<span class="site-badge"><i class="fas fa-map-marker-alt"></i>${s.ville}</span>`
+        `<span class="site-badge ${s.voiture_necessaire ? 'car-needed' : 'car-not-needed'}">
+            <i class="fas fa-map-marker-alt"></i>${s.ville}
+            ${s.voiture_necessaire ? ' <i class="fas fa-car" title="Cotxe necessari"></i>' : ' <i class="fas fa-train" title="Accessible en transport"></i>'}
+        </span>`
     ).join('');
 
     let transportHtml = '';
@@ -275,6 +283,9 @@ function buildCard(hospital, hospitalId, cantonSection, cantonIndex, hospitalInd
             ${hospital.accessibilite_etrangers ? `<span class="meta-badge ${accessClass}"><i class="fas fa-globe"></i> ${hospital.accessibilite_etrangers}</span>` : ''}
             ${hospital.langue_requise ? `<span class="meta-badge dist"><i class="fas fa-language"></i> FR ${hospital.langue_requise}</span>` : ''}
             ${hospital.temps_aeroport ? `<span class="meta-badge dist"><i class="fas fa-plane"></i> ${hospital.aeroport_proche} ${hospital.temps_aeroport}</span>` : ''}
+            ${hospital.sites.some(s => s.voiture_necessaire) 
+                ? '<span class="meta-badge access-low"><i class="fas fa-car"></i> Cotxe necessari</span>' 
+                : '<span class="meta-badge access-high"><i class="fas fa-train"></i> Sense cotxe OK</span>'}
         </div>
 
         <p class="card-description">${hospital.description}</p>
@@ -459,7 +470,7 @@ window.clearSearch = function() {
 
 // ── FILTERS ───────────────────────────────────────────────
 function setupFilters() {
-    const ids = ['filter-canton','filter-categorie','filter-accessibilite','filter-langue','sort-hospitals'];
+    const ids = ['filter-canton','filter-categorie','filter-accessibilite','filter-langue','filter-voiture','sort-hospitals'];
     ids.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -468,6 +479,7 @@ function setupFilters() {
             state.filters.categorie     = document.getElementById('filter-categorie').value;
             state.filters.accessibilite = document.getElementById('filter-accessibilite').value;
             state.filters.langue        = document.getElementById('filter-langue').value;
+            state.filters.voiture       = document.getElementById('filter-voiture').value;
             state.sort                  = document.getElementById('sort-hospitals').value;
             initHospitalData();
         });
@@ -475,13 +487,13 @@ function setupFilters() {
 }
 
 window.resetFilters = function() {
-    ['filter-canton','filter-categorie','filter-accessibilite','filter-langue'].forEach(id => {
+    ['filter-canton','filter-categorie','filter-accessibilite','filter-langue','filter-voiture'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = 'all';
     });
     const sort = document.getElementById('sort-hospitals');
     if (sort) sort.value = 'score';
-    state.filters = { canton:'all', categorie:'all', accessibilite:'all', langue:'all' };
+    state.filters = { canton:'all', categorie:'all', accessibilite:'all', langue:'all', voiture:'all' };
     state.sort = 'score';
     initHospitalData();
 };

@@ -587,7 +587,21 @@ body.map-hidden #map-toggle-btn {
     font-size: 0.77rem;
     color: var(--text-main);
     font-weight: 500;
-    transition: background var(--transition-fast);
+    transition: all var(--transition-fast);
+}
+.site-badge.car-needed {
+    border-color: #fee2e2;
+    background: #fff1f2;
+}
+.site-badge.car-needed i.fa-car {
+    color: #e11d48;
+}
+.site-badge.car-not-needed {
+    border-color: #dcfce7;
+    background: #f0fdf4;
+}
+.site-badge.car-not-needed i.fa-train {
+    color: #16a34a;
 }
 .site-badge i { margin-right: 5px; font-size: 0.8em; color: var(--text-light); }
 .site-badge:hover { background: var(--border); }

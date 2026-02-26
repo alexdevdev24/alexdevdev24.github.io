@@ -9,11 +9,13 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Yverdon-les-Bains",
-              "adresse": "Rue d'Entremonts 11, 1400 Yverdon-les-Bains, Suisse"
+              "adresse": "Rue d'Entremonts 11, 1400 Yverdon-les-Bains, Suisse",
+              "voiture_necessaire": false
             },
             {
               "ville": "Saint-Loup",
-              "adresse": "Hôpital de Saint-Loup, 1318 Pompaples, Suisse"
+              "adresse": "Hôpital de Saint-Loup, 1318 Pompaples, Suisse",
+              "voiture_necessaire": true
             }
           ],
           "description": "Molt reconegut per la formació bàsica.",
@@ -32,7 +34,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Morges",
-              "adresse": "Chemin du Crêt 2, 1110 Morges, Suisse"
+              "adresse": "Chemin du Crêt 2, 1110 Morges, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Molt valorat per la seva proximitat a Lausana i Ginebra.",
@@ -51,15 +54,18 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Rennaz",
-              "adresse": "Route du Vieux Séquoia 20, 1847 Rennaz, Suisse"
+              "adresse": "Route du Vieux Séquoia 20, 1847 Rennaz, Suisse",
+              "voiture_necessaire": true
             },
             {
               "ville": "Vevey",
-              "adresse": "Avenue de la Prairie 3, 1800 Vevey, Suisse"
+              "adresse": "Avenue de la Prairie 3, 1800 Vevey, Suisse",
+              "voiture_necessaire": false
             },
             {
               "ville": "Monthey",
-              "adresse": "Route de Choëx 21, 1870 Monthey, Suisse"
+              "adresse": "Route de Choëx 21, 1870 Monthey, Suisse",
+              "voiture_necessaire": true
             }
           ],
           "description": "Un gran hospital intercantonal totalment nou.",
@@ -76,7 +82,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Payerne",
-              "adresse": "Avenue de la Folie 8, 1530 Payerne, Suisse"
+              "adresse": "Avenue de la Folie 8, 1530 Payerne, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Excel·lent per a una supervisió de proximitat.",
@@ -93,7 +100,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Nyon",
-              "adresse": "Chemin Monastier 10, 1260 Nyon, Suisse"
+              "adresse": "Chemin Monastier 10, 1260 Nyon, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Hospital perifèric molt valorat pels assistents, reconegut categoria B en medicina interna.",
@@ -110,7 +118,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Genolier",
-              "adresse": "Route du Muids 3, 1272 Genolier, Suisse"
+              "adresse": "Route du Muids 3, 1272 Genolier, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Clínica privada de referència, amb reconeixement ISFM.",
@@ -127,7 +136,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Lausanne",
-              "adresse": "Avenue Vinet 30, 1004 Lausanne, Suisse"
+              "adresse": "Avenue Vinet 30, 1004 Lausanne, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Clínica d'avantguarda que ofereix excel·lents oportunitats d'especialització.",
@@ -144,7 +154,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Lausanne",
-              "adresse": "Avenue Ruchonnet 53, 1003 Lausanne, Suisse"
+              "adresse": "Avenue Ruchonnet 53, 1003 Lausanne, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Establiment de la xarxa Hirslanden, servei de medicina interna reconegut.",
@@ -161,7 +172,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Cully",
-              "adresse": "Route de la Petite-Corniche 1, 1096 Bourg-en-Lavaux, Suisse"
+              "adresse": "Route de la Petite-Corniche 1, 1096 Bourg-en-Lavaux, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Hospital que ofereix sovint rehabilitació i medicina interna amb reconeixement.",
@@ -184,15 +196,18 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Sion",
-              "adresse": "Avenue du Grand-Champsec 80, 1950 Sion, Suisse"
+              "adresse": "Avenue du Grand-Champsec 80, 1950 Sion, Suisse",
+              "voiture_necessaire": true
             },
             {
               "ville": "Sierre",
-              "adresse": "Rue Saint-Charles 14, 3960 Sierre, Suisse"
+              "adresse": "Rue Saint-Charles 14, 3960 Sierre, Suisse",
+              "voiture_necessaire": true
             },
             {
               "ville": "Martigny",
-              "adresse": "Avenue de la Fusion 27, 1920 Martigny, Suisse"
+              "adresse": "Avenue de la Fusion 27, 1920 Martigny, Suisse",
+              "voiture_necessaire": true
             }
           ],
           "description": "Per a moltes especialitats, Sion funciona gairebé com un 'petit A'.",
@@ -211,7 +226,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Sion",
-              "adresse": "Rue de l'Industrie 29, 1950 Sion, Suisse"
+              "adresse": "Rue de l'Industrie 29, 1950 Sion, Suisse",
+              "voiture_necessaire": true
             }
           ],
           "description": "Clínica privada amb infraestructures d'alt nivell i places per a medicina interna.",
@@ -234,15 +250,18 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Fribourg",
-              "adresse": "Chemin des Pensionnats 2-6, 1708 Fribourg, Suisse"
+              "adresse": "Chemin des Pensionnats 2-6, 1708 Fribourg, Suisse",
+              "voiture_necessaire": false
             },
             {
               "ville": "Riaz",
-              "adresse": "Rue de l'Hôpital 9, 1632 Riaz, Suisse"
+              "adresse": "Rue de l'Hôpital 9, 1632 Riaz, Suisse",
+              "voiture_necessaire": true
             },
             {
               "ville": "Tavel",
-              "adresse": "Maggenberg 1, 1712 Tafers, Suisse"
+              "adresse": "Maggenberg 1, 1712 Tafers, Suisse",
+              "voiture_necessaire": true
             }
           ],
           "description": "Gran pol de categoria B amb hospitals perifèrics per a medicina interna bàsica.",
@@ -259,7 +278,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Fribourg",
-              "adresse": "Route de Bertigny 34, 1700 Fribourg, Suisse"
+              "adresse": "Route de Bertigny 34, 1700 Fribourg, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Hospital privat de cures agudes que ofereix places en medicina interna (Cat C).",
@@ -282,11 +302,13 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Neuchâtel (Pourtalès)",
-              "adresse": "Rue de la Maladière 45, 2000 Neuchâtel, Suisse"
+              "adresse": "Rue de la Maladière 45, 2000 Neuchâtel, Suisse",
+              "voiture_necessaire": false
             },
             {
               "ville": "La Chaux-de-Fonds",
-              "adresse": "Rue de Chasseral 20, 2300 La Chaux-de-Fonds, Suisse"
+              "adresse": "Rue de Chasseral 20, 2300 La Chaux-de-Fonds, Suisse",
+              "voiture_necessaire": true
             }
           ],
           "description": "Establiments de categoria B molt complets per a la majoria d'especialitats.",
@@ -305,7 +327,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Neuchâtel",
-              "adresse": "Faubourg de l'Hôpital 81, 2000 Neuchâtel, Suisse"
+              "adresse": "Faubourg de l'Hôpital 81, 2000 Neuchâtel, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Clínica establerta a Neuchâtel, pertanyent al grup Swiss Medical Network.",
@@ -328,11 +351,13 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Delémont",
-              "adresse": "Faubourg des Capucins 30, 2800 Delémont, Suisse"
+              "adresse": "Faubourg des Capucins 30, 2800 Delémont, Suisse",
+              "voiture_necessaire": true
             },
             {
               "ville": "Porrentruy",
-              "adresse": "Chemin de l'Hôpital 9, 2900 Porrentruy, Suisse"
+              "adresse": "Chemin de l'Hôpital 9, 2900 Porrentruy, Suisse",
+              "voiture_necessaire": true
             }
           ],
           "description": "Xarxa principal del cantó del Jura.",
@@ -351,11 +376,13 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Moutier",
-              "adresse": "Beausite 49, 2740 Moutier, Suisse"
+              "adresse": "Beausite 49, 2740 Moutier, Suisse",
+              "voiture_necessaire": true
             },
             {
               "ville": "Saint-Imier",
-              "adresse": "Les Fontenayes 17, 2610 Saint-Imier, Suisse"
+              "adresse": "Les Fontenayes 17, 2610 Saint-Imier, Suisse",
+              "voiture_necessaire": true
             }
           ],
           "description": "Situat a la part francòfona del cantó de Berna.",
@@ -378,7 +405,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Meyrin",
-              "adresse": "Avenue J.-D.-Maillard 3, 1217 Meyrin, Suisse"
+              "adresse": "Avenue J.-D.-Maillard 3, 1217 Meyrin, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "El més gran hospital privat de Ginebra amb urgències i cures intensives.",
@@ -395,11 +423,13 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Genève",
-              "adresse": "Chemin de Beau-Soleil 20, 1206 Genève, Suisse"
+              "adresse": "Chemin de Beau-Soleil 20, 1206 Genève, Suisse",
+              "voiture_necessaire": false
             },
             {
               "ville": "Chêne-Bougeries",
-              "adresse": "Chemin des Grangettes 7, 1224 Chêne-Bougeries, Suisse"
+              "adresse": "Chemin des Grangettes 7, 1224 Chêne-Bougeries, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Establiments privats reconeguts per a certes especialitats.",
@@ -416,15 +446,18 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Thônex (Trois-Chêne)",
-              "adresse": "Chemin du Pont-Bochet 3, 1226 Thônex, Suisse"
+              "adresse": "Chemin du Pont-Bochet 3, 1226 Thônex, Suisse",
+              "voiture_necessaire": false
             },
             {
               "ville": "Collonge-Bellerive",
-              "adresse": "Chemin de la Savonnière 11, 1245 Collonge-Bellerive, Suisse"
+              "adresse": "Chemin de la Savonnière 11, 1245 Collonge-Bellerive, Suisse",
+              "voiture_necessaire": true
             },
             {
               "ville": "Bernex (Loëx)",
-              "adresse": "Route de Loëx 151, 1233 Bernex, Suisse"
+              "adresse": "Route de Loëx 151, 1233 Bernex, Suisse",
+              "voiture_necessaire": true
             }
           ],
           "description": "Ofereixen places d'assistent molt orientades a medicina interna, geriatria i rehabilitació.",
@@ -441,7 +474,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Genève",
-              "adresse": "Avenue Trembley 43, 1209 Genève, Suisse"
+              "adresse": "Avenue Trembley 43, 1209 Genève, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Situada davant dels HUG per a sinergies de continuïtat de cures i readaptació.",
@@ -458,7 +492,8 @@ const HOSPITAL_DATA = {
           "sites": [
             {
               "ville": "Carouge",
-              "adresse": "Avenue Cardinal-Mermillod 1, 1227 Carouge, Suisse"
+              "adresse": "Avenue Cardinal-Mermillod 1, 1227 Carouge, Suisse",
+              "voiture_necessaire": false
             }
           ],
           "description": "Establiment privat que ofereix oportunitats en medicina (Cat C).",
