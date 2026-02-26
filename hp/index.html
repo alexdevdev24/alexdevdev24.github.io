@@ -218,6 +218,36 @@ header {
 .hosp-card.score-med  .card-stripe { background:var(--gold); }
 .hosp-card.score-low  .card-stripe { background:var(--warn); }
 
+/* Match Strength Bar */
+.match-strength {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+.match-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+.match-bar-bg {
+  height: 6px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.match-bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 99px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.score-high .match-bar-fill { background: var(--success); }
+.score-med .match-bar-fill  { background: var(--gold); }
+.score-low .match-bar-fill  { background: var(--warn); }
+
 .card-body { padding:18px 20px; }
 
 /* Card top row */
@@ -404,6 +434,19 @@ header {
   .pros-cons { grid-template-columns:1fr; }
   #map { height: 250px !important; }
 }
+
+/* Reordering Animation */
+#cards-container {
+  display: flex;
+  flex-direction: column;
+}
+.hosp-card {
+  transition: transform 0.4s ease, opacity 0.4s ease, border-color 0.2s;
+}
+.card-hidden {
+  opacity: 0.4;
+  filter: grayscale(0.8);
+}
 #map { 
   height: 350px; 
   width: 100%; 
@@ -465,12 +508,33 @@ header {
         </div>
 
         <div class="filter-group">
-          <div class="filter-group-label"><div class="dot"></div> Accessibilité étrangers</div>
-          <div class="filter-chips" data-filter="acces">
-            <div class="f-chip on" data-val="all" onclick="fchip(this,'acces')">Toutes</div>
-            <div class="f-chip" data-val="Alta" onclick="fchip(this,'acces')">🟢 Haute</div>
-            <div class="f-chip" data-val="Mittlana" onclick="fchip(this,'acces')">🟡 Moyenne</div>
-            <div class="f-chip" data-val="Baixa" onclick="fchip(this,'acces')">🔴 Faible</div>
+          <div class="filter-group-label"><div class="dot"></div> Langue (FR)</div>
+          <div class="filter-chips" data-filter="langue">
+            <div class="f-chip on" data-val="all" onclick="fchip(this,'langue')">Toutes</div>
+            <div class="f-chip" data-val="B2" onclick="fchip(this,'langue')">B2</div>
+            <div class="f-chip" data-val="C1" onclick="fchip(this,'langue')">C1</div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-group-label"><div class="dot"></div> Logement & Auto</div>
+          <div class="filter-chips" data-filter="housing">
+            <div class="f-chip on" data-val="all" onclick="fchip(this,'housing')">Tous</div>
+            <div class="f-chip" data-val="yes" onclick="fchip(this,'housing')">🏠 Logement</div>
+          </div>
+          <div class="filter-chips" style="margin-top:8px" data-filter="voiture">
+            <div class="f-chip on" data-val="all" onclick="fchip(this,'voiture')">Tous</div>
+            <div class="f-chip" data-val="no" onclick="fchip(this,'voiture')">🚂 Sans voiture</div>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-group-label"><div class="dot"></div> Budget Loyer</div>
+          <div class="filter-chips" data-filter="budget">
+            <div class="f-chip on" data-val="all" onclick="fchip(this,'budget')">Tous</div>
+            <div class="f-chip" data-val="$" onclick="fchip(this,'budget')">$</div>
+            <div class="f-chip" data-val="$$" onclick="fchip(this,'budget')">$$</div>
+            <div class="f-chip" data-val="$$$" onclick="fchip(this,'budget')">$$$</div>
           </div>
         </div>
 
@@ -528,8 +592,7 @@ header {
 <script src="data.js"></script>
 <script>
 /* ─── STATE ──────────────────────────────── */
-let wizState = { priority: null, langue: null, budget: null };
-let filters  = { canton:'all', cat:'all', acces:'all' };
+let filters  = { canton:'all', cat:'all', acces:'all', langue:'all', housing:'all', voiture:'all', budget:'all' };
 let sortMode = 'score';
 let favs     = JSON.parse(localStorage.getItem('mswiss_favs') || '[]');
 let activeDetail = null;
@@ -623,7 +686,7 @@ function fchip(el, group) {
 }
 
 function resetFilters() {
-  filters = { canton:'all', cat:'all', acces:'all' };
+  filters = { canton:'all', cat:'all', acces:'all', langue:'all', housing:'all', voiture:'all', budget:'all' };
   document.querySelectorAll('.f-chip').forEach(c => {
     c.classList.toggle('on', c.dataset.val === 'all');
   });
@@ -637,49 +700,102 @@ function setSort(mode, btn) {
   renderCards();
 }
 
-/* ─── SCORE CALC ─────────────────────────── */
+/* ─── SCORE CALC (DYNAMIC MATCH) ─────────── */
 function computeScore(h) {
-  let s = h.score; // base score
+  let score = 0;
+  
+  // Base Quality (Supervision & Category) - Base 60 pts
+  score += (h.supervision / 5) * 40; 
+  
+  if (h.cat === 'A') score += 20;
+  else if (h.cat === 'B') score += 15;
+  else score += 10;
 
-  // Boost from wizard priorities
-  if (wizState.priority === 'supervision') s += h.supervision * 2;
-  if (wizState.priority === 'barcelona')   s += h.temps.includes('15') ? 10 : h.temps.includes('20') ? 8 : h.temps.includes('30') ? 5 : 0;
-  if (wizState.priority === 'housing' && h.housing) s += 15;
-  if (wizState.priority === 'notcar' && !h.voiture) s += 12;
-  if (wizState.langue === h.langue) s += 8;
-  if (wizState.budget && wizState.budget !== 'any' && h.budget === wizState.budget) s += 5;
+  // Preference Matches (Match Score based on active filters) - Extra 40 pts
+  // Language
+  if (filters.langue !== 'all') {
+    if (h.langue === filters.langue || (filters.langue === 'B2' && h.langue === 'C1') || (filters.langue === 'C1' && h.langue === 'B2')) {
+      score += 10;
+    } else {
+      score -= 5;
+    }
+  } else {
+    score += 10; // Neutral bonus if no filter
+  }
+  
+  // Housing
+  if (filters.housing === 'yes') {
+    if (h.housing) score += 10;
+    else score -= 5;
+  } else {
+    score += 10;
+  }
 
-  return Math.min(Math.round(s), 100);
+  // Voiture (Soft preference for "No car")
+  if (filters.voiture === 'no') {
+    if (!h.voiture) score += 10;
+    else score -= 8;
+  } else {
+    score += 10;
+  }
+
+  // Budget
+  if (filters.budget !== 'all') {
+    const levels = {'$':1, '$$':2, '$$$':3, '$$$$':4};
+    if (levels[h.budget] <= levels[filters.budget]) score += 10;
+    else score -= 5;
+  } else {
+    score += 10;
+  }
+
+  // Airport proximity (Small bonus)
+  if (parseInt(h.temps) < 30) score += 5;
+
+  return Math.min(Math.max(Math.round(score), 0), 100);
 }
 
 /* ─── FILTER & SORT ──────────────────────── */
 function getFiltered() {
+  // We keep everyone now (except search if it was implemented, but let's keep it simple)
+  // Canton remains a "Hard" filter because usually people stick to a canton
   return HOSPITALS.filter(h => {
     if (filters.canton !== 'all' && h.canton !== filters.canton) return false;
-    if (filters.cat    !== 'all' && h.cat    !== filters.cat)    return false;
-    if (filters.acces  !== 'all' && h.acces  !== filters.acces)  return false;
-    // Wizard filters
-    if (wizState.langue && wizState.langue !== 'both' && h.langue !== wizState.langue) return false;
-    if (wizState.priority === 'housing' && !h.housing) return false;
-    if (wizState.priority === 'notcar'  && h.voiture)  return false;
-    if (wizState.budget && wizState.budget !== 'any' && h.budget > wizState.budget) return false;
-    return true;
+    return true; 
+  }).map(h => {
+    const score = computeScore(h);
+    // isMatch should be true if it meets all SELECTED criteria
+    let isMatch = true;
+    if (filters.cat !== 'all' && h.cat !== filters.cat) isMatch = false;
+    if (filters.acces !== 'all' && h.acces !== filters.acces) isMatch = false;
+    if (filters.langue !== 'all') {
+        if (filters.langue === 'B2' && h.langue === 'C1') isMatch = false; // B2 level user can't do C1 hospital
+    }
+    if (filters.housing === 'yes' && !h.housing) isMatch = false;
+    if (filters.voiture === 'no' && h.voiture) isMatch = false;
+    if (filters.budget !== 'all') {
+       const levels = {'$':1, '$$':2, '$$$':3, '$$$$':4};
+       if (levels[h.budget] > levels[filters.budget]) isMatch = false;
+    }
+    return { ...h, currentScore: score, isMatch };
   }).sort((a, b) => {
-    if (sortMode === 'score') return computeScore(b) - computeScore(a);
+    // Primary sort by score
+    if (sortMode === 'score') return b.currentScore - a.currentScore;
     if (sortMode === 'alpha') return a.nom.localeCompare(b.nom);
     if (sortMode === 'airport') return parseInt(a.temps) - parseInt(b.temps);
     return 0;
   });
 }
 
+
 /* ─── RENDER ─────────────────────────────── */
 function renderCards() {
   const list = getFiltered();
   const container = document.getElementById('cards-container');
+  // Instead of clearing everything, we rebuild content to trigger CSS transitions
   container.innerHTML = '';
 
   initMap();
-  updateMapMarkers(list);
+  updateMapMarkers(list.filter(h => h.isMatch));
 
   document.getElementById('result-count').innerHTML =
     `<strong>${list.length}</strong> hôpital${list.length > 1 ? 'x' : ''}`;
@@ -687,30 +803,19 @@ function renderCards() {
   if (!list.length) {
     container.innerHTML = `<div style="text-align:center;padding:48px 0;color:var(--muted);">
       <div style="font-size:2.5rem;margin-bottom:12px;">🔍</div>
-      <p>Aucun hôpital ne correspond.<br>Essaie d'élargir tes critères.</p>
-      <button onclick="resetFilters()" style="margin-top:16px;padding:8px 20px;border-radius:8px;background:var(--primary);color:#fff;border:none;cursor:pointer;font-family:inherit;">Réinitialiser</button>
+      <p>Aucun hôpital ne correspond.</p>
     </div>`;
     return;
   }
 
-  // Group by canton
-  const byC = {};
-  list.forEach(h => { (byC[h.canton] = byC[h.canton] || []).push(h); });
-
-  Object.entries(byC).forEach(([canton, hosps]) => {
-    const div = document.createElement('div');
-    div.className = 'canton-div';
-    div.innerHTML = `${canton} <span>${hosps.length} hosp.</span>`;
-    container.appendChild(div);
-
-    hosps.forEach(h => container.appendChild(buildCard(h)));
-  });
+  list.forEach(h => container.appendChild(buildCard(h)));
 }
 
 function buildCard(h) {
-  const sc = computeScore(h);
+  const sc = h.currentScore;
   const cls = sc >= 85 ? 'score-high' : sc >= 75 ? 'score-med' : 'score-low';
   const faved = favs.includes(h.id);
+  const matchClass = h.isMatch ? '' : 'card-hidden';
 
   // Decision pills
   const pills = [];
@@ -723,7 +828,7 @@ function buildCard(h) {
   pills.push({ label:`🇫🇷 FR ${h.langue} min.`, cls: h.langue === 'B2' ? 'green' : 'amber' });
 
   const card = document.createElement('div');
-  card.className = `hosp-card ${cls}`;
+  card.className = `hosp-card ${cls} ${matchClass}`;
   card.id = `card-${h.id}`;
   card.innerHTML = `
     <div class="card-stripe"></div>
@@ -735,7 +840,14 @@ function buildCard(h) {
         </div>
         <div class="score-block ${cls}">
           <div class="score-num">${sc}</div>
-          <div class="score-lbl">/ 100</div>
+          <div class="score-lbl">Match %</div>
+        </div>
+      </div>
+
+      <div class="match-strength">
+        <div class="match-label"><span>Force du match</span> <span>${sc}%</span></div>
+        <div class="match-bar-bg">
+          <div class="match-bar-fill" style="width: ${sc}%"></div>
         </div>
       </div>
 
