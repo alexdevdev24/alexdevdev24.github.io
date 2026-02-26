@@ -6,6 +6,8 @@
 <title>MedSwiss Finder — Trouve ton hôpital</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 /* ─── TOKENS ─────────────────────────────── */
 :root {
@@ -400,7 +402,19 @@ header {
   .key-facts { grid-template-columns:1fr 1fr; }
   #detail-panel { width:100%; }
   .pros-cons { grid-template-columns:1fr; }
+  #map { height: 250px !important; }
 }
+#map { 
+  height: 350px; 
+  width: 100%; 
+  border-radius: var(--radius); 
+  margin-bottom: 24px; 
+  border: 1px solid var(--border);
+  z-index: 10;
+}
+.leaflet-popup-content-wrapper { border-radius: 12px; font-family: 'Sora', sans-serif; }
+.popup-h-name { font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.popup-h-info { font-size: 0.8rem; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -466,8 +480,7 @@ header {
 
     <!-- RIGHT: Cards -->
     <div>
-
-
+      <div id="map"></div>
       <div class="results-topbar">
         <div class="results-count" id="result-count"><strong>—</strong> hôpitaux</div>
         <div class="sort-row">
@@ -514,6 +527,15 @@ header {
 
 <script src="data.js"></script>
 <script>
+/* ─── STATE ──────────────────────────────── */
+let wizState = { priority: null, langue: null, budget: null };
+let filters  = { canton:'all', cat:'all', acces:'all' };
+let sortMode = 'score';
+let favs     = JSON.parse(localStorage.getItem('mswiss_favs') || '[]');
+let activeDetail = null;
+let mapInstance = null;
+let markers = [];
+
 /* ─── DATA PREPARATION ───────────────────────────────────── */
 function prepareHospitals() {
   const result = [];
@@ -523,12 +545,16 @@ function prepareHospitals() {
   HOSPITAL_DATA.suisse_francophone.forEach(c => {
     c.hopitaux.forEach(h => {
       const site = h.sites[0];
+      const coords = (typeof ADDRESS_COORDINATES !== 'undefined') ? ADDRESS_COORDINATES[site.adresse] : null;
+      
       result.push({
         id: id++,
         nom: h.nom,
         canton: c.canton,
         ville: site.ville,
         cat: h.categorie,
+        lat: coords ? coords[0] : 46.5,
+        lng: coords ? coords[1] : 6.6,
         acces: h.accessibilite_etrangers === 'Mitjana' ? 'Mittlana' : h.accessibilite_etrangers,
         langue: h.langue_requise ? (h.langue_requise.includes('/') ? 'B2' : h.langue_requise) : 'B2',
         budget: site.budget_loyer,
@@ -551,13 +577,40 @@ function prepareHospitals() {
 
 const HOSPITALS = prepareHospitals();
 
+function initMap() {
+  if (mapInstance) return;
+  mapInstance = L.map('map', { zoomControl: false }).setView([46.5, 6.6], 8);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(mapInstance);
+  L.control.zoom({ position: 'bottomright' }).addTo(mapInstance);
+}
 
-/* ─── STATE ──────────────────────────────── */
-let wizState = { priority: null, langue: null, budget: null };
-let filters  = { canton:'all', cat:'all', acces:'all' };
-let sortMode = 'score';
-let favs     = JSON.parse(localStorage.getItem('mswiss_favs') || '[]');
-let activeDetail = null;
+function updateMapMarkers(list) {
+  if (!mapInstance) return;
+  markers.forEach(m => mapInstance.removeLayer(m));
+  markers = [];
+
+  const group = L.featureGroup();
+  list.forEach(h => {
+    if (h.lat && h.lng) {
+      const m = L.marker([h.lat, h.lng]).addTo(mapInstance);
+      m.bindPopup(`
+        <div class="popup-h-wrapper">
+          <div class="popup-h-name">${h.nom}</div>
+          <div class="popup-h-info">📍 ${h.ville} · Cat. ${h.cat}</div>
+          <div style="margin-top:8px"><button onclick="openDetail(${h.id})" style="background:var(--primary);color:#fff;border:none;padding:4px 8px;border-radius:4px;font-size:0.7rem;cursor:pointer;">Détails</button></div>
+        </div>
+      `);
+      markers.push(m);
+      group.addLayer(m);
+    }
+  });
+
+  if (markers.length > 0) {
+    mapInstance.fitBounds(group.getBounds(), { padding: [30, 30] });
+  }
+}
 
 
 
@@ -624,6 +677,9 @@ function renderCards() {
   const list = getFiltered();
   const container = document.getElementById('cards-container');
   container.innerHTML = '';
+
+  initMap();
+  updateMapMarkers(list);
 
   document.getElementById('result-count').innerHTML =
     `<strong>${list.length}</strong> hôpital${list.length > 1 ? 'x' : ''}`;
